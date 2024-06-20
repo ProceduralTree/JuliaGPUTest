@@ -1,7 +1,7 @@
 using KernelAbstractions
 using oneAPI: oneArray
 
-device_arr = x -> x
+device_arr = oneArray
 
 function G(I::CartesianIndex , Inds::CartesianIndices)
     if I in Inds
