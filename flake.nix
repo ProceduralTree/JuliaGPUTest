@@ -1,5 +1,6 @@
 {
   description = "Julia2Nix development environment";
+
   nixConfig = {
     allowUnfree = true;
     extra-substituters = [ "https://cuda-maintainers.cachix.org" ];
@@ -55,73 +56,9 @@
           # default = project;
         };
         devShells.default = pkgs.devshell.mkShell {
-          packages = with pkgs; [
-            cudatoolkit
-            cudaPackages.cudnn
-            git
-            gitRepo
-            pdf2svg
-            gnupg
-            autoconf
-            curl
-            procps
-            gnumake
-            util-linux
-            m4
-            gperf
-            unzip
-            libGLU
-            libGL
-            xorg.libXi
-            xorg.libXmu
-            freeglut
-            xorg.libXext
-            xorg.libX11
-            xorg.libXv
-            xorg.libXrandr
-            zlib
-            ncurses5
-            stdenv.cc
-            binutils
-          ];
-          env = [
-            {
-              name = "NIX_LD_LIBRARY_PATH";
-              value = pkgs.lib.makeLibraryPath [
-                pkgs.stdenv.cc.cc
-                # ...
-              ];
-            }
-            {
-              name = "NIX_LD";
-              value = "${pkgs.glibc}/lib/ld-linux-x86-64.so.2";
-            }
-            {
-              name = "CUDA_PATH";
-              value = "${pkgs.cudatoolkit}";
-            }
-            {
-              name = "LD_LIBRARY_PATH";
-              value =
-                "${pkgs.linuxPackages.nvidia_x11_production}/lib:${pkgs.ncurses5}/lib";
-            }
-            {
-              name = "EXTRA_LDFLAGS";
-              value =
-                "-L/lib -L${pkgs.linuxPackages.nvidia_x11_production}/lib";
-            }
-            {
-              name = "EXTRA_CCFLAGS";
-              value = "-I/usr/include";
-            }
-            {
-              name = "JULIA_NUM_THREADS";
-              value = "auto";
-            }
-          ];
           imports = [
             # you can keep either one of them devshellProfiles.packages or julia-wrapped
-            #inputs.julia2nix.${pkgs.system}.julia2nix.devshellProfiles.packages
+            # inputs.julia2nix.${pkgs.system}.julia2nix.devshellProfiles.packages
 
             # add dev-tools in your devshell
             inputs.julia2nix.${pkgs.system}.julia2nix.devshellProfiles.dev
