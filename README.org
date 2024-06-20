@@ -1,0 +1,10 @@
+#+title: Readme
+
+* Personal tests of the KernelAbstraction lib
++ Tests of diffrent backends
+  + [X] CPU
+  + [X] oneApi
+  + [ ] CUDA
++ Test of finite difference laplacian
+  - [X] basic
+  - [ ] with characteristic function
