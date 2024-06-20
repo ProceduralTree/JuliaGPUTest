@@ -1,6 +1,5 @@
 {
   description = "Julia2Nix development environment";
-
   nixConfig = {
     allowUnfree = true;
     extra-substituters = [ "https://cuda-maintainers.cachix.org" ];
@@ -10,9 +9,9 @@
   };
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     flake-utils.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     devshell.url = "github:numtide/devshell";
     devshell.inputs.nixpkgs.follows = "nixpkgs";
@@ -56,7 +55,6 @@
           # default = project;
         };
         devShells.default = pkgs.devshell.mkShell {
-
           packages = with pkgs; [
             cudatoolkit
             cudaPackages.cudnn
@@ -123,7 +121,7 @@
           ];
           imports = [
             # you can keep either one of them devshellProfiles.packages or julia-wrapped
-            # inputs.julia2nix.${pkgs.system}.julia2nix.devshellProfiles.packages
+            #inputs.julia2nix.${pkgs.system}.julia2nix.devshellProfiles.packages
 
             # add dev-tools in your devshell
             inputs.julia2nix.${pkgs.system}.julia2nix.devshellProfiles.dev
