@@ -153,7 +153,7 @@ function test_elyps_solver(arr, n; device_arr=(x) -> x)
     stencil = [(1, 0), (-1, 0), (0, 1), (0, -1)] |> device_arr
     stencil = CartesianIndex.(stencil)
     device = get_backend(C)
-    test_kernel = elyps_solver(device, 64, size(C))
+    test_kernel = elyps_solver(device, 256, size(C))
     alpha::Float32 = 2.e6
     h::Float32 = 3e-3 * 64 / 1024
     for i in 1:n
