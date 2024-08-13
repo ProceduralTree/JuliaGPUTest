@@ -57,7 +57,7 @@
         devShells.default = pkgs.devshell.mkShell {
           packages = with pkgs; [
             cudatoolkit
-            cudaPackages.cudnn
+            #cudaPackages.cudnn
             git
             gitRepo
             pdf2svg

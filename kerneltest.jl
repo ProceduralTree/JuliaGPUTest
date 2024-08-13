@@ -1,9 +1,9 @@
+using BenchmarkTools
+using CUDA
 using KernelAbstractions
 using KernelAbstractions.Extras.LoopInfo: @unroll
-using CUDA
-using Random
-#using oneAPI: oneArray
 using LinearAlgebra
+using Random
 
 device_arr = CuArray
 # device_arr = x -> x
@@ -177,3 +177,5 @@ function testdata(gridsize, blobs, radius, norm; rng=MersenneTwister(42))
     end
     M
 end
+
+
