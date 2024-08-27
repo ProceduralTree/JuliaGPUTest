@@ -1,14 +1,6 @@
 using Base: Callable
 using CUDA
 using Random
-
-function set_xi_and_psi!(Ξ::CuArray , Ψ::CuArray , Φ::CuArray, W′::Callable , Δt::Float32)
-    xi_init(x) = x / Δt
-    psi_init(x) = W′(x) - 2 * x
-    Ξ[2:end-1, 2:end-1] = xi_init.(Φ[2:end-1,2:end-1])
-    Ψ[2:end-1, 2:end-1] = psi_init.(Φ[2:end-1,2:end-1])
-    return nothing
-end
 function testdata(gridsize , blobs , radius ,norm;rng=MersenneTwister(42))
 rngpoints = rand(rng,1:gridsize, 2, blobs)
 M = zeros(gridsize,gridsize) .- 1
@@ -39,3 +31,5 @@ function massbal(arr)
     num_cells= *((size(arr).-2)...)
     return sum(arr[2:end-1, 2:end-1])/num_cells
     end
+
+

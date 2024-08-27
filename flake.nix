@@ -19,15 +19,20 @@
     julia2nix.url = "github:JuliaCN/Julia2Nix.jl";
   };
 
-  outputs = inputs@{ self, julia2nix, ... }:
-    (inputs.flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    inputs@{ self, julia2nix, ... }:
+    (inputs.flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = import inputs.nixpkgs {
           inherit system;
           config.allowUnfree = true;
           config.cudaSupport = true;
           config.cudaVersion = "12.4";
-          overlays = [ inputs.devshell.overlays.default self.overlays.default ];
+          overlays = [
+            inputs.devshell.overlays.default
+            self.overlays.default
+          ];
         };
         julia-wrapped = inputs.julia2nix.lib.${system}.julia-wrapped {
           # package = pkgs.julia_17-bin;
@@ -36,7 +41,11 @@
             # only x86_64-linux is supported
             GR = true;
             python = pkgs.python3.buildEnv.override {
-              extraLibs = with pkgs.python3Packages; [ xlrd matplotlib pyqt5 ];
+              extraLibs = with pkgs.python3Packages; [
+                xlrd
+                matplotlib
+                pyqt5
+              ];
               # ignoreCollisions = true;
             };
           };
@@ -49,7 +58,8 @@
           name = "your julia project";
           package = julia-wrapped;
         };
-      in {
+      in
+      {
         packages = {
           # make sure you have generated the julia2nix.toml
           # default = project;
@@ -102,13 +112,11 @@
             }
             {
               name = "LD_LIBRARY_PATH";
-              value =
-                "${pkgs.linuxPackages.nvidia_x11_production}/lib:${pkgs.ncurses5}/lib";
+              value = "${pkgs.linuxPackages.nvidia_x11}/lib:${pkgs.ncurses5}/lib";
             }
             {
               name = "EXTRA_LDFLAGS";
-              value =
-                "-L/lib -L${pkgs.linuxPackages.nvidia_x11_production}/lib";
+              value = "-L/lib -L${pkgs.linuxPackages.nvidia_x11}/lib";
             }
             {
               name = "EXTRA_CCFLAGS";
@@ -129,13 +137,16 @@
             # add nightly julia
             # inputs.julia2nix.${pkgs.system}.julia2nix.devshellProfiles.nightly
           ];
-          commands = [{
-            package = julia-wrapped;
-            help =
-              julia2nix.packages.${pkgs.system}.julia_19-bin.meta.description;
-          }];
+          commands = [
+            {
+              package = julia-wrapped;
+              help = julia2nix.packages.${pkgs.system}.julia_19-bin.meta.description;
+            }
+          ];
         };
-      })) // {
-        overlays.default = final: prev: { };
-      };
+      }
+    ))
+    // {
+      overlays.default = final: prev: { };
+    };
 }
