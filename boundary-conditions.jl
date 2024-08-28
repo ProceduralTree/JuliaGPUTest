@@ -30,7 +30,7 @@ end
 
 @kernel function left(out)
     I = @index(Global, Cartesian)
-    Ids = CartesianIndices(Φ)
+    Ids = CartesianIndices(out)
     Id = oneunit(I)
     Ix = CartesianIndex(1,0)
     Iy = CartesianIndex(0,1)
@@ -43,11 +43,11 @@ end
 
 @kernel function right(out)
     I = @index(Global, Cartesian)
-    Ids = CartesianIndices(Φ)
+    Ids = CartesianIndices(out)
     Id = oneunit(I)
     Ix = CartesianIndex(1,0)
     Iy = CartesianIndex(0,1)
-    value = 0.1
+    value = 1.
     out[I] = 0.0
     if I in Ids[begin]+Id:Ids[end]-Id
         out[I] = value * abs(G(2 * I + Ix, Ids) -  G(2 * I, Ids))
@@ -55,11 +55,11 @@ end
 end
 @kernel function top(out)
     I = @index(Global, Cartesian)
-    Ids = CartesianIndices(Φ)
+    Ids = CartesianIndices(out)
     Id = oneunit(I)
     Ix = CartesianIndex(1,0)
     Iy = CartesianIndex(0,1)
-    value = 0.1
+    value = 1.
     out[I] = 0.0
     if I in Ids[begin]+Id:Ids[end]-Id
         out[I] = value * abs(G(2 * I + Iy, Ids) -  G(2 * I, Ids))
@@ -67,11 +67,11 @@ end
 end
 @kernel function bottom(out)
     I = @index(Global, Cartesian)
-    Ids = CartesianIndices(Φ)
+    Ids = CartesianIndices(out)
     Id = oneunit(I)
     Ix = CartesianIndex(1,0)
     Iy = CartesianIndex(0,1)
-    value = 0.1
+    value = 1.
     out[I] = 0.0
     if I in Ids[begin]+Id:Ids[end]-Id
         out[I] = value * abs(G(2 * I - Iy, Ids) -  G(2 * I, Ids))

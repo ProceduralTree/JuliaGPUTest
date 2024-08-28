@@ -1,5 +1,4 @@
 using Base: Callable
-using CUDA
 using Random
 function testdata(gridsize , blobs , radius ,norm;rng=MersenneTwister(42))
 rngpoints = rand(rng,1:gridsize, 2, blobs)

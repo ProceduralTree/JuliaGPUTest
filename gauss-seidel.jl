@@ -1,7 +1,6 @@
 
 using KernelAbstractions
 using KernelAbstractions.Extras.LoopInfo: @unroll
-using CUDA
 using Random
 #using oneAPI: oneArray
 using LinearAlgebra
@@ -34,7 +33,7 @@ end
     Ids = CartesianIndices(C)
     Idx = CartesianIndex(1, 0)
     Idy = CartesianIndex(0, 1)
-    if I in Ids[begin]+Id:Ids[end]-Id
+    if I in (Ids[begin]+Id:Ids[end]-Id)
         g = G(2 * I + Idx, Ids) + G(2 * I + Idy, Ids) + G(2 * I - Idx, Ids) + G(2 * I - Idy, Ids)
         for _ = 1:iterations
             Σμ = G(2 * I + Idx, Ids) * M[I+Idx]
