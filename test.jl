@@ -1,5 +1,7 @@
 using Plots
-using oneAPI
+using ProgressMeter
+#using oneAPI
+using CUDA
 using KernelAbstractions
 using KernelAbstractions.Extras.LoopInfo: @unroll
 using Base: Callable
@@ -9,7 +11,7 @@ include("gauss-seidel.jl")
 include("explicit.jl")
 include("boundary-conditions.jl")
 
-Arrtype = oneArray
+Arrtype = CuArray
 arr = Arrtype(zeros(Float32,256, 256))
 SIZE = 254
 M = testdata(SIZE, 6, SIZE / 5, 2)
@@ -56,7 +58,7 @@ function solve(initialCondition::T, timesteps::Int ; arrtype=T) where T<:Abstrac
     Neumann2 += tmp
     r(tmp)
     Neumann2 += tmp
-    Neumann2 *= 1f-0 * h^2
+    Neumann2 *= 1f-0
     #print(Neumann1)
 
     @showprogress for j = 1:timesteps
@@ -91,11 +93,13 @@ function animated_solve(initialCondition::T, timesteps::Int, filepath::String ; 
     tmp = zeros(Float32, size(initialCondition)...) |> arrtype
 
     Dirac = zeros(Float32, size(initialCondition)...) |> arrtype
-    Neumann1 = zeros(Float32, size(initialCondition)...) |> arrtype
+    Neumann1X = zeros(Float32, size(initialCondition)...) |> arrtype
+    Neumann1Y = zeros(Float32, size(initialCondition)...) |> arrtype
     Neumann2 = zeros(Float32, size(initialCondition)...) |> arrtype
 
 
     l = BoundaryKernels.left(device , 128 , size(initialCondition))
+    l2 = BoundaryKernels.left2(device , 128 , size(initialCondition))
     r = BoundaryKernels.right(device , 128 , size(initialCondition))
     t = BoundaryKernels.top(device , 128 , size(initialCondition))
     b = BoundaryKernels.bottom(device , 128 , size(initialCondition))
@@ -108,24 +112,33 @@ function animated_solve(initialCondition::T, timesteps::Int, filepath::String ; 
     ellipical_solver = elyps_solver!(device, 256, size(C))
     jacoby_step = relaxed_jacoby!(device, 256, size(C))
 
-    l(tmp)
-    Neumann2 += tmp
-    r(tmp)
-    Neumann2 +=tmp
-    Neumann2 *= 1f-0 * h^2
+    # l(tmp)
+    # Neumann1 += tmp
+    # r(tmp)
+    # Neumann1 +=tmp
+    # Neumann1 *=  3f-3
     #print(Neumann1)
 
+     l(tmp)
+     #Neumann1 += tmp
+     l2(tmp)
+     Neumann1X +=tmp
+     Neumann1Y +=tmp
+     Neumann1Y *=  -2f2
+     Neumann1X *=  -2f2
+    p = Progress(timesteps)
     anim=@animate for j = 1:timesteps
-        heatmap(Array(Φ))
+        heatmap(Array(Φ), aspect_ratio=:equal , clims=(-1,1))
         set_xi_and_psi!(Ξ, Ψ, Φ, W′, Δt)
         # add boundary conditions
-        Ψ .+= add_boundary(Φ , h , Dirac , Neumann1 , Neumann2)
+        Ψ .+= add_boundary(Φ , h , Dirac , Neumann1X, Neumann1Y , Neumann2)
         for _ = 1:100
             ellipical_solver(C, Φ, α, h, stencil, 10)
             KernelAbstractions.synchronize(device)
             jacoby_step(Φ, M, Ξ, Ψ, C, h, α, ε, Δt, 10)
             KernelAbstractions.synchronize(device)
         end
+        next!(p)
     end
     mp4(anim , filepath , fps=24)
     return nothing
