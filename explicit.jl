@@ -18,15 +18,15 @@ function set_xi_and_psi!(
     return nothing
 end
 
-function add_boundary(Φ,h::Float32, Dirac::T, Neumann1::T, Neumann2::T) where T<:AbstractArray
+function add_boundary(Φ,h::Float32, Dirac::T, Neumann1X::T,Neumann1Y, Neumann2::T) where T<:AbstractArray
     device = get_backend(Φ)
     out = KernelAbstractions.zeros(device,Float32,size(Φ)...)
 
     add_divergence = divergence_add_kernel(device, 128, size(out))
-    add_gradient = gradient_add_kernel(device, 128, size(out))
+    #add_gradient = gradient_add_kernel(device, 128, size(out))
     #
-    out += Neumann2
-    add_divergence(Neumann1, out,h)
-    add_gradient(Dirac, out,h)
+    #out += Neumann2
+    add_divergence(Neumann1X , Neumann1Y, out,h)
+    #add_gradient(Dirac, out,h)
     return out
 end
