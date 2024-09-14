@@ -109,10 +109,10 @@ function animated_solve(initialCondition::T, timesteps::Int, filepath::String ; 
     jacoby_step = relaxed_jacoby!(device, 256, size(C))
 
     l(tmp)
-    Neumann2 += tmp
+    Neumann1 += 3f-2 * tmp
     r(tmp)
-    Neumann2 +=tmp
-    Neumann2 *= 1f-0 * h^2
+    Neumann1 += 1f-2 * tmp
+    Neumann1 *= 1f-1
     #print(Neumann1)
 
     anim=@animate for j = 1:timesteps
