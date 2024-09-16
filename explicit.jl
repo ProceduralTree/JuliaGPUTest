@@ -25,8 +25,8 @@ function add_boundary(Φ,h::Float32, Dirac::T, Neumann1X::T,Neumann1Y, Neumann2:
     add_divergence = divergence_add_kernel(device, 128, size(out))
     #add_gradient = gradient_add_kernel(device, 128, size(out))
     #
-    #out += Neumann2
-    add_divergence(Neumann1X , Neumann1Y, out,h)
+    out += Neumann2
+    #add_divergence(Neumann1X , Neumann1Y, out,h)
     #add_gradient(Dirac, out,h)
     return out
 end

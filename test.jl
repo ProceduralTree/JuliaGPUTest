@@ -1,7 +1,7 @@
 using Plots
 using ProgressMeter
-#using oneAPI
-using CUDA
+using oneAPI
+#using CUDA
 using KernelAbstractions
 using KernelAbstractions.Extras.LoopInfo: @unroll
 using Base: Callable
@@ -11,7 +11,7 @@ include("gauss-seidel.jl")
 include("explicit.jl")
 include("boundary-conditions.jl")
 
-Arrtype = CuArray
+Arrtype = oneArray
 arr = Arrtype(zeros(Float32,256, 256))
 SIZE = 254
 M = testdata(SIZE, 6, SIZE / 5, 2)
@@ -84,7 +84,6 @@ function animated_solve(initialCondition::T, timesteps::Int, filepath::String ; 
     Δt::Float32 = 1e-2
     ε::Float32 = 1e-3
     W′(x) = -x * (1 - x^2)
-    device = get_backend(initialCondition)
 
     C = rand(Float32, size(initialCondition)...) |> arrtype
     M = zeros(Float32, size(initialCondition)...) |> arrtype
@@ -96,6 +95,7 @@ function animated_solve(initialCondition::T, timesteps::Int, filepath::String ; 
     Neumann1X = zeros(Float32, size(initialCondition)...) |> arrtype
     Neumann1Y = zeros(Float32, size(initialCondition)...) |> arrtype
     Neumann2 = zeros(Float32, size(initialCondition)...) |> arrtype
+    device = get_backend(C)
 
 
     l = BoundaryKernels.left(device , 128 , size(initialCondition))
@@ -112,20 +112,11 @@ function animated_solve(initialCondition::T, timesteps::Int, filepath::String ; 
     ellipical_solver = elyps_solver!(device, 256, size(C))
     jacoby_step = relaxed_jacoby!(device, 256, size(C))
 
-    # l(tmp)
-    # Neumann1 += tmp
-    # r(tmp)
-    # Neumann1 +=tmp
-    # Neumann1 *=  3f-3
-    #print(Neumann1)
 
      l(tmp)
-     #Neumann1 += tmp
-     #l2(tmp)
-     Neumann1X +=tmp
-     Neumann1Y +=tmp
-     Neumann1Y *=  2f-3
-     Neumann1X *=  +5f-4
+     Neumann2 += -7.5f-1 * tmp
+     Neumann1X += -2f-2 * tmp
+     Neumann1Y += -2f-2 * tmp
     p = Progress(timesteps)
     anim=@animate for j = 1:timesteps
         heatmap(Array(Φ), aspect_ratio=:equal , clims=(-1,1))
