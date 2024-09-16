@@ -121,11 +121,11 @@ function animated_solve(initialCondition::T, timesteps::Int, filepath::String ; 
 
      l(tmp)
      #Neumann1 += tmp
-     l2(tmp)
+     #l2(tmp)
      Neumann1X +=tmp
      Neumann1Y +=tmp
-     Neumann1Y *=  -2f2
-     Neumann1X *=  -2f2
+     Neumann1Y *=  2f-3
+     Neumann1X *=  +5f-4
     p = Progress(timesteps)
     anim=@animate for j = 1:timesteps
         heatmap(Array(Φ), aspect_ratio=:equal , clims=(-1,1))

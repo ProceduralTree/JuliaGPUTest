@@ -409,8 +409,6 @@ for task in tasks
 jldsave("experiments/iteration.jld2"; result)
 #+end_src
 
-#+RESULTS:
-
 #+name: behaviour
 #+begin_src julia-vterm :results graphics file :file behaviour.gif :chache :session jl :noweb no-export :output-dir images :exports both :noweb no-export
 <<init>>
@@ -437,9 +435,6 @@ anim = @animate for res in eachrow(results)
 end
 gif(anim , "images/behaviour.gif" , fps = 10)
 #+end_src
-
-#+RESULTS: behaviour
-[[file:images/behaviour.gif]]
 
 #+caption: behaviour of bulk energy \( E_{bulk} \) and amount of fluid changing phase, for different initial conditions
 *** subiteration
