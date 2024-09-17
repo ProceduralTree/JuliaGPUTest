@@ -11,13 +11,13 @@ end
     I = @index(Global, Cartesian)
     Id = oneunit(I)
     output[I] = 0
-    Idx = CartesianIndex(1, 0)
-    Idy = CartesianIndex(0, 1)
+    Ix = CartesianIndex(1, 0)
+    Iy = CartesianIndex(0, 1)
     Ids = CartesianIndices(A)
     output[I] = 0
     if I in Ids[begin]+Id:Ids[end]-Id
-        @inline output[I] += G(2 * I + i, Ids) * (A[I+Idx] - A[I])
-        +G(2 * I + i, Ids) * (A[I+Idy] - A[I])
+        @inline output[I] += G(2 * I + Ix, Ids) * (A[I+Ix] - A[I])
+        +G(2 * I + Iy, Ids) * (A[I+Iy] - A[I])
     end
 end
 

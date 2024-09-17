@@ -1,12 +1,12 @@
 
-function evaluate(array::Array ; arrtype=T)
+    function evaluate(array , h::Float32; arrtype=T)
 
-    device = get_backend(initialCondition)
-    tmp = zeros(Float32, size(initialCondition)...) |> arrtype
-    output = zeros(Float32, size(initialCondition)...) |> arrtype
-    l = BoundaryKernels.left(device , 128 , size(initialCondition))
-    div  = gdiv(device  , 128 , size(array))
+    device = get_backend(array)
+    tmp = zeros(Float32, size(array)...) |> arrtype
+    output = zeros(Float32, size(array)...) |> arrtype
+    l = BoundaryKernels.left(device , 128 , size(array))
+    grad  = gradient_add_kernel(device  , 128 , size(array))
     l(tmp)
-    div(array , output)
+    grad(array , output , h)
     sum(output .* tmp)
 end

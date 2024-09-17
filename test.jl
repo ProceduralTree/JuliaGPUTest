@@ -1,7 +1,7 @@
 using Plots
 using ProgressMeter
-using oneAPI
-#using CUDA
+#using oneAPI
+using CUDA
 using KernelAbstractions
 using KernelAbstractions.Extras.LoopInfo: @unroll
 using Base: Callable
@@ -11,7 +11,7 @@ include("gauss-seidel.jl")
 include("explicit.jl")
 include("boundary-conditions.jl")
 
-Arrtype = oneArray
+Arrtype = cu
 arr = Arrtype(zeros(Float32,256, 256))
 SIZE = 254
 M = testdata(SIZE, 6, SIZE / 5, 2)
@@ -37,7 +37,8 @@ function solve(initialCondition::T, timesteps::Int ; arrtype=T) where T<:Abstrac
     tmp = zeros(Float32, size(initialCondition)...) |> arrtype
 
     Dirac = zeros(Float32, size(initialCondition)...) |> arrtype
-    Neumann1 = zeros(Float32, size(initialCondition)...) |> arrtype
+    Neumann1X = zeros(Float32, size(initialCondition)...) |> arrtype
+    Neumann1Y = zeros(Float32, size(initialCondition)...) |> arrtype
     Neumann2 = zeros(Float32, size(initialCondition)...) |> arrtype
 
 
@@ -55,16 +56,14 @@ function solve(initialCondition::T, timesteps::Int ; arrtype=T) where T<:Abstrac
     jacoby_step = relaxed_jacoby!(device, 256, size(C))
 
     l(tmp)
-    Neumann2 += tmp
-    r(tmp)
-    Neumann2 += tmp
-    Neumann2 *= 1f-0
-    #print(Neumann1)
+    Neumann2 += -7.5f-1 * tmp
+    Neumann1X += -2f-2 * tmp
+    Neumann1Y += -2f-2 * tmp
 
     @showprogress for j = 1:timesteps
         set_xi_and_psi!(Ξ, Ψ, Φ, W′, Δt)
         # add boundary conditions
-        Ψ .+= add_boundary(Φ , h , Dirac , Neumann1 , Neumann2)
+        Ψ .+= add_boundary(Φ , h , Dirac , Neumann1X, Neumann1Y , Neumann2)
         for _ = 1:100
             ellipical_solver(C, Φ, α, h, stencil, 10)
             KernelAbstractions.synchronize(device)
