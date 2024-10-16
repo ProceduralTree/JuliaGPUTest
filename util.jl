@@ -32,3 +32,9 @@ function massbal(arr)
     end
 
 
+@kernel function set_circle(A , radius::Float32 , center::CartesianIndex)
+    I = @index(Global , Cartesian)
+    if norm((I - center).I) < radius
+        A[I] = 1
+        end
+end
