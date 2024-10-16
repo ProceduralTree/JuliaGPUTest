@@ -1,5 +1,14 @@
 #+title: Project Thesis
+#+latex_class: mimosis
 #+BIBLIOGRAPHY: ~/org/resources/bibliography/refs.bib
+  #+latex_header: \include{~/.doom.d/OrgConfig/noteHeader.tex}
+#+latex_header: \usepackage[
+#+latex_header: colorlinks = true,
+#+latex_header: citecolor  = RoyalBlue,
+#+latex_header: linkcolor  = RoyalBlue,
+#+latex_header: urlcolor   = RoyalBlue,
+#+latex_header: unicode,
+#+latex_header: ]{hyperref}
 #+options:  toc:1
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
 
@@ -45,688 +54,96 @@ B_2(x,t)=
 0 \,, x \in \overline{\Omega}^C \\
 \end{cases}
 \end{equation}
-#+begin_src julia :tangle src/adapted_multisolver.jl
-function B_2(I::CartesianIndex,shape::Tuple)
-    laplace = 1
-    for (i,s) in zip(I.I , shape)
-        if i == s || i == 1
-            return laplace
-        end
-    end
-    return 0
-end
-#+end_src
 We then state the adapted approach as:
-#+name: eq:second-order-adapted-ansatz
 \begin{equation}
+\label{eq:second-order-adapted-ansatz}
 \begin{aligned}
 \frac{\phi_{ij}^{n+1} - \phi_{ij}^n}{\Delta t}  &=  \nabla _d \cdot (G_{ij} \nabla_d \mu_{ij}^{n+\frac{1}{2}} )  \\
  \mu_{ij}^{n+\frac{1}{2}} &= 2\phi_{ij}^{n+1} - \varepsilon^2  \nabla_d \cdot  (G_{ij} \nabla _d \phi_{ij}^{n+1} ) + B_{ij} + W'(\phi_{ij}^n) - 2\phi _{ij}^n
 \end{aligned}
 \end{equation}
-** Derivation of necessary operators
-In equivalent fashion to[cite:@Ulmer_CHRelaxed_2024] we separate [[eq:adapted-ansatz]] by implicit and exlixit parts into \( L \) and \( \zeta , \psi \):
-\begin{align*}
-L
-\begin{pmatrix}
-\phi^{n+1}_{ij} \\
-\mu^{n+\frac{1}{2}}_{ij}
-\end{pmatrix}
-&=
-\begin{pmatrix}
-\frac{\phi^{n+1}_{ij}}{\Delta t} - \nabla _d \cdot  ( G_{ij} \nabla _d \mu^{n+\frac{1}{2}}_{ij} ) \\
-\varepsilon^2 \nabla _d \cdot  (G \nabla_d \phi_{ij}^{n+1}) - 2\phi_{ij}^{n+1} + \mu_{ij}^{n+\frac{1}{2}}
-\end{pmatrix}
-\end{align*}
-Notably the implicit part stayed the same as in[cite:@Ulmer_CHRelaxed_2024] and we reuse it.
-#+begin_src julia :tangle src/adapted_multisolver.jl :eval never
-function L(solver::T,i,j , phi , mu) where T <: Union{adapted_multi_solver, adapted_relaxed_multi_solver , gradient_boundary_solver}
-    xi = solver.phase[i, j] / solver.dt -
-         (discrete_G_weigted_neigbour_sum(i, j, solver.potential, G, solver.len, solver.width)
-          -
-          neighbours_in_domain(i, j, G, solver.len, solver.width) * mu )/solver.h^2
-    psi = solver.epsilon^2/solver.h^2 *
-          (discrete_G_weigted_neigbour_sum(i, j, solver.phase, G, solver.len, solver.width)
-           -
-           neighbours_in_domain(i, j, G, solver.len, solver.width) * phi) - 2 * phi + mu
-    return [xi, psi]
-end
-#+end_src
-while the explicit part now accommodates for thee additional boundary function.
-
-\begin{align*}
-\begin{pmatrix}
-\zeta^n
- \\
-\psi^n
-\end{pmatrix}
-&=
-\begin{pmatrix}
-\frac{\phi_{ij}^{n}}{\Delta t}\\
-W'(\phi_{ij}^n) - 2\phi_{ij}^n + B_{2,ij}
-\end{pmatrix}
-\end{align*}
-#+begin_src julia :tangle src/adapted_multisolver.jl
-function set_xi_and_psi!(solver::T) where T <: Union{adapted_multi_solver, adapted_relaxed_multi_solver}
-    xi_init(x) = x / solver.dt
-    psi_init(x) = solver.W_prime(x) - 2 * x
-    solver.xi[2:end-1, 2:end-1] = xi_init.(solver.phase[2:end-1,2:end-1])
-
-    solver.psi[2:end-1, 2:end-1] = psi_init.(solver.phase[2:end-1,2:end-1])
-    + B.(CartesianIndices(solver.phase[2:end-1,2:end-1]) , Ref((solver.len , solver.width)) )
-
-    return nothing
-end
-#+end_src
-
-\begin{align*}
-DL\begin{pmatrix}
-\phi \\
-\mu
-\end{pmatrix} &= \begin{pmatrix}
-\frac{1}{\Delta t} & \frac{1}{h^2}\Sigma_{G}  \\
--\frac{\varepsilon^2}{h^2}\Sigma_{G} - 2 & 1
-\end{pmatrix}
-\end{align*}
-#+begin_src julia :tangle src/adapted_multisolver.jl :eval never
-function dL(solver::T , i , j) where T <: Union{adapted_multi_solver, adapted_relaxed_multi_solver, gradient_boundary_solver}
-    return [ (1/solver.dt) (1/solver.h^2*neighbours_in_domain(i,j,G,solver.len , solver.width));
-             (-1*solver.epsilon^2/solver.h^2 * neighbours_in_domain(i,j,G,solver.len , solver.width) - 2) 1]
-    end
-#+end_src
-
-testing this adaptation yields
-#+begin_src julia-vterm :noweb yes :session jl :results file graphics :file iteration_boundary.gif :output-dir images
-<<setup-adapted-grid>>
-
-pbar = ProgressBar(total = 1000)
-
-anim = @animate for i in 1:100
-    set_xi_and_psi!(testgrd[1])
-    for j in 1:10
-        v_cycle!(testgrd, 1)
-        update(pbar)
-        end
-    heatmap(testgrd[1].phase , clim =(-1,1) , framestyle=:none )
-end
-gif(anim , "images/iteration_boundary.gif" , fps = 10)
-#+end_src
-
-#+RESULTS:
-[[file:images/iteration_boundary.gif]]
-
-** relaxed solver:
-since we extracted laplace type boundary conditions to the initialization of the explicit part that is shared between both the original and the relaxed approach. We can reuse code.
-
-#+begin_src julia-vterm :noweb yes :session jl :results file graphics :file iteration_relaxed_boundary.gif :output-dir images
-<<setup-adapted-relaxed-grid>>
-
-pbar = ProgressBar(total = 1000)
-
-anim = @animate for i in 1:100
-    set_xi_and_psi!(adapted_relaxed_grid[1])
-    elyps_solver!(adapted_relaxed_grid[1], 1000)
-    for j in 1:10
-        v_cycle!(adapted_relaxed_grid, 1)
-        update(pbar)
-        end
-    heatmap(adapted_relaxed_grid[1].phase , clim =(-1,1) , framestyle=:none )
-end
-gif(anim , "images/iteration_relaxed_boundary.gif" , fps = 10)
-#+end_src
-
-#+RESULTS:
-[[file:images/iteration_relaxed_boundary.gif]]
-
-* Adaptation to first order neuman conditions
-We follow the same idea as for the [[Adaptation to second order boundary conditions]] where we define a function to control the behaviour on the boundary.
-\begin{equation}
-B_1(x,t)=
-\begin{cases}
-0 \,, x \in \Omega \\
-\nabla\phi \,, x \in \partial\Omega \\
-0 \,, x \in \overline{\Omega}^C \\
-\end{cases}
-\end{equation}
-#+name: first-order-adapted-ansatz
+* Numerical solver
+\begin{math}
+\sum_{i=0}^n \frac{1}{x^i}
+\end{math}
+contrary to the solver proposed in[cite:@Ulmer_CHRelaxed_2024] we do not use a multi-grid Gauss-Seidel Solver to solve the linear system, and use a Jacoby solver instead, since it is easier to parrallize.
+Similar to [cite:@Ulmer_CHRelaxed_2024] we linearise \eqref{eq:second-order-adapted-ansatz} to
 \begin{equation}
 \begin{aligned}
-\frac{\phi_{ij}^{n+1} - \phi_{ij}^n}{\Delta t}  &=  \nabla _d \cdot (G_{ij} \nabla_d \mu_{ij}^{n+\frac{1}{2}} )  \\
- \mu_{ij}^{n+\frac{1}{2}} &= 2\phi_{ij}^{n+1} - \varepsilon^2  \nabla_d \cdot  (G_{ij} \nabla _d \phi_{ij}^{n+1}  + B_{1,ij}) + W'(\phi_{ij}^n) - 2\phi _{ij}^n
+\frac{\phi_{ij}^{n+1}}{\Delta t}  -  \nabla _d \cdot (G_{ij} \nabla_d \mu_{ij}^{n+\frac{1}{2}} ) &= \frac{ \phi_{ij}^n}{\Delta t}  \\
+ \mu_{ij}^{n+\frac{1}{2}} - 2\phi_{ij}^{n+1} + \varepsilon^2  \nabla_d \cdot  (G_{ij} \nabla _d \phi_{ij}^{n+1} ) + B_{ij} &=2\phi _{ij}^n - W'(\phi_{ij}^n)
 \end{aligned}
 \end{equation}
-** Derivation of necessary operators
-We begin by separating the equation into its implicit and explicit parts.
-To achieve this, we observe
-\begin{equation}
-\nabla_d \cdot (G_{ij} \nabla \phi_{ij} + B_{ij}) = \nabla \cdot(G_{ij}\nabla\phi_{ij}) + \nabla_d \cdot B_{ij}
-\end{equation}
-Therefore we are able to seperate explixit parts in simmilar fashion to earlier.
-Notably the implicit part stayed the same again.
-The explicit part now includes the divergence of our boundary function
-
-\begin{align*}
-\begin{pmatrix}
-\zeta^n
- \\
-\psi^n
-\end{pmatrix}
-&=
-\begin{pmatrix}
-\frac{\phi_{ij}^{n}}{\Delta t}\\
-W'(\phi_{ij}^n) - 2\phi_{ij}^n + \nabla_d \cdot B_{ij}
-\end{pmatrix}
-\end{align*}
-#+begin_src julia :tangle src/adapted_multisolver.jl
-function B_1(i,j,shape)
-    B_x = 0.01
-    B_y = 0
-    return abs(G(i + 0.5,j, shape[1] , shape[2]) - G(i-0.5,j,shape[1] , shape[2])) * B_x
-         + abs(G(i,j + 0.5, shape[1] , shape[2]) - G(i,j-0.5,shape[1] , shape[2])) * B_y
-end
-#+end_src
-
-#+begin_src julia :tangle src/adapted_multisolver.jl
-function div(f, I::CartesianIndex  , shape , h)
-    (i,j) = I.I
-    return (f(i+0.5 , j , shape) - f(i-0.5, j , shape) + f(i,j+0.5,shape) - f(i, j - 0.5, shape))/ h
-    end
-function set_xi_and_psi!(solver::T) where T <: Union{gradient_boundary_solver}
-    xi_init(x) = x / solver.dt
-    psi_init(x) = solver.W_prime(x) - 2 * x
-    solver.xi[2:end-1, 2:end-1] = xi_init.(solver.phase[2:end-1,2:end-1])
-    solver.psi[2:end-1, 2:end-1] = psi_init.(solver.phase[2:end-1,2:end-1]) + div.(B_1 ,CartesianIndices(solver.phase) , Ref((solver.len , solver.width)) , Ref(solver.h) )[2:end-1,2:end-1]
-    return nothing
-end
-
-#+end_src
-
-#+RESULTS:
-
-#+begin_src julia-vterm :noweb yes :session jl :results file graphics :file iteration_gradient_boundary.gif :output-dir images
-<<setup-gradient-boundary-grid>>
-
-pbar = ProgressBar(total = 1000)
-
-anim = @animate for i in 1:100
-    set_xi_and_psi!(gradient_boundary_grid[1])
-    for j in 1:10
-        v_cycle!(gradient_boundary_grid, 1)
-        update(pbar)
-        end
-    heatmap(gradient_boundary_grid[1].phase , clim =(-1,1) , framestyle=:none )
-end
-gif(anim , "images/iteration_gradient_boundary.gif" , fps = 10)
-#+end_src
-
-#+RESULTS:
-[[file:images/iteration_gradient_boundary.gif]]
-
-* Adaptation to 0th order Dirichlet condition
-As with the first Approaches we propose a boundary function including dirichlet boundary conditions.
-
-\begin{equation}
-B(x,t)=
-\begin{cases}
-0 \,, x \in \Omega \\
-\phi \,, x \in \partial\Omega \\
-0 \,, x \in \overline{\Omega}^C \\
-\end{cases}
-\end{equation}
-#+name: first-order-adapted-ansatz
+after some rearranging we note, that the left hand side is linear and, the right hand side is solely dependent on the previous time step. Therefore this constitutes a linear system, wich we solve with a Jacoby method, the element wise formula of wich is given as follows:
+Provided the \( mth \) Jacoby iteration has been computed, the \( m+1th \) iteration is computed by solving
 \begin{equation}
 \begin{aligned}
-\frac{\phi_{ij}^{n+1} - \phi_{ij}^n}{\Delta t}  &=  \nabla _d \cdot (G_{ij} \nabla_d \mu_{ij}^{n+\frac{1}{2}} )  \\
- \mu_{ij}^{n+\frac{1}{2}} &= 2\phi_{ij}^{n+1} - \varepsilon^2  \nabla_d \cdot  G_{ij} \nabla _d( \phi_{ij}^{n+1} + B_{ij} ) + W'(\phi_{ij}^n) - 2\phi _{ij}^n
+\frac{\phi_{ij}^{n+1,m+1}}{\Delta t}  -  \nabla _d \cdot (G_{ij} \nabla_d \mu_{ij}^{n+\frac{1}{2},m+\frac{1}{2}} ) &= \frac{ \phi_{ij}^{n}}{\Delta t}  \\
+ \mu_{ij}^{n+\frac{1}{2},m} - 2\phi_{ij}^{n+1,m} + \varepsilon^2  \nabla_d \cdot  (G_{ij} \nabla _d \phi_{ij}^{n+1,m+\frac{1}{2}} ) + B_{ij} &=2\phi _{ij}^n - W'(\phi_{ij}^n)
 \end{aligned}
 \end{equation}
-as in [[Adaptation to first order neuman conditions]] we observe
+for \( \phi_{ij}^{n+1,m+1} , \mu_{ij}^{n+\frac{1}{2},m+1} \),
+where \( \nabla _d \cdot (G_{ij} \nabla_d \mu_{ij}^{n+\frac{1}{2},m+\frac{1}{2}} ) \) and \( \nabla_d \cdot  (G_{ij} \nabla _d \phi_{ij}^{n+1,m+\frac{1}{2}} ) \).  Use the results from the previous jacoby step for values off the center. eg.
 \begin{equation}
-\nabla_d \cdot G_{ij} \nabla_d (\phi_{ij} + B_{ij}) = \nabla_d \cdot(G_{ij}\nabla_d\phi_{ij}) + \nabla_d \cdot (G_{ij}\nabla_dB_{ij})
+\begin{aligned}
+ \nabla _d \cdot (G_{ij} \nabla_d \phi_{ij}^{n+1,m+\frac{1}{2}} )  =&
+\frac{1}{h^2} (
+G_{i+\frac{1}{2}j}\phi_{i+1j}^{n+1,m}
++ G_{i-\frac{1}{2}j}\phi_{i-1j}^{n+1,m} \\
+& + \quad G_{ij+\frac{1}{2}}\phi_{ij+1}^{n+1,m}
++ G_{ij-\frac{1}{2}}\phi_{ij-1}^{n+1,m}
+ ) \\
+& -
+\left(
+ G_{i+\frac{1}{2}j}
+ + G_{i-\frac{1}{2}j}
+ + G_{ij+\frac{1}{2}}
+ + G_{ij-\frac{1}{2}}
+\right)\phi_{ij}^{n+1,m+1}
+\end{aligned}
 \end{equation}
-* aggregation of previous approaches
-as all approaches are able to act on the explicit part in a similar way on the explicit part of the solver we can aggregate them into one boundary function:
-
-\begin{equation}
-B(B_0(x,y) , B_1(x,y) , B_2(x,y)) =
-\begin{cases}
-B_2(x,y) + \nabla B_1 + \nabla (G(x,y) \nabla B_0(x,y) & (x,y) \in \partial \Omega\\
-0 & (x,y)\in X\backslash \partial \Omega
-\end{cases}
-\end{equation}
-\begin{equation}
-\begin{pmatrix}
-\zeta^n
- \\
-\psi^n
-\end{pmatrix}
-&=
-\begin{pmatrix}
-\frac{\phi_{ij}^{n}}{\Delta t}\\
-W'(\phi_{ij}^n) - 2\phi_{ij}^n + B_{2,ij} \nabla_d \cdot B_{1,ij}  + \nabla_d(G_{ij}\nabla_dB_{0,ij})
-\end{pmatrix}
-\end{equation}
-this approach conserves the implicit \( L \) operator and therefore only has to modify the \( \zeta^n_{ij}, \psi^n_{ij} \) initialization
-#+begin_src julia :tangle src/adapted_multisolver.jl
-#
-# + B_2.(CartesianIndices(solver.phase[2:end-1,2:end-1]) , Ref((solver.len , solver.width)) )
-# + div.(B_1 ,CartesianIndices(solver.phase) , Ref((solver.len , solver.width)) , Ref(solver.h) )[2:end-1,2:end-1]
-# + Ggrad.(B_0 ,CartesianIndices(solver.phase) , Ref((solver.len , solver.width)) , Ref(solver.h) )[2:end-1,2:end-1]
-#
-#
-function boundary_corection(solver::T , I::CartesianIndex) where T <: Union{boundary_solver}
-return Ggrad(solver.B0 , I , (solver.len , solver.width) , solver.h)
-       + div(solver.B_1 , I , (solver.len , solver,width) , sover.h)
-       + B_2(I, (solver.len , solver.width) )
-
-end
-
-function set_xi_and_psi!(solver::T) where T <: Union{boundary_solver}
-    inds = CartesianIndicies(sover.phase)
-    Idx = one(inds[begin])
-    xi_init(x) = x / solver.dt
-    psi_init(x) = solver.W_prime(x) - 2 * x
-    solver.xi[2:end-1, 2:end-1] = xi_init.(solver.phase[2:end-1,2:end-1])
-    solver.psi[2:end-1, 2:end-1] = psi_init.(solver.phase[2:end-1,2:end-1]) + boundary_corection.(Ref(solver) , inds[begin]+Idx:inds[end]-Idx)
-end
-#+end_src
-* Different boundary conditions for testing
-** static boundary conditions
-*** constant laplacian \( \pm \)
-*** constant gradient
-*** constant phase
-*** positive gradien top negative bottom
-** Dynamic boundary conditions
-we only observe explicit boundary conditions, that means for boundary conditions dependant on the state of the phasefield at time \( t \) our solver uses \( \phi^n \) to modify the boundary instead of \( \phi^{n+1} \) this has the benefit, that we can use the discretisations proposed earlier and can modify the explicit term of the solver. this is significantly less expensive and simpler than using implicit dependencies. However it might necessitate smaller timesteps and or affect stability and convergence.
-
-#+begin_src julia :tangle src/adapted_multisolver.jl
-function Ggrad(f , I::CartesianIndex , shape , h)
-    dx = CartesianIndex(1,0)
-    dy = CartesianIndex(0,1)
-    return (
-      G(I.I .+dx.I ./2 , shape...)*f((I + dx)... , shape)
-    + G(I.I .+dy.I ./2 , shape...)*f((I + dy)... , shape)
-    + G(I.I .-dx.I ./2 , shape...)*f((I - dx)... , shape)
-    + G(I.I .-dy.I ./2 , shape...)*f((I - dy)... , shape)
-    +(
-       G(I.I .+dx.I ./2 , shape...)
-     + G(I.I .+dy.I ./2 , shape...)
-     + G(I.I .-dx.I ./2 , shape...)
-     + G(I.I .-dy.I ./2 , shape...)
-    ) * f(I.I... , shape)
+our implementation makes use of julia to dispatch the solution for each element in paralell on the GPU.
+#+begin_src julia :eval never :exports none
+@kernel function relaxed_jacoby!(
+    Φ,
+    M,
+    @Const(Ξ),
+    @Const(Ψ),
+    @Const(C),
+    @Const(h),
+    @Const(α),
+    @Const(ε),
+    @Const(Δt),
+    @Const(iterations)
+)
+    I = @index(Global, Cartesian)
+    Id = oneunit(I)
+    Ids = CartesianIndices(C)
+    Idx = CartesianIndex(1, 0)
+    Idy = CartesianIndex(0, 1)
+    if I in (Ids[begin]+Id:Ids[end]-Id)
+        g = G(2 * I + Idx, Ids) + G(2 * I + Idy, Ids) + G(2 * I - Idx, Ids) + G(2 * I - Idy, Ids)
+        for _ = 1:iterations
+            Σμ = G(2 * I + Idx, Ids) * M[I+Idx]
+            +G(2 * I + Idy, Ids) * M[I+Idy]
+            +G(2 * I - Idx, Ids) * M[I-Idx]
+            +G(2 * I - Idy, Ids) * M[I-Idy]
+            @inline Φ[I] = (ε^2 * α * C[I] + (1 / g) * (h^2 * Ξ[I] + Σμ) - Ψ[I]) / (ε^2 * α + 2 + h^2 / (g * Δt))
+            @synchronize()
+            @inline M[I] = (Φ[I] / Δt - Ξ[I] + Σμ / h^2) * (h^2 / g)
+            @synchronize()
+        end
 
     end
-
-
-function div(f, I::CartesianIndex  , shape , h)
-    (i,j) = I.I
-    return (
-        f(i+0.5 , j , shape)
-        - f(i-0.5, j , shape)
-        + f(i,j+0.5,shape)
-        - f(i, j - 0.5, shape))/ h
-    end
-function set_xi_and_psi!(solver::T) where T <: Union{gradient_boundary_solver}
-    xi_init(x) = x / solver.dt
-    psi_init(x) = solver.W_prime(x) - 2 * x
-    solver.xi[2:end-1, 2:end-1] = xi_init.(solver.phase[2:end-1,2:end-1])
-    solver.psi[2:end-1, 2:end-1] = psi_init.(solver.phase[2:end-1,2:end-1])
-            + div.(B_1 ,CartesianIndices(solver.phase) , Ref((solver.len , solver.width)) , Ref(solver.h) )[2:end-1,2:end-1]
 end
+
 #+end_src
 * Numerical evaluation
-** Experiments :noexport:
-*** iteration
-#+begin_src julia :results output  :noweb yes :eval never :tangle boundary_experiments/src/iteration.jl
-using JLD2
-using DataFrames
-using Random
-<<init>>
-<<setup-diverse-testgrids>>
-tests = [testgrid(relaxed_multi_solver, M , 2;alpha=60000 , epsilon=0.016) for M in initial_data]
-function iter(g::Vector{T} , n) where T<: solver
-    out = []
-    for j in 1:64
-    set_xi_and_psi!(g[1])
-    for i = 1:64
-        v_cycle!(g, 1)
-    end
-    push!(out, (solver=deepcopy(g[1]), iteration=j , experiment=n))
-    end
-    return out
-end
-
-
-tasks = []
-for i in eachindex(tests)
-    t = Threads.@spawn iter(tests[i], i)
-    push!(tasks , (iteration = 1 , task = t))
-    end
-result = DataFrame()
-for task in tasks
-    append!(result , fetch(task.task) )
-    end
-jldsave("experiments/iteration.jld2"; result)
-#+end_src
-
-#+name: behaviour
-#+begin_src julia-vterm :results graphics file :file behaviour.gif :chache :session jl :noweb no-export :output-dir images :exports both :noweb no-export
-<<init>>
-using JLD2
-using DataFrames
-results = jldopen("experiments/iteration.jld2")["result"]
-n  = size(results.solver , 1)
-pbar = ProgressBar(total = 10 * n)
-energy = zeros(0)
-massbalance = zeros(0)
-
-anim = @animate for res in eachrow(results)
-    push!(energy , bulk_energy(res.solver))
-    push!(massbalance , massbal(res.solver.phase))
-
-    p0 = heatmap(res.solver.phase , clim =(-1,1) , framestyle=:none , legend=true, lims=(1, size(res.solver.phase , 1)) , aspect_ratio=:equal, title  = "phasefield" )
-   p1 = heatmap(res.solver.potential , framestyle=:none , legend=true, lims=(1,size(res.solver.phase , 1)), aspect_ratio=:equal, title  = "potential" )
-
-    current_range = (res.experiment -1)*64 +1
-
-    p3 = plot( 1:res.iteration, (massbalance .-massbalance[current_range])[current_range:current_range+res.iteration-1] , xlim=(1,64),  title = "Mass change")
-    p2 = plot(1:res.iteration , energy[current_range:current_range+res.iteration-1], xlim=(1,64),  title = "Bulk energy")
-    plot(p0,p1,p2,p3)
-end
-gif(anim , "images/behaviour.gif" , fps = 10)
-#+end_src
-
-#+caption: behaviour of bulk energy \( E_{bulk} \) and amount of fluid changing phase, for different initial conditions
-*** subiteration
-#+begin_src julia :results output :noweb yes :tangle boundary_experiments/src/subiteration.jl
-using DataFrames
-using JLD2
-<<init>>
-<<setup-diverse-testgrids>>
-
-tests = [testgrid(relaxed_multi_solver, M , 2;alpha=60000 , epsilon=0.016) for M in initial_data]
-
-
-function iter(g::Vector{T} , n) where T<: solver
-    out = []
-    for j in 1:n
-    set_xi_and_psi!(g[1])
-    for i = 1:64
-        v_cycle!(g, 1)
-        push!(out, (cycle=deepcopy(g[1]), iteration=j , subiteration=i))
-    end
-    end
-    return out
-end
-
-
-tasks = []
-for i in eachindex(tests)
-    t = Threads.@spawn iter(tests[i] , 64)
-    push!(tasks , (iteration = 1 , task = t))
-    end
-result = DataFrame()
-for task in tasks
-    append!(result , fetch(task.task) )
-    end
-jldsave("experiments/subiteration.jld2"; result)
-#+end_src
-*** time
-#+begin_src julia :results output :noweb yes :exports none :tangle boundary_experiments/src/time.jl
-using DataFrames
-using JLD2
-<<init>>
-SIZE  =64
-M = testdata(SIZE, SIZE ÷ 5, SIZE /5 , 2)
-tests = [testgrid(multi_solver , M , 2 , dt = t ) for t in 1e-2./(1:64)]
-
-function iter(g::Vector{T} , n) where T<: solver
-    out = []
-    for i = 1:n
-    set_xi_and_psi!(g[1])
-    for i = 1:64
-        v_cycle!(g, 1)
-    end
-    push!(out, (phase=copy(g[1].phase), iteration=n))
-    end
-    return out
-end
-
-
-tasks = []
-for i in eachindex(tests)
-    t = Threads.@spawn iter(tests[i], i)
-    push!(tasks , (iteration = 1 , task = t))
-    end
-result = DataFrame()
-for task in tasks
-    append!(result , fetch(task.task) )
-    end
-jldsave("experiments/time.jld2"; result)
-#+end_src
-*** space
-#+begin_src julia :results output :noweb yes :exports none :tangle experiments/src/space.jl
-using DataFrames
-using JLD2
-<<init>>
-
-M = testdata(2^10 , 2^5 , 2^7 , 2 )
-grids = testgrid(multi_solver  , M , 7)
-# inits
-for i=2:size(grids,1)
-    restrict_solver!(grids[i-1] , grids[i])
-end
-tests = [[grids[i-1] , grids[i]] for i=2:size(grids,1)]
-
-
-function iter(g::Vector{T} , n) where T<: solver
-    out = []
-    for j in 1:n
-    set_xi_and_psi!(g[1])
-    for i = 1:64
-        v_cycle!(g, 1)
-    end
-    push!(out, (phase=copy(g[1].phase), iteration=j))
-    end
-    return out
-end
-
-
-tasks = []
-for i in eachindex(tests)
-    t = Threads.@spawn iter(tests[i], 16)
-    push!(tasks , (iteration = 1 , task = t))
-    end
-result = DataFrame()
-for task in tasks
-    append!(result , fetch(task.task) )
-    end
-jldsave("experiments/space_refinement.jld2"; result)
-#+end_src
+** Experiments
+to begin our evaluations we tested constant values for \( B_{ij} \) on the boundary. For \( B_{ij} \in \{-1,1\} \) we observed behaviour expected of hydrophobic / hydrophilic substances on the boundary, where \( B_{ij}=1 \) resulted in the one phase pearling of the boundary, while the other semed attracted. this manifested on apparent contact angles of 180° and 0° respectivly. Using \( B_{ij} = -1 \) results in the opposite behavior.
+** more values
+further testing shows that with values for \( B_{ij} \in [-1,1] \) we are able to control the contact angle freely.
 * Summary and outlook
-* Utility
-#+begin_src julia :tangle src/adapted_solvers.jl :eval never
-struct adapted_multi_solver <: solver
-    phase::Matrix{Float64}
-    potential::Matrix{Float64}
-    xi::Matrix{Float64}
-    psi::Matrix{Float64}
-    epsilon::Float64
-    h::Float64
-    dt::Float64
-    W_prime::Function
-    len::Int
-    width::Int
-
-end
-
-struct adapted_relaxed_multi_solver <: solver
-    phase::Matrix{Float64}
-    potential::Matrix{Float64}
-    xi::Matrix{Float64}
-    psi::Matrix{Float64}
-    c::Matrix{Float64}
-    epsilon::Float64
-    h::Float64
-    dt::Float64
-    W_prime::Function
-    len::Int
-    width::Int
-    alpha::Float64
-
-end
-struct gradient_boundary_solver <: solver
-    phase::Matrix{Float64}
-    potential::Matrix{Float64}
-    xi::Matrix{Float64}
-    psi::Matrix{Float64}
-    epsilon::Float64
-    h::Float64
-    dt::Float64
-    W_prime::Function
-    len::Int
-    width::Int
-    end
-struct boundary_solver <: solver
-    phase::Matrix{Float64}
-    potential::Matrix{Float64}
-    xi::Matrix{Float64}
-    psi::Matrix{Float64}
-    epsilon::Float64
-    h::Float64
-    dt::Float64
-    W_prime::Function
-    len::Int
-    width::Int
-    B_0::Function
-    B_1::Function
-    B_2::Function
-    end
-#+end_src
-#+begin_src julia :tangle src/adapted_testgrids.jl :eval never
-function W_prime(x)
-    return -x * (1 - x^2)
-end
-function testgrid(::Type{adapted_multi_solver},M, len;h0=3e-3 ,dt=1e-3 )
-    grid = Array{adapted_multi_solver}(undef, len)
-    phase = zeros(size(M) .+ 2)
-    phase[2:end-1, 2:end-1] = M
-
-    for i = 1:len
-        dims = size(M) .÷ 2^(i-1) .+ 2
-        grid[i] = multi_solver(zeros(dims),
-            zeros(dims),
-            zeros(dims),
-            zeros(dims),
-            epsilon, h0 * 2^i, dt,
-            W_prime,
-            (dims .- 2)...)
-
-    end
-    copyto!(grid[1].phase, phase)
-    return grid
-end
-function testgrid(::Type{adapted_relaxed_multi_solver},M, len ;dt=1e-3 , h = 3e-3 , epsilon=8e-3, h0=3e-3 , alpha=40000)
-    grid = Array{adapted_relaxed_multi_solver}(undef, len)
-    phase = zeros(size(M) .+ 2)
-    phase[2:end-1, 2:end-1] = M
-
-    for i = 1:len
-        dims = size(M) .÷ 2^(i-1) .+ 2
-        grid[i] = adapted_relaxed_multi_solver(zeros(dims),
-            zeros(dims),
-            zeros(dims),
-            zeros(dims),
-            zeros(dims),
-            epsilon, h0 * 2^i, dt,
-            W_prime,
-            (dims .- 2)...,
-            alpha)
-    end
-    copyto!(grid[1].phase, phase)
-    return grid
-end
-function testgrid(::Type{gradient_boundary_solver},M, len ; epsilon=8e-3 , h0=3e-3)
-    grid = Array{gradient_boundary_solver}(undef, len)
-    phase = zeros(size(M) .+ 2)
-    phase[2:end-1, 2:end-1] = M
-    W_prime(x) = -x * (1 - x^2)
-    h0 = 3e-3
-
-    for i = 1:len
-        dims = size(M) .÷ 2^(i-1) .+ 2
-
-        grid[i] = gradient_boundary_solver(zeros(dims),
-            zeros(dims),
-            zeros(dims),
-            zeros(dims),
-            epsilon, h0 * 2^i, dt,
-            W_prime,
-            (dims .- 2)...
-            )
-    end
-    copyto!(grid[1].phase, phase)
-    return grid
-end
-#+end_src
-
-#+name: init
-#+begin_src julia :eval never
-include(pwd() * "/src/solvers.jl")
-include(pwd() * "/src/adapted_solvers.jl")
-include(pwd() * "/src/utils.jl")
-include(pwd() * "/src/multisolver.jl")
-include(pwd() * "/src/multi_relaxed.jl")
-include(pwd() * "/src/adapted_multisolver.jl")
-include(pwd() * "/src/adapted_testgrids.jl")
-include(pwd() * "/src/elypssolver.jl")
-using Plots
-using LaTeXStrings
-using LinearAlgebra
-using Printf
-using ProgressBars
-default(fontfamily="computer modern" , titlefontsize=23)
-SIZE = 64
-M = testdata(SIZE, SIZE ÷ 5, SIZE /5 , 2)
-#+end_src
-
-#+name: setup-adapted-grid
-#+begin_src julia :eval never :noweb yes
-<<init>>
-testgrd = testgrid(adapted_multi_solver,M, 2)
-#+end_src
-#+name: setup-adapted-relaxed-grid
-#+begin_src julia :eval never :noweb yes
-<<init>>
-adapted_relaxed_grid = testgrid(adapted_relaxed_multi_solver,M, 2)
-#+end_src
-
-#+name: setup-gradient-boundary-grid
-#+begin_src julia :eval never :noweb yes
-<<init>>
-gradient_boundary_grid = testgrid(gradient_boundary_solver,M, 2)
-#+end_src
-
-
-#+name: setup-diverse-testgrids
-#+begin_src julia :noweb yes
-incirc(M) = filter(x -> norm(x.I .- (size(M, 1) / 2, size(M, 2) / 2)) < min(size(M)...) / 3, CartesianIndices(M))
-insquare(M) = filter(x -> norm(x.I .- (size(M, 1) / 2, size(M, 2) / 2), Inf) < min(size(M)...) / 4, CartesianIndices(M))
-side(M) = filter(x -> x.I[2] < size(M, 2) ÷ 2, CartesianIndices(M))
-halfcirc(M) = filter(x -> norm(x.I .- (1, size(M, 2) / 2), 2) < min(size(M)...) / 3, CartesianIndices(M))
-
-function get_special_input(fn, size)
-    M = fill(-1, size , size )
-    M[fn(M)] .= 1
-    return M
-end
-SIZE  =64
-t1= [testdata(SIZE, SIZE ÷ 5, SIZE /5 , j) for j in [1,2, Inf]]
-t2 = [get_special_input(fn,SIZE) for  fn in [halfcirc , incirc, side , insquare]]
-initial_data = [t1 ; t2]
-tests = [testgrid(multi_solver, M , 2) for M in initial_data]
-
-#+end_src
 * References
 #+PRINT_BIBLIOGRAPHY:
 

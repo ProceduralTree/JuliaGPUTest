@@ -1,7 +1,7 @@
 using Plots
 using ProgressMeter
-#using oneAPI
-using CUDA
+using oneAPI
+#using CUDA
 using KernelAbstractions
 using KernelAbstractions.Extras.LoopInfo: @unroll
 using Base: Callable
@@ -11,15 +11,18 @@ include("gauss-seidel.jl")
 include("explicit.jl")
 include("boundary-conditions.jl")
 
-Arrtype = cu
+Arrtype = oneArray
 arr = Arrtype(zeros(Float32,256, 256))
+#arr = Arrtype(zeros(Float32,256, 256))
 SIZE = 254
 M = testdata(SIZE, 6, SIZE / 5, 2)
-
+rng=MersenneTwister(42)
+#M = 2 .* rand(rng,SIZE , SIZE) .- 1
 Inds = CartesianIndices(arr)
 Id = one(Inds[begin])
 
 arr[Inds[begin]+Id:Inds[end]-Id] = Arrtype(M)
+
 
 function solve(initialCondition::T, timesteps::Int ; arrtype=T) where T<:AbstractArray
     # variable<s
@@ -62,8 +65,9 @@ function solve(initialCondition::T, timesteps::Int ; arrtype=T) where T<:Abstrac
 
     @showprogress for j = 1:timesteps
         set_xi_and_psi!(Ξ, Ψ, Φ, W′, Δt)
+        DynamicBD = Neumann2 .* Φ
         # add boundary conditions
-        Ψ .+= add_boundary(Φ , h , Dirac , Neumann1X, Neumann1Y , Neumann2)
+        Ψ .+= add_boundary(Φ , h , Dirac , Neumann1X, Neumann1Y , DynamicBD)
         for _ = 1:100
             ellipical_solver(C, Φ, α, h, stencil, 10)
             KernelAbstractions.synchronize(device)
@@ -90,10 +94,9 @@ function animated_solve(initialCondition::T, timesteps::Int, filepath::String ; 
     Ψ = zeros(Float32, size(initialCondition)...) |> arrtype
     tmp = zeros(Float32, size(initialCondition)...) |> arrtype
 
-    Dirac = zeros(Float32, size(initialCondition)...) |> arrtype
-    Neumann1X = zeros(Float32, size(initialCondition)...) |> arrtype
-    Neumann1Y = zeros(Float32, size(initialCondition)...) |> arrtype
     Neumann2 = zeros(Float32, size(initialCondition)...) |> arrtype
+    ZERO = zeros(Float32, size(initialCondition)...) |> arrtype
+    DynamicBD = zeros(Float32, size(initialCondition)...) |> arrtype
     device = get_backend(C)
 
 
@@ -113,15 +116,16 @@ function animated_solve(initialCondition::T, timesteps::Int, filepath::String ; 
 
 
      l(tmp)
-     Neumann2 += -7.5f-1 * tmp
-     Neumann1X += -2f-2 * tmp
-     Neumann1Y += -2f-2 * tmp
+     Neumann2 += -5f-1 * tmp
+
     p = Progress(timesteps)
     anim=@animate for j = 1:timesteps
         heatmap(Array(Φ), aspect_ratio=:equal , clims=(-1,1))
         set_xi_and_psi!(Ξ, Ψ, Φ, W′, Δt)
+        t = 2 * j / timesteps - 1
+        DynamicBD = (1 .- Φ.^2) .* Neumann2
         # add boundary conditions
-        Ψ .+= add_boundary(Φ , h , Dirac , Neumann1X, Neumann1Y , Neumann2)
+        Ψ .+= DynamicBD
         for _ = 1:100
             ellipical_solver(C, Φ, α, h, stencil, 10)
             KernelAbstractions.synchronize(device)

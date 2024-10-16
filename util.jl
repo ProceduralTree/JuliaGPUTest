@@ -14,7 +14,6 @@ end
 M
 end
 
-Φ
 
 # function bulk_energy(solver::T) where T <: Union{multi_solver , relaxed_multi_solver}
 #     energy = 0

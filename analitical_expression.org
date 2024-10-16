@@ -1,0 +1,34 @@
+#+title: Analitical Expression
+* Discrete adaptation
+we implement a approach based on the following discretizations
+#+name: eq:ansatz
+\begin{equation}
+\begin{aligned}
+\frac{\phi_{ij}^{n+1} - \phi_{ij}^n}{\Delta t}  &=  \nabla _d \cdot (G_{ij} \nabla_d \mu_{ij}^{n+\frac{1}{2}} )  \\
+ \mu_{ij}^{n+\frac{1}{2}} &= 2\phi_{ij}^{n+1} - \varepsilon^2  \nabla_d \cdot  (G_{ij} \nabla _d \phi_{ij}^{n+1} ) + W'(\phi_{ij}^n) - 2\phi _{ij}^n
+\end{aligned}
+\end{equation}
+since this approach guaranties zero flux boundary conditions we propose adding the desired flux on the boundary at a discrete level by modifying \( \Delta \hat{\phi} = \Delta\phi + B \).
+#+name: eq:second-order-adapted-ansatz
+\begin{equation}
+\begin{aligned}
+\frac{\phi_{ij}^{n+1} - \phi_{ij}^n}{\Delta t}  &=  \nabla _d \cdot (G_{ij} \nabla_d \mu_{ij}^{n+\frac{1}{2}} )  \\
+ \mu_{ij}^{n+\frac{1}{2}} &= 2\phi_{ij}^{n+1} - \varepsilon^2  \nabla_d \cdot  (G_{ij} \nabla _d \phi_{ij}^{n+1} ) + B_{ij} + W'(\phi_{ij}^n) - 2\phi _{ij}^n
+\end{aligned}
+\end{equation}
+where \( B_{ij} \) is fixed on the boundary
+* Analytical Variation
+\begin{equation}
+\begin{aligned}
+\partial_{t}\phi(x,t) &=  \nabla \cdot(M(\phi)\nabla\mu) \\
+\mu &= - \varepsilon^2 \nabla \cdot (G_{\Omega} \nabla\phi)  + W'(\phi) + B(\phi)
+\end{aligned}
+\end{equation}
+where \( G_{\Omega} \) is the characteristic function of \( \Omega \) and B is defined as
+\begin{equation}
+B :=
+\begin{cases}
+1 & \iff x \in \partial\Omega\\
+0 & else
+\end{cases}
+\end{equation}
