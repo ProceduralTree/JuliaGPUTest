@@ -14,6 +14,7 @@ end
 M
 end
 
+
 # function bulk_energy(solver::T) where T <: Union{multi_solver , relaxed_multi_solver}
 #     energy = 0
 #     dx = CartesianIndex(1,0)
