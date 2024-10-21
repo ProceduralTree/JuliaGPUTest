@@ -1,14 +1,16 @@
 #+title: Project Thesis
-#+latex_class: mimosis
+# #+latex_class: mimosis
 #+BIBLIOGRAPHY: ~/org/resources/bibliography/refs.bib
-  #+latex_header: \include{~/.doom.d/OrgConfig/noteHeader.tex}
-#+latex_header: \usepackage[
-#+latex_header: colorlinks = true,
-#+latex_header: citecolor  = RoyalBlue,
-#+latex_header: linkcolor  = RoyalBlue,
-#+latex_header: urlcolor   = RoyalBlue,
-#+latex_header: unicode,
-#+latex_header: ]{hyperref}
+#+PROPERTY: header-args:julia  :eval never-export :noweb no-export
+# #+latex_header: \include{~/.doom.d/OrgConfig/noteHeader.tex}
+# #+latex_header: \usepackage[
+# #+latex_header: colorlinks = true,
+# #+latex_header: citecolor  = RoyalBlue,
+# #+latex_header: linkcolor  = RoyalBlue,
+# #+latex_header: urlcolor   = RoyalBlue,
+# #+latex_header: unicode
+# #+latex_header: ]{hyperref}
+# #+latex_header: \usepackage[utf8x]{inputenc}
 #+options:  toc:1
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
 
@@ -33,6 +35,22 @@ Furthermore our solver implements the ansatz proposed by the autors[cite:@SHIN20
 \end{aligned}
 \end{equation}
 We use the same implementation as in the bachelor thesis[cite:@Ulmer_CHRelaxed_2024]. Therefore we use the same discretizations and notation.
+
+#+begin_src julia :results drawer :tangle src/domain.jl
+using Plots
+using LaTeXStrings
+pgfplotsx()
+Idx = CartesianIndex(1,1)
+M = zeros(66,66)
+M[2:end-1 , 2:end-1] = ones(64,64)
+heatmap(M, title=L"\Omega_d" , clim=(0,1),
+            gridlinewidth=2 , axis_equal_image=true , extra_kwargs=:subplot , xlims=(1 ,66) , ylims=(1,66))
+#+end_src
+
+#+RESULTS:
+:results:
+:end:
+
 ** Notation
 We use the following differential quotients:
 \begin{align}
@@ -43,17 +61,37 @@ and define a discrete gradient as.
 \nabla_d f_{ij} = (D_x f_{i+1j} , \ D_y f_{ij+1})
 \end{equation}
 see[cite:@Ulmer_CHRelaxed_2024]
-* Adaptation to second order neuman conditions
-We modify the ansatz [[eq:ansatz]] to accomodate different boundary conditions. To achieve this, we propose a boundary function \( B(x ,t) \):
-#+name: boundary-function
+* Adaptation to second order Neuman conditions
+The solver we use as reference guaranties no flux boundary conditions at a discrete level by setting \( \nabla \phi_{ij} = 0\) for \( \phi_{ij} \in \partial \Omega_{d} \) this is done by multiplying with the Characteristic function of \( \Omega_{d} \)
 \begin{equation}
-B_2(x,t)=
+G_{ij}=
 \begin{cases}
-0 \,, x \in \Omega \\
-\Delta\phi \,, x \in \partial\Omega \\
-0 \,, x \in \overline{\Omega}^C \\
+1 \,, x_{ij} \in \Omega \\
+0 \,, x_{ij} \not\in \Omega \\
 \end{cases}
 \end{equation}
+The accommodate different boundary conditions, we bias \( \nabla_d \cdot (G_{ij} \nabla_d \phi_{ij}) \) in grid points next to the boundary. We determine those points using a centred difference scheme on \( G \)
+\begin{equation}
+B_{ij} = \max\left(  |G_{i+\frac{1}{2}j} - G_{i-\frac{1}{2}j}| , |G_{ij+\frac{1}{2}} - G_{ij-\frac{1}{2}}|\right) * C
+\end{equation}
+where \( C \) is a constant we chose freely. For example on a 32x32 Domain with \( C=1 \) the Boundary fiels \( \mathbf{B} \) appers as follows
+#+begin_src julia :results drawer :async t :results file :file images/Domain.svg
+using Plots
+using LaTeXStrings
+using KernelAbstractions
+include("boundary-conditions.jl")
+pgfplotsx()
+arr = zeros(32,32)
+b = BoundaryKernels.border(get_backend(arr) , 128 , size(arr))
+b(arr)
+heatmap(arr, title=L"\Omega_d" , clim=(0,1),
+            gridlinewidth=2 , axis_equal_image=true , extra_kwargs=:subplot  )
+#+end_src
+
+#+RESULTS:
+:results:
+[[file:images/Domain.svg]]
+:end:
 We then state the adapted approach as:
 \begin{equation}
 \label{eq:second-order-adapted-ansatz}
@@ -62,10 +100,18 @@ We then state the adapted approach as:
  \mu_{ij}^{n+\frac{1}{2}} &= 2\phi_{ij}^{n+1} - \varepsilon^2  \nabla_d \cdot  (G_{ij} \nabla _d \phi_{ij}^{n+1} ) + B_{ij} + W'(\phi_{ij}^n) - 2\phi _{ij}^n
 \end{aligned}
 \end{equation}
+#+begin_src julia :results raw :async t
+include("testbaseline.jl")
+solution = solve(arr , 10)
+heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), widen=1.06 , lims=(0,size(solution,1)) )
+#+end_src
+
+#+RESULTS:
+#+begin_results
+[[file:./.ob-julia-snail/jl_OZc5ErUd4d.png]]
+#+end_results
+
 * Numerical solver
-\begin{math}
-\sum_{i=0}^n \frac{1}{x^i}
-\end{math}
 contrary to the solver proposed in[cite:@Ulmer_CHRelaxed_2024] we do not use a multi-grid Gauss-Seidel Solver to solve the linear system, and use a Jacoby solver instead, since it is easier to parrallize.
 Similar to [cite:@Ulmer_CHRelaxed_2024] we linearise \eqref{eq:second-order-adapted-ansatz} to
 \begin{equation}
@@ -102,51 +148,136 @@ G_{i+\frac{1}{2}j}\phi_{i+1j}^{n+1,m}
 \right)\phi_{ij}^{n+1,m+1}
 \end{aligned}
 \end{equation}
-our implementation makes use of julia to dispatch the solution for each element in paralell on the GPU.
-#+begin_src julia :eval never :exports none
-@kernel function relaxed_jacoby!(
+our implementation makes use of julia to dispatch the solution for each element in paralell on the GPU. The full implementation of the jacoby iteration is given as:
+#+begin_src julia :eval never :exports code
+@kernel function jacoby!(
     Φ,
     M,
     @Const(Ξ),
     @Const(Ψ),
-    @Const(C),
     @Const(h),
-    @Const(α),
     @Const(ε),
     @Const(Δt),
     @Const(iterations)
 )
-    I = @index(Global, Cartesian)
-    Id = oneunit(I)
-    Ids = CartesianIndices(C)
-    Idx = CartesianIndex(1, 0)
-    Idy = CartesianIndex(0, 1)
+    I   = @index(Global, Cartesian)
+    Id  = oneunit(I)
+    Ids = CartesianIndices(M)
+    Ix = CartesianIndex(1, 0)
+    Iy = CartesianIndex(0, 1)
     if I in (Ids[begin]+Id:Ids[end]-Id)
-        g = G(2 * I + Idx, Ids) + G(2 * I + Idy, Ids) + G(2 * I - Idx, Ids) + G(2 * I - Idy, Ids)
+        g = G(2 * I + Ix, Ids) + G(2 * I + Iy, Ids) + G(2 * I - Ix, Ids) + G(2 * I - Iy, Ids)
+        a1 = 1/Δt
+        a2 = -1* ε^2/h^2 * g  - 2
+        b1 = 1/h^2 * g
+        b2 = 1
         for _ = 1:iterations
-            Σμ = G(2 * I + Idx, Ids) * M[I+Idx]
-            +G(2 * I + Idy, Ids) * M[I+Idy]
-            +G(2 * I - Idx, Ids) * M[I-Idx]
-            +G(2 * I - Idy, Ids) * M[I-Idy]
-            @inline Φ[I] = (ε^2 * α * C[I] + (1 / g) * (h^2 * Ξ[I] + Σμ) - Ψ[I]) / (ε^2 * α + 2 + h^2 / (g * Δt))
-            @synchronize()
-            @inline M[I] = (Φ[I] / Δt - Ξ[I] + Σμ / h^2) * (h^2 / g)
+
+            Σμ = G(2 * I + Ix, Ids) * M[I+Ix] + G(2 * I + Iy, Ids) * M[I+Iy] + G(2 * I - Ix, Ids) * M[I-Ix] + G(2 * I - Iy, Ids) * M[I-Iy]
+
+            Σϕ = G(2 * I + Ix, Ids) * Φ[I+Ix] + G(2 * I + Iy, Ids) * Φ[I+Iy] +G(2 * I - Ix, Ids) * Φ[I-Ix] +G(2 * I - Iy, Ids) * Φ[I-Iy]
+
+            c1 = Ξ[I] + 1/h^2   * Σμ
+            c2 = Ψ[I] - ε^2/h^2 * Σϕ
+
+            # stupid matrix solve
+            @inline Φ[I] = (c1*b2 - c2*b1) / (a1*b2 - a2*b1)
+            @inline M[I] = (a1*c2 - a2*c1) / (a1*b2 - a2*b1)
+            #
             @synchronize()
         end
 
     end
 end
-
 #+end_src
 * Numerical evaluation
 ** Experiments
 to begin our evaluations we tested constant values for \( B_{ij} \) on the boundary. For \( B_{ij} \in \{-1,1\} \) we observed behaviour expected of hydrophobic / hydrophilic substances on the boundary, where \( B_{ij}=1 \) resulted in the one phase pearling of the boundary, while the other semed attracted. this manifested on apparent contact angles of 180° and 0° respectivly. Using \( B_{ij} = -1 \) results in the opposite behavior.
+for \( C = 0 \) the Interface Lies orthogonal on the boundary
+#+name: fig:angle0
+#+begin_src julia  :exports both :results drawer
+include("testbaseline.jl")
+θ = 0
+solution = solve(arr , 100 , θ=θ)
+heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
+#+end_src
+
+#+caption: phase-field \( \phi \) after 100 time-steps with \( C=0 \)
+#+RESULTS: fig:angle0
+#+begin_results
+[[file:./.ob-julia-snail/jl_ojmFmRoZCX.png]]
+#+end_results
+
+
+#+name: fig:angle1
+#+begin_src julia  :exports both :results drawer :wrap figure
+include("testbaseline.jl")
+θ = 1
+solution = solve(arr , 100 , θ=θ)
+heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
+#+end_src
+
+#+caption: phase-field \( \phi \) after 100 time-steps with \( C=1 \)
+#+RESULTS: fig:angle1
+#+begin_figure
+[[file:./.ob-julia-snail/jl_wjybChKZyZ.png]]
+#+end_figure
+
+#+name: fig:angle-1
+#+begin_src julia   :results drawer :exports both
+include("testbaseline.jl")
+θ = -1
+solution = solve(arr , 100 , θ=θ)
+heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
+#+end_src
+
+#+caption: phase-field \( \phi \) after 100 time-steps with \( C=-1 \)
+#+RESULTS: fig:angle-1
+#+begin_results
+#+end_results
+
+#+name: fig:angle-sqrt(2)
+#+begin_src julia   :results drawer :exports both :async t
+include("testbaseline.jl")
+θ = -sqrt(2)/2
+solution = solve(arr , 100 , θ=θ)
+heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
+#+end_src
+
+#+caption: phase-field \( \phi \) after 100 time-steps with \( C=-\frac{\sqrt{2}}{2} \)
+#+RESULTS: fig:angle-sqrt(2)
+#+begin_results
+[[file:./.ob-julia-snail/jl_PAPWzet45y.png]]
+#+end_results
+
+#+name: fig:two-blobs
+#+begin_src julia   :results drawer :exports both
+include("test.jl")
+solution = solve(arr , 100  , arrtype=oneArray )
+heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
+#+end_src
+
+#+RESULTS: fig:two-blobs
+#+begin_results
+#+end_results
+
 ** more values
 further testing shows that with values for \( B_{ij} \in [-1,1] \) we are able to control the contact angle freely.
+** Boundary Normals
+we are interested in the contact angle of the interface on the boundary. ie.
+\begin{align}
+\label{eq:1}
+\frac{\nabla_d \phi_{ij} \cdot \mathbf{n}}{\|\nabla_{d} \phi_{ij}\|} &= \cos(\theta)& & \phi_{ij} \in \partial\Omega_{d}
+\end{align}
+We evaluate the boundary at \( x_{2,j} \)
+
+
+
 * Summary and outlook
 * References
 #+PRINT_BIBLIOGRAPHY:
 
 # Local Variables:
 # julia-snail-extensions: (ob-julia)
+# julia-snail/ob-julia-capture-io: nil
 # End:

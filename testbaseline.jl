@@ -1,7 +1,7 @@
 using Plots
 using ProgressMeter
 #using oneAPI
-using CUDA
+using oneAPI
 using KernelAbstractions
 using KernelAbstractions.Extras.LoopInfo: @unroll
 using Base: Callable
@@ -11,7 +11,7 @@ include("gauss-seidel.jl")
 include("explicit.jl")
 include("boundary-conditions.jl")
 
-Arrtype = cu
+Arrtype = oneArray
 arr = Arrtype(zeros(Float32,256, 256))
 SIZE = 254
 M = testdata(SIZE, 6, SIZE / 5, 2)
@@ -21,7 +21,7 @@ Id = one(Inds[begin])
 
 arr[Inds[begin]+Id:Inds[end]-Id] = Arrtype(M)
 
-function solve(initialCondition::T, timesteps::Int ; arrtype=T) where T<:AbstractArray
+function solve(initialCondition::T, timesteps::Int ; arrtype=T , θ=0) where T<:AbstractArray
     # variable<s
     h::Float32 = 3f-3 * 64 / size(initialCondition)[1]
     Δt::Float32 = 1e-3
@@ -41,22 +41,22 @@ function solve(initialCondition::T, timesteps::Int ; arrtype=T) where T<:Abstrac
     l = BoundaryKernels.left(device , 128 , size(initialCondition))
     r = BoundaryKernels.right(device , 128 , size(initialCondition))
     t = BoundaryKernels.top(device , 128 , size(initialCondition))
-    b = BoundaryKernels.bottom(device , 128 , size(initialCondition))
+    b = BoundaryKernels.border(device , 128 , size(initialCondition))
 
 
     Φ = copy(initialCondition) |> arrtype
     println(sum(Φ))
     jacoby_step = jacoby!(device, 256, size(Φ))
 
-    l(tmp)
-    Neumann2 += -7.5f-1 * tmp
+    b(tmp)
+    Neumann2 += θ * tmp
 
     @showprogress for j = 1:timesteps
         set_xi_and_psi!(Ξ, Ψ, Φ, W′, Δt)
         DynamicBD = Neumann2
         # add boundary conditions
-        #Ψ .+= DynamicBD
-        jacoby_step(Φ, M, Ξ, Ψ, h, ε, Δt, 10000)
+        Ψ .+= DynamicBD
+        jacoby_step(Φ, M, Ξ, Ψ, h, ε, Δt, 1000)
         KernelAbstractions.synchronize(device)
     end
     println(sum(Φ))

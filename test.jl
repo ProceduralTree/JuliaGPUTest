@@ -1,10 +1,9 @@
 using Plots
 using ProgressMeter
-#using oneAPI
-using CUDA
+using oneAPI
+#using CUDA
 using KernelAbstractions
 using KernelAbstractions.Extras.LoopInfo: @unroll
-using Base: Callable
 include("derrivative-kernels.jl")
 include("elyps.jl")
 include("gauss-seidel.jl")
@@ -12,7 +11,8 @@ include("explicit.jl")
 include("boundary-conditions.jl")
 include("util.jl")
 
-Arrtype = cu
+
+Arrtype = oneArray
 arr = Arrtype(zeros(Float32,265, 1024))
 dev = get_backend(arr)
 SIZE = 254
