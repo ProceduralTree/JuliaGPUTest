@@ -1,22 +1,55 @@
 #+title: Analitical Expression
-* Discrete adaptation
-we implement a approach based on the following discretizations
-#+name: eq:ansatz
+* Adaptation to second order Neuman conditions
+The solver we use as reference guaranties no flux boundary conditions at a discrete level by setting \( \nabla \phi_{ij} = 0\) for \( \phi_{ij} \in \partial \Omega_{d} \) this is done by multiplying with the Characteristic function of \( \Omega_{d} \)
 \begin{equation}
-\begin{aligned}
-\frac{\phi_{ij}^{n+1} - \phi_{ij}^n}{\Delta t}  &=  \nabla _d \cdot (G_{ij} \nabla_d \mu_{ij}^{n+\frac{1}{2}} )  \\
- \mu_{ij}^{n+\frac{1}{2}} &= 2\phi_{ij}^{n+1} - \varepsilon^2  \nabla_d \cdot  (G_{ij} \nabla _d \phi_{ij}^{n+1} ) + W'(\phi_{ij}^n) - 2\phi _{ij}^n
-\end{aligned}
+G_{ij}=
+\begin{cases}
+1 \,, x_{ij} \in \Omega \\
+0 \,, x_{ij} \not\in \Omega \\
+\end{cases}
 \end{equation}
-since this approach guaranties zero flux boundary conditions we propose adding the desired flux on the boundary at a discrete level by modifying \( \Delta \hat{\phi} = \Delta\phi + B \).
-#+name: eq:second-order-adapted-ansatz
+This guaranties \( \nabla \phi \cdot \mathbf{n} = 0 \). In this work we are interested in results \( \frac{\nabla \phi \cdot \mathbf{n}}{\|\nabla \phi\|} = \cos(\alpha) \) where we are able to controll the interface angle \( \alpha \). The method proposed has not (currently) a mathematical motivation, however experimentation shows successful results.
+The accommodate different boundary conditions, we bias \( \nabla_d \cdot (G_{ij} \nabla_d \phi_{ij}) \) in grid points next to the boundary. We determine those points using a centred difference scheme on \( G \)
 \begin{equation}
+B_{ij} = \max\left(  |G_{i+\frac{1}{2}j} - G_{i-\frac{1}{2}j}| , |G_{ij+\frac{1}{2}} - G_{ij-\frac{1}{2}}|\right) * C
+\end{equation}
+where \( C \) is a constant we chose freely. For example on a 32x32 Domain with \( C=1 \) the Boundary field \( \mathbf{B} \) appears as follows
+#+begin_src julia :results drawer :exports both :eval never-export
+using Plots
+using LaTeXStrings
+using KernelAbstractions
+include("boundary-conditions.jl")
+pgfplotsx()
+arr = zeros(32,32)
+b = BoundaryKernels.border(get_backend(arr) , 128 , size(arr))
+b(arr)
+heatmap(arr, title=L"\Omega_d" , clim=(0,1),
+            gridlinewidth=2 , axis_equal_image=true , extra_kwargs=:subplot  )
+#+end_src
+
+#+RESULTS:
+#+begin_results
+[[file:images/Domain.svg]]
+#+end_results
+We then state the adapted approach as:
+\begin{equation}
+\label{eq:second-order-adapted-ansatz}
 \begin{aligned}
 \frac{\phi_{ij}^{n+1} - \phi_{ij}^n}{\Delta t}  &=  \nabla _d \cdot (G_{ij} \nabla_d \mu_{ij}^{n+\frac{1}{2}} )  \\
  \mu_{ij}^{n+\frac{1}{2}} &= 2\phi_{ij}^{n+1} - \varepsilon^2  \nabla_d \cdot  (G_{ij} \nabla _d \phi_{ij}^{n+1} ) + B_{ij} + W'(\phi_{ij}^n) - 2\phi _{ij}^n
 \end{aligned}
 \end{equation}
-where \( B_{ij} \) is fixed on the boundary
+#+begin_src julia :results raw :exports both  :eval never-export
+include("testbaseline.jl")
+solution = solve(arr , 100 , θ=-0.75 )
+heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), widen=1.06 , lims=(0,size(solution,1)) )
+#+end_src
+
+#+RESULTS:
+#+begin_results
+[[file:./.ob-julia-snail/jl_IRC9ir6r8v.png]]
+#+end_results
+
 * Analytical Variation
 \begin{equation}
 \begin{aligned}
@@ -32,3 +65,10 @@ B :=
 0 & else
 \end{cases}
 \end{equation}
+#+begin_remark
+For no flux boundary conditions \( G(x) = 0 \,, \forall x \in \partial \Omega \) is required.
+#+end_remark
+# Local Variables:
+# julia-snail-extensions: (ob-julia)
+# julia-snail/ob-julia-capture-io: nil
+# End:

@@ -14,7 +14,7 @@ include("boundary-conditions.jl")
 Arrtype = oneArray
 arr = Arrtype(zeros(Float32,256, 256))
 SIZE = 254
-M = testdata(SIZE, 6, SIZE / 5, 2)
+M = testdata(SIZE, 4, SIZE / 5, 2)
 
 Inds = CartesianIndices(arr)
 Id = one(Inds[begin])
@@ -53,7 +53,7 @@ function solve(initialCondition::T, timesteps::Int ; arrtype=T , θ=0) where T<:
 
     @showprogress for j = 1:timesteps
         set_xi_and_psi!(Ξ, Ψ, Φ, W′, Δt)
-        DynamicBD = Neumann2
+        DynamicBD = Neumann2 * (1 .- Φ.^2)
         # add boundary conditions
         Ψ .+= DynamicBD
         jacoby_step(Φ, M, Ξ, Ψ, h, ε, Δt, 1000)
@@ -69,7 +69,7 @@ function animated_solve(initialCondition::T, timesteps::Int, filepath::String ; 
     # variable<s
     h::Float32 = 3f-4
     Δt::Float32 = 1e-4
-    ε::Float32 = 2e-4
+    ε::Float32 = 1e-3
     W′(x) = -x * (1 - x^2)
 
     M = zeros(Float32, size(initialCondition)...) |> arrtype
@@ -82,28 +82,25 @@ function animated_solve(initialCondition::T, timesteps::Int, filepath::String ; 
     device = get_backend(initialCondition)
 
 
-    l = BoundaryKernels.left(device , 128 , size(initialCondition))
-    l2 = BoundaryKernels.left2(device , 128 , size(initialCondition))
-    r = BoundaryKernels.right(device , 128 , size(initialCondition))
-    t = BoundaryKernels.top(device , 128 , size(initialCondition))
-    b = BoundaryKernels.bottom(device , 128 , size(initialCondition))
+    b = BoundaryKernels.border(device , 128 , size(initialCondition))
 
 
     Φ = initialCondition |> arrtype
     jacoby_step = jacoby!(device, 256, size(Φ))
 
     mass = []
-    Neumann2 += -7.5f-1 * tmp
+    b(tmp)
+    Neumann2 += -15f-1 * tmp
     p = Progress(timesteps)
     anim=@animate for j = 1:timesteps
-        #heatmap(Array(Φ), aspect_ratio=:equal , clims=(-1,1))
-        push!(mass , sum(Φ))
-        plot(mass)
+        heatmap(Array(Φ), aspect_ratio=:equal , clims=(-1,1))
+        #push!(mass , sum(Φ))
+        #plot(mass)
         set_xi_and_psi!(Ξ, Ψ, Φ, W′, Δt)
-        DynamicBD = Neumann2
+        DynamicBD = Neumann2 # .* (1 .- Φ.^2)
+        Ψ += DynamicBD
         # add boundary conditions
-        #Ψ .+= DynamicBD
-        jacoby_step(Φ, M, Ξ, Ψ, h, ε, Δt, 10000)
+        jacoby_step(Φ, M, Ξ,Ψ , h, ε, Δt, 1000)
         KernelAbstractions.synchronize(device)
         next!(p)
     end

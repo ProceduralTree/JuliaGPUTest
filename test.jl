@@ -13,13 +13,13 @@ include("util.jl")
 
 
 Arrtype = oneArray
-arr = Arrtype(zeros(Float32,265, 1024))
+arr = Arrtype(zeros(Float32,265, 512))
 dev = get_backend(arr)
 SIZE = 254
 #M = testdata(SIZE, 6, SIZE / 5, 2)
 M = KernelAbstractions.zeros(dev , Float32 , size(arr) .- 2)
 fill!(M , -1)
-circle = set_circle(dev , 256  , size(M))
+circle = set_circle(dev , 128  , size(M))
 circle(M , 2f2 , CartesianIndex(1, 400))
 circle(M , 1f2 , CartesianIndex(1, 800))
 Inds = CartesianIndices(arr)
@@ -42,16 +42,11 @@ function solve(initialCondition::T, timesteps::Int ; arrtype=T) where T<:Abstrac
     Ψ = zeros(Float32, size(initialCondition)...) |> arrtype
     tmp = zeros(Float32, size(initialCondition)...) |> arrtype
 
-   Dirac = zeros(Float32, size(initialCondition)...) |> arrtype
-    Neumann1X = zeros(Float32, size(initialCondition)...) |> arrtype
-    Neumann1Y = zeros(Float32, size(initialCondition)...) |> arrtype
     DynamicBD = zeros(Float32, size(initialCondition)...) |> arrtype
     Neumann2 = zeros(Float32, size(initialCondition)...) |> arrtype
 
 
     l = BoundaryKernels.left(device ,  256 , size(initialCondition))
-    r = BoundaryKernels.right(device , 256 , size(initialCondition))
-    t = BoundaryKernels.top(device ,   256 , size(initialCondition))
     b = BoundaryKernels.bottom(device, 256 , size(initialCondition))
 
 
@@ -69,7 +64,7 @@ function solve(initialCondition::T, timesteps::Int ; arrtype=T) where T<:Abstrac
         set_xi_and_psi!(Ξ, Ψ, Φ, W′, Δt)
         DynamicBD = Neumann2 .* Φ
         # add boundary conditions
-        Ψ .+= add_boundary(Φ , h , Dirac , Neumann1X, Neumann1Y , DynamicBD)
+        Ψ .+= Neumann2
         for _ = 1:100
             ellipical_solver(C, Φ, α, h, stencil, 10)
             KernelAbstractions.synchronize(device)
