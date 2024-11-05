@@ -11,6 +11,23 @@ include("gauss-seidel.jl")
 include("explicit.jl")
 include("boundary-conditions.jl")
 
+
+
+arr = Arrtype(zeros(Float32,265, 512))
+dev = get_backend(arr)
+SIZE = 254
+#M = testdata(SIZE, 6, SIZE / 5, 2)
+M = KernelAbstractions.zeros(dev , Float32 , size(arr) .- 2)
+fill!(M , -1)
+circle = set_circle(dev , 128  , size(M))
+circle(M , 2f2 , CartesianIndex(1, 400))
+circle(M , 1f2 , CartesianIndex(1, 800))
+Inds = CartesianIndices(arr)
+Id = one(Inds[begin])
+
+arr[Inds[begin]+Id:Inds[end]-Id] = M
+
+
 Arrtype = oneArray
 arr = Arrtype(zeros(Float32,256, 256))
 SIZE = 254
@@ -20,7 +37,8 @@ Inds = CartesianIndices(arr)
 Id = one(Inds[begin])
 
 arr[Inds[begin]+Id:Inds[end]-Id] = Arrtype(M)
-
+d = BoundaryKernels.domain(get_backend(arr) , 128 , size(arr))
+d(arr)
 function solve(initialCondition::T, timesteps::Int ; arrtype=T , θ=0) where T<:AbstractArray
     # variable<s
     h::Float32 = 3f-3 * 64 / size(initialCondition)[1]
@@ -66,10 +84,10 @@ end
 
 
 function animated_solve(initialCondition::T, timesteps::Int, filepath::String ; arrtype=T) where T<:AbstractArray
-    # variable<s
+    # variables
     h::Float32 = 3f-4
     Δt::Float32 = 1e-4
-    ε::Float32 = 1e-3
+    ε::Float32 = 2e-4
     W′(x) = -x * (1 - x^2)
 
     M = zeros(Float32, size(initialCondition)...) |> arrtype
@@ -90,7 +108,7 @@ function animated_solve(initialCondition::T, timesteps::Int, filepath::String ; 
 
     mass = []
     b(tmp)
-    Neumann2 += -15f-1 * tmp
+    Neumann2 += -5f-1 * tmp
     p = Progress(timesteps)
     anim=@animate for j = 1:timesteps
         heatmap(Array(Φ), aspect_ratio=:equal , clims=(-1,1))

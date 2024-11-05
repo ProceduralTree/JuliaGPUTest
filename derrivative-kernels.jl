@@ -1,5 +1,5 @@
 using KernelAbstractions
-function G(I::CartesianIndex, Inds::CartesianIndices)
+function D(I::CartesianIndex, Inds::CartesianIndices)
     Id = oneunit(I)
     if I in 2*(Inds[begin]+Id):2*(Inds[end]-Id)
         return 1

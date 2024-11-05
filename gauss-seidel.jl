@@ -8,13 +8,20 @@ using ProgressMeter
 
 include("util.jl")
 
-function G(I::CartesianIndex, Inds::CartesianIndices)
+function D(I::CartesianIndex, Inds::CartesianIndices)
     Id = oneunit(I)
     if I in 2*(Inds[begin]+Id):2*(Inds[end]-Id)
         return 1
     end
     return 0
 end
+@inline function G(I::CartesianIndex , Ids::CartesianIndices)
+    @inline r  = Ids[end] - I
+    if norm(Tuple(r)) < 200
+        return 1
+        end
+    return 0
+    end
 
 @kernel function relaxed_jacoby!(
     Φ,
@@ -80,7 +87,7 @@ end
             c2 = Ψ[I] - ε^2/h^2 * Σϕ
 
             # stupid matrix solve
-            @inline Φ[I] = (c1*b2 - c2*b1) / (a1*b2 - a2*b1)
+            @inline Φ[I] =  (c1*b2 - c2*b1) / (a1*b2 - a2*b1)
             @inline M[I] = (a1*c2 - a2*c1) / (a1*b2 - a2*b1)
             #
             @synchronize()

@@ -50,7 +50,7 @@ heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), widen=1.06 , lims=
 [[file:./.ob-julia-snail/jl_IRC9ir6r8v.png]]
 #+end_results
 
-* Analytical Variation
+* Continous Variation
 \begin{equation}
 \begin{aligned}
 \partial_{t}\phi(x,t) &=  \nabla \cdot(M(\phi)\nabla\mu) \\

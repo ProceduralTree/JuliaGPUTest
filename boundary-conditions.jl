@@ -1,13 +1,28 @@
 module BoundaryKernels
 using KernelAbstractions
+using LinearAlgebra
 
-function G(I::CartesianIndex, Inds::CartesianIndices)
+function D(I::CartesianIndex, Inds::CartesianIndices)
     Id = oneunit(I)
     if I in 2*(Inds[begin]+Id):2*(Inds[end]-Id)
         return 1
     end
     return 0
 end
+
+@inline function G(I::CartesianIndex , Ids::CartesianIndices)
+    @inline r  = Ids[end] - I
+    if norm(Tuple(r)) < 200
+        return 1
+        end
+    return 0
+    end
+
+@kernel  function domain(out)
+    I = @index(Global, Cartesian)
+    Ids = CartesianIndices(out)
+    @inline out[I] = G( 2 * I , Ids ) * out[I]
+    end
 
 
 @kernel function constant(out)
@@ -28,6 +43,22 @@ end
     end
 end
 
+
+"""
+# border(out)
+-----------------
+* returns: all grid-cells on the border
+* out: Array to be written to
+# This function is a kernel abstraction.
+plase initialize it first on a dedicated device eg
+
+julia> using KernelAbstractions
+julia> using oneAPI
+julia> array = oneArray(zeros(10,10))
+julia> b = BoundaryKernels.border(get_backend(array) , 128 , size(array))
+julia> b(array)
+
+"""
 @kernel function border(out)
     I = @index(Global, Cartesian)
     Ids = CartesianIndices(out)
