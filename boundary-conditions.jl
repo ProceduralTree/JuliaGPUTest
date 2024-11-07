@@ -1,28 +1,12 @@
-module BoundaryKernels
 using KernelAbstractions
 using LinearAlgebra
 
-function D(I::CartesianIndex, Inds::CartesianIndices)
-    Id = oneunit(I)
-    if I in 2*(Inds[begin]+Id):2*(Inds[end]-Id)
-        return 1
-    end
-    return 0
-end
-
-@inline function G(I::CartesianIndex , Ids::CartesianIndices)
-    @inline r  = Ids[end] - I
-    if norm(Tuple(r)) < 200
-        return 1
-        end
-    return 0
-    end
 
 @kernel  function domain(out)
     I = @index(Global, Cartesian)
-    Ids = CartesianIndices(out)
-    @inline out[I] = G( 2 * I , Ids ) * out[I]
-    end
+    Inds = CartesianIndices(out)
+    @inline out[I] = G( 2 * I , Inds ) * out[I]
+end
 
 
 @kernel function constant(out)
@@ -134,5 +118,4 @@ end
     if I in Ids[begin]+Id:Ids[end]-Id
         out[I] = value * abs(G(2 * I - Iy, Ids) -  G(2 * I, Ids))
     end
-end
 end

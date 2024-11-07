@@ -1,4 +1,5 @@
 #+title: Project Thesis
+#+startup: latexpreview t
 # #+latex_class: mimosis
 #+BIBLIOGRAPHY: ~/org/resources/bibliography/refs.bib
 #+PROPERTY: header-args:julia  :eval never-export :noweb no-export
@@ -36,7 +37,7 @@ Furthermore our solver implements the ansatz proposed by the autors[cite:@SHIN20
 \end{equation}
 Although we use as slightly different implementation as in the bachelor thesis[cite:@Ulmer_CHRelaxed_2024].,  use the same discretizations and notation.
 
-#+begin_src julia :results drawer :tangle src/domain.jl
+#+begin_src julia :results drawer :tangle src/domain.jl :async t :session
 using Plots
 using LaTeXStrings
 pgfplotsx()
@@ -49,7 +50,7 @@ heatmap(M, title=L"\Omega_d" , clim=(0,1),
 
 #+RESULTS:
 #+begin_results
-[[file:./.ob-julia-snail/jl_y7slkfyRmb.png]]
+[[file:./.ob-julia-snail/jl_AfgjUnSrk3.png]]
 #+end_results
 
 ** Notation
@@ -75,24 +76,29 @@ The accommodate different boundary conditions, we bias \( \nabla_d \cdot (G_{ij}
 \begin{equation}
 B_{ij} = \max\left(  |G_{i+\frac{1}{2}j} - G_{i-\frac{1}{2}j}| , |G_{ij+\frac{1}{2}} - G_{ij-\frac{1}{2}}|\right) * C
 \end{equation}
-where \( C \) is a constant we chose freely. For example on a 32x32 Domain with \( C=1 \) the Boundary fiels \( \mathbf{B} \) appers as follows
-#+begin_src julia :results drawer
+where \( C \) is a constant we chose freely. For example on a 32x32 Domain with \( C=1 \) the Boundary fiels \( \mathbf{B} \) appears as follows
+#+begin_src julia :session
 using Plots
 using LaTeXStrings
 using KernelAbstractions
 
+include("domains.jl")
+using .Domains:square as G
 include("boundary-conditions.jl")
 pgfplotsx()
-arr = zeros(32,32)
-b = BoundaryKernels.border(get_backend(arr) , 128 , size(arr))
+arr = zeros(64,64)
+b = border(get_backend(arr) , 128 , size(arr))
 b(arr)
+
 heatmap(arr, title=L"\Omega_d" , clim=(0,1),
-            gridlinewidth=2 , axis_equal_image=true , extra_kwargs=:subplot  )
+            gridlinewidth=2 , axis_equal_image=true , extra_kwargs=:subplot , xlims=(1 ,64) , ylims=(1,64))
 #+end_src
 
 #+RESULTS:
-:results:
-:end:
+#+begin_results
+[[file:./.ob-julia-snail/jl_qzyNIbUnOn.png]]
+#+end_results
+
 We then state the adapted approach as:
 \begin{equation}
 \label{eq:second-order-adapted-ansatz}
@@ -101,14 +107,16 @@ We then state the adapted approach as:
  \mu_{ij}^{n+\frac{1}{2}} &= 2\phi_{ij}^{n+1} - \varepsilon^2  \nabla_d \cdot  (G_{ij} \nabla _d \phi_{ij}^{n+1} ) + B_{ij} + W'(\phi_{ij}^n) - 2\phi _{ij}^n
 \end{aligned}
 \end{equation}
-#+begin_src julia :results raw :async t
-include("testbaseline.jl")
+#+begin_src julia :results file :session :async t
+include("solvers.jl")
 solution = solve(arr , 10)
 heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), widen=1.06 , lims=(0,size(solution,1)) )
 #+end_src
 
 #+RESULTS:
-julia-async:0a331a40-ca83-43c8-875c-2171e55ed2b4
+#+begin_results
+[[file:julia-async:d5883a76-2299-4235-859c-6603f42ccb9f]]
+#+end_results
 
 * Numerical solver
 contrary to the solver proposed in[cite:@Ulmer_CHRelaxed_2024] we do not use a multi-grid Gauss-Seidel Solver to solve the linear system, and use a Jacoby solver instead, since it is easier to parrallize.
@@ -194,24 +202,28 @@ end
 to begin our evaluations we tested constant values for \( B_{ij} \) on the boundary. For \( B_{ij} \in \{-1,1\} \) we observed behaviour expected of hydrophobic / hydrophilic substances on the boundary, where \( B_{ij}=1 \) resulted in the one phase pearling of the boundary, while the other semed attracted. this manifested on apparent contact angles of 180° and 0° respectivly. Using \( B_{ij} = -1 \) results in the opposite behavior.
 for \( C = 0 \) the Interface Lies orthogonal on the boundary
 #+name: fig:angle0
-#+begin_src julia  :exports both :results drawer
-include("testbaseline.jl")
+#+begin_src julia  :exports both :results drawer :session
+include("domains.jl")
+using .Domains:square as G
+include("solvers.jl")
+include("initial_conditions.jl")
+arr = _init()
 θ = 0
 solution = solve(arr , 100 , θ=θ)
 heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
 #+end_src
 
-#+caption: phase-field \( \phi \) after 100 time-steps with \( C=0 \)
 #+RESULTS: fig:angle0
 #+begin_results
-[[file:./.ob-julia-snail/jl_ojmFmRoZCX.png]]
+[[file:./.ob-julia-snail/jl_929sBWbc5o.png]]
 #+end_results
+
+#+caption: phase-field \( \phi \) after 100 time-steps with \( C=0 \)
 
 
 #+name: fig:angle1
 #+begin_src julia  :exports both :results drawer :wrap figure
-include("testbaseline.jl")
-θ = 1
+θ = -2f-2
 solution = solve(arr , 100 , θ=θ)
 heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
 #+end_src
@@ -219,25 +231,27 @@ heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solut
 #+caption: phase-field \( \phi \) after 100 time-steps with \( C=1 \)
 #+RESULTS: fig:angle1
 #+begin_figure
-[[file:./.ob-julia-snail/jl_wjybChKZyZ.png]]
+[[file:./.ob-julia-snail/jl_mZY5mz0Lyl.png]]
 #+end_figure
 
 #+name: fig:angle-1
 #+begin_src julia   :results drawer :exports both
-include("testbaseline.jl")
-θ = -1
-solution = solve(arr , 100 , θ=θ)
+include("solvers.jl")
+θ = -1f-0
+arr = _init()
+solution = solve(arr , 100000 , θ=θ ,arrtype=cu)
 heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
 #+end_src
 
 #+caption: phase-field \( \phi \) after 100 time-steps with \( C=-1 \)
 #+RESULTS: fig:angle-1
 #+begin_results
+[[file:./.ob-julia-snail/jl_slQNkxyrSx.png]]
 #+end_results
 
 #+name: fig:angle-sqrt(2)
 #+begin_src julia   :results drawer :exports both :async t
-include("testbaseline.jl")
+include("solvers.jl")
 θ = -sqrt(2)/2
 solution = solve(arr , 100 , θ=θ)
 heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
@@ -246,24 +260,28 @@ heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solut
 #+caption: phase-field \( \phi \) after 100 time-steps with \( C=-\frac{\sqrt{2}}{2} \)
 #+RESULTS: fig:angle-sqrt(2)
 #+begin_results
-[[file:./.ob-julia-snail/jl_PAPWzet45y.png]]
 #+end_results
 
-#+name: fig:random-circle
+#+name: fig:random-square
 #+begin_src julia   :results drawer :exports both :wrap figure
-include("testbaseline.jl")
+using LaTeXStrings
+include("solvers.jl")
 θ = 5f-3
-arr = oneArray(rand(256,256)) .* 2 .- 1
+arr = cu(rand(Float32,256,256)) .* 2 .- 1
+d = domain(get_backend(arr) , 256 , size(arr))
 d(arr)
+solution = solve(arr , 5 , θ=θ)
+h1 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=5")
 solution = solve(arr , 50 , θ=θ)
-heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
+h2 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=50")
+solution = solve(arr , 500 , θ=θ)
+h3 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=500")
+solution = solve(arr , 5000 , θ=θ)
+h4 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=5000")
+plot(h1,h2,h3,h4)
 #+end_src
 
 #+caption: phase-field \( \phi \) after 100 time-steps with \( C=-\frac{\sqrt{2}}{2} \)
-#+RESULTS: fig:random-circle
-#+begin_figure
-[[file:./.ob-julia-snail/jl_kHgzqbqZwp.png]]
-#+end_figure
 
 
 ** more values
@@ -290,7 +308,136 @@ In essence our solver tries to ensure no flux boundary conditions ie. \( \nabla 
 hence \( B_{ij} \) should be \( -\cos(\theta) \left| \nabla_d \phi_{ij}   \right|  div(\mathbf{n}) \)
 
 
+* Numerical evaluation on a circle
+** Experiments
+to begin our evaluations we tested constant values for \( B_{ij} \) on the boundary. For \( B_{ij} \in \{-1,1\} \) we observed behaviour expected of hydrophobic / hydrophilic substances on the boundary, where \( B_{ij}=1 \) resulted in the one phase pearling of the boundary, while the other semed attracted. this manifested on apparent contact angles of 180° and 0° respectivly. Using \( B_{ij} = -1 \) results in the opposite behavior.
+for \( C = 0 \) the Interface Lies orthogonal on the boundary
+#+name: fig:angle0c
+#+begin_src julia  :exports both :results drawer :session
+include("domains.jl")
+using .Domains:circle as G
+include("solvers.jl")
+include("initial_conditions.jl")
+arr = _init()
+d = domain(get_backend(arr) , 128 , size(arr))
+θ = 0
+solution = solve(arr , 100 , θ=θ)
+heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
+#+end_src
 
+#+RESULTS: fig:angle0c
+#+begin_results
+[[file:./.ob-julia-snail/jl_N0vCtMtwpW.png]]
+#+end_results
+
+
+#+caption: phase-field \( \phi \) after 100 time-steps with \( C=0 \)
+
+
+#+name: fig:angle1c
+#+begin_src julia  :exports both :results drawer :wrap figure
+θ = -2f-2
+solution = solve(arr , 100 , θ=θ)
+heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
+#+end_src
+
+#+RESULTS: fig:angle1c
+#+begin_figure
+[[file:./.ob-julia-snail/jl_rQvSDEnExA.png]]
+#+end_figure
+
+#+caption: phase-field \( \phi \) after 100 time-steps with \( C=1 \)
+
+#+name: fig:angle-1c
+#+begin_src julia   :results drawer :exports both
+include("solvers.jl")
+θ = -1f-0
+arr = _init()
+solution = solve(arr , 100 , θ=θ ,arrtype=cu)
+heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
+#+end_src
+
+#+RESULTS: fig:angle-1c
+#+begin_results
+[[file:./.ob-julia-snail/jl_54rwjYv0ja.png]]
+#+end_results
+
+#+caption: phase-field \( \phi \) after 100 time-steps with \( C=-1 \)
+
+#+name: fig:angle-sqrt(2)c
+#+begin_src julia   :results drawer :exports both :async t
+include("solvers.jl")
+θ = Float32(-sqrt(2)/2)
+solution = solve(arr , 100 , θ=θ)
+heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
+#+end_src
+
+#+RESULTS: fig:angle-sqrt(2)c
+#+begin_results
+[[file:./.ob-julia-snail/jl_F6fGfCLCDA.png]]
+#+end_results
+
+#+caption: phase-field \( \phi \) after 100 time-steps with \( C=-\frac{\sqrt{2}}{2} \)
+
+#+name: fig:random-circle
+#+begin_src julia   :results drawer :exports both :wrap figure
+using LaTeXStrings
+include("solvers.jl")
+θ = 5f-3
+arr = cu(rand(Float32,256,256)) .* 2 .- 1
+d = domain(get_backend(arr) , 256 , size(arr))
+d(arr)
+solution = solve(arr , 5 , θ=θ)
+h1 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=5")
+solution = solve(arr , 50 , θ=θ)
+h2 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=50")
+solution = solve(arr , 500 , θ=θ)
+h3 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=500")
+solution = solve(arr , 5000 , θ=θ)
+h4 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=5000")
+plot(h1,h2,h3,h4)
+#+end_src
+
+#+caption: phase-field \( \phi \) after 100 time-steps with \( C=-\frac{\sqrt{2}}{2} \)
+
+#+RESULTS: fig:random-circle
+#+begin_results
+[[file:./.ob-julia-snail/jl_bapARITWtE.png]]
+#+end_results
+
+** more values
+further testing shows that with values for \( B_{ij} \in [-1,1] \) we are able to control the contact angle freely.
+** Boundary Normals
+we are interested in the contact angle of the interface on the boundary. ie.
+\begin{align}
+\label{eq:1}
+\frac{\nabla_d \phi_{ij} \cdot \mathbf{n}}{\|\nabla_{d} \phi_{ij}\|} &= \cos(\theta)& & \phi_{ij} \in \partial\Omega_{d} = 0
+\end{align}
+ie.
+\begin{align}
+\frac{\nabla_d \phi_{ij} \cdot \mathbf{n}}{\|\nabla_{d} \phi_{ij}\|} - \cos(\theta) &= 0 \\
+\frac{\nabla_d \phi_{ij} \cdot \mathbf{n}}{\|\nabla_{d} \phi_{ij}\|} - \cos(\theta) \mathbf{n} \cdot \mathbf{n} &= 0 \\
+\left(   \frac{\nabla_d \phi_{ij}}{\|\nabla_{d} \phi_{ij}\|} - \cos(\theta) \mathbf{n} \right) \cdot \mathbf{n} &= 0 \\
+\left(   \nabla_d \phi_{ij}- \cos(\theta) \|\nabla_{d} \phi_{ij}\|  \mathbf{n} \right) \cdot \mathbf{n} &= 0 \\
+\end{align}
+therefore we use
+\begin{align}
+\nabla \cdot \left(   \nabla_d \phi_{ij}- \cos(\theta) \|\nabla_{d} \phi_{ij}\|  \mathbf{n} \right) \cdot \mathbf{n} &= \nabla \cdot \nabla \phi_{ij} - \cos(\theta) div(\mathbf{n})\\
+\end{align}
+in our implementation we modify \( \nabla_d (G \nabla_d \phi_{ij})\).
+In essence our solver tries to ensure no flux boundary conditions ie. \( \nabla \phi_{ij} \cdot \mathbf{n} = 0 \).
+hence \( B_{ij} \) should be \( -\cos(\theta) \left| \nabla_d \phi_{ij}   \right|  div(\mathbf{n}) \)
+
+* Notes for meeting
++ Solver:
+  + Jacoby
+  + Paralell
+  + Implicit
+  + ...
++ Boundary
+  + constant
+  + not mass conservative
+  +
 * Summary and outlook
 * References
 #+PRINT_BIBLIOGRAPHY:

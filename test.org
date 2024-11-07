@@ -2,8 +2,7 @@
 #+title: Test
 
 #+begin_src julia
-using .BoundaryConditions
-
+plot(rand(19))
 #+end_src
 
 #+RESULTS:
