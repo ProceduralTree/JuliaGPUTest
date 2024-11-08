@@ -94,11 +94,6 @@ heatmap(arr, title=L"\Omega_d" , clim=(0,1),
             gridlinewidth=2 , axis_equal_image=true , extra_kwargs=:subplot , xlims=(1 ,64) , ylims=(1,64))
 #+end_src
 
-#+RESULTS:
-#+begin_results
-[[file:./.ob-julia-snail/jl_qzyNIbUnOn.png]]
-#+end_results
-
 We then state the adapted approach as:
 \begin{equation}
 \label{eq:second-order-adapted-ansatz}
@@ -264,10 +259,13 @@ heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solut
 
 #+name: fig:random-square
 #+begin_src julia   :results drawer :exports both :wrap figure
+include("domains.jl")
+using .Domains:square as G
 using LaTeXStrings
+using oneAPI
 include("solvers.jl")
 θ = 5f-3
-arr = cu(rand(Float32,256,256)) .* 2 .- 1
+arr = oneArray(rand(Float32,256,256)) .* 2 .- 1
 d = domain(get_backend(arr) , 256 , size(arr))
 d(arr)
 solution = solve(arr , 5 , θ=θ)
@@ -280,6 +278,10 @@ solution = solve(arr , 5000 , θ=θ)
 h4 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=5000")
 plot(h1,h2,h3,h4)
 #+end_src
+
+#+RESULTS: fig:random-square
+#+begin_figure
+#+end_figure
 
 #+caption: phase-field \( \phi \) after 100 time-steps with \( C=-\frac{\sqrt{2}}{2} \)
 
@@ -299,7 +301,7 @@ ie.
 \left(   \frac{\nabla_d \phi_{ij}}{\|\nabla_{d} \phi_{ij}\|} - \cos(\theta) \mathbf{n} \right) \cdot \mathbf{n} &= 0 \\
 \left(   \nabla_d \phi_{ij}- \cos(\theta) \|\nabla_{d} \phi_{ij}\|  \mathbf{n} \right) \cdot \mathbf{n} &= 0 \\
 \end{align}
-therefore we use
+therefore we should use
 \begin{align}
 \nabla \cdot \left(   \nabla_d \phi_{ij}- \cos(\theta) \|\nabla_{d} \phi_{ij}\|  \mathbf{n} \right) \cdot \mathbf{n} &= \nabla \cdot \nabla \phi_{ij} - \cos(\theta) div(\mathbf{n})\\
 \end{align}
@@ -430,14 +432,13 @@ hence \( B_{ij} \) should be \( -\cos(\theta) \left| \nabla_d \phi_{ij}   \right
 
 * Notes for meeting
 + Solver:
-  + Jacoby
+  + Jacobi
   + Paralell
   + Implicit
   + ...
 + Boundary
   + constant
   + not mass conservative
-  +
 * Summary and outlook
 * References
 #+PRINT_BIBLIOGRAPHY:
