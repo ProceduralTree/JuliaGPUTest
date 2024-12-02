@@ -39,3 +39,15 @@ function massbal(arr)
         A[I] = 1
         end
 end
+
+function bulk_energy(phase)
+    energy = 0
+    Ids = CartesianIndices(phase)
+    dx = CartesianIndex(1,0)
+    dy = CartesianIndex(0,1)
+
+    for I in Ids[2:end-1,2:end-1]
+        energy += ε^2 / 2 * G(2*I + dx,Ids) * (phase[I+dx] - phase[I])^2 + G(2*I + dy,Ids) * (phase[I+dy] - phase[I])^2 + W′(phase[I])
+        end
+   return energy
+end

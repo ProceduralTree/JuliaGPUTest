@@ -14,8 +14,16 @@
 #+latex_header: unicode
 #+latex_header: ]{hyperref}
 #+latex_header:\usepackage{fontspec}
+#+latex_header:\usepackage{ltablex}
 #+latex_header: \usepackage{unicode-math}
 #+latex_header: \setmonofont{DejaVu Sans Mono}[Scale=0.8]
+#+latex_header: \newenvironment{abstract} {}{}
+#+latex_header: \usepackage{abstract}
+#+latex_header:
+#+latex_header:
+#+latex_header:
+#+latex_header:
+#+cite_export: biblatex
 #+options:  toc:1
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
 
@@ -23,6 +31,8 @@
 This work shows sensitivity of boundary conditions for two different finite difference approaches to solving the cahn hilliard equation
 #+end_abstract
 
+* Introduction
+This project thesis builds upon the work in our bachelor thesis, by introducing a simple boudary condition approach to a variation of the solver useed therein. In Chapter [[Fundamentals]] we introduce the Cahn Hilliard Equation in the fomulation that we use for this project. This project used a two dimensional second order version of  this CH equation rather than the usual 1D 4th order one, to simplify the numerical implementation. The solver itself biulds upon a finite difference discretization of this equation. In Chapter [[Numerical Solver]], together with the discrete domains, on wich we run our numerical solver ,we introduce a jacoby iteration to solve the linear system derrived from the afforementioned discretization.  The numerical solver in this thesis is gpu accelerated, and the discretization we chose to base our solver on is capable to calculate on all domains as long as a characteristic function is given. Therefore, we introduce two domains, on which we present our findings. The primary goal of this work is then the boundary condition approach in Chapter [[Boundary adaptation]]. Conceptionally the boundary condition we introduce simply consists of a constant value added in the linear system to all equations corresponding to gridcells on the boundary. The actual implementation is capable of doing this for arbitrary domains. We present the reults of this method on two Domains, a square one in [[Numerical evaluation]] and a circular domain in [[Numerical evaluation on a circle]]
 * Fundamentals
 The Cahn-Hilliard (CH) equation is a diffuse interface coupling equation used for interpolating between different approach in different formulas. We use it in the following form:
 \begin{equation}
@@ -55,7 +65,7 @@ heatmap(M, title=L"\Omega_d" , clim=(0,1),
 #+RESULTS:
 [[file:images/domain.png]]
 
-#+begin_src julia :session *julia* :async t
+#+begin_src julia :session *julia* :async t :exports none
 pwd()
 #+end_src
 
@@ -72,7 +82,7 @@ and define a discrete gradient as.
 \nabla_d f_{ij} = (D_x f_{i+1j} , \ D_y f_{ij+1})
 \end{equation}
 see[cite:@Ulmer_CHRelaxed_2024]
-* Adaptation to second order Neumann conditions
+* Boundary adaptation
 The solver we use as reference guaranties no flux boundary conditions at a discrete level by setting \( \nabla \phi_{ij} = 0\) for \( \phi_{ij} \in \partial \Omega_{d} \) this is done by multiplying with the Characteristic function of \( \Omega_{d} \)
 \begin{equation}
 G_{ij}=
@@ -100,7 +110,7 @@ using KernelAbstractions
     end
     return 0
     end
-include("boundary-conditions.jl")
+include("src/boundary-conditions.jl")
 pgfplotsx()
 arr = zeros(64,64)
 b = border(get_backend(arr) , 128 , size(arr))
@@ -131,7 +141,7 @@ end
 using Plots
 using LaTeXStrings
 using KernelAbstractions
-include("boundary-conditions.jl")
+include("src/boundary-conditions.jl")
 pgfplotsx()
 arr = zeros(64,64)
 b = border(get_backend(arr) , 128 , size(arr))
@@ -240,14 +250,28 @@ end
 * Numerical evaluation
 ** Experiments
 to begin our evaluations we tested constant values for \( B_{ij} \) on the boundary.
-initially we tested setting \(C=0\) as it is equivalent to the no-flux boundary condition of the unmodified solver. For \( C = 0 \) ,as seen in [[fig:angle0,]] the interface lies orthogonal on the boundary as expected for a CH solver with no-flux boundary conditions.
+initially we tested setting \(C=0\) as it is equivalent to the no-flux boundary condition of the unmodified solver. For \( C = 0 \) ,as seen in [[fig:angle0]] the interface lies orthogonal on the boundary as expected for a CH solver with no-flux boundary conditions.
 For \( B_{ij} \in \{-1,1\} \) we observed behaviour expected of hydrophobic / hydrophilic substances on the boundary, where \( B_{ij}=1 \) resulted in the one phase pearling of the boundary, while the other semed attracted. this manifested on apparent contact angles of 180° and 0° respectivly. Using \( B_{ij} = -1 \) results in the opposite behavior.
 
 
 #+name: fig:angle0
 #+begin_src julia  :exports results :results file :file images/baseline.png
-include("solvers.jl")
-include("initial_conditions.jl")
+using LaTeXStrings
+@inline function G(I::CartesianIndex , Ids::CartesianIndices)::Float32
+    Id = oneunit(I)
+    if I in 2*(Ids[begin]+Id):2*(Ids[end]-Id)
+        return 1
+    end
+    return 0
+    end
+
+h::Float32 = 3f-4
+Δt::Float32 = 1e-4
+ε::Float32 = 2e-4
+W′(x) = -x * (1 - x^2)
+
+include("src/solvers.jl")
+include("src/initial_conditions.jl")
 arr = _init()
 θ = 0
 n = 100
@@ -282,7 +306,7 @@ ylabel!(L"j")
 In [[fig:angle-1]] we try the opposite as bevore. And we obsesrve corresponding behaviour. When using a value of \(C=-1\) we observe behaviour opposite to before. Where the contact angle on the boundary lies at 0°, the interface runs parallel to the boundary again.
 #+name: fig:angle-1
 #+begin_src julia :results file :file images/angle-.png
-include("solvers.jl")
+include("src/solvers.jl")
 θ = -1f-0
 arr = _init()
 n = 500
@@ -298,9 +322,9 @@ ylabel!(L"j")
 [[file:images/angle-.png]]
 
 we observe the most interessting behaviour for values between \((-1,1)\), where we observe the contact angle of the interafce on the boundary to change from parallel 0° to parallel 180°.
-#+name: fig:angle-sqrt(2)
+#+name: fig:angle-multiple
 #+begin_src julia :results file :file images/angle-sqrt(2).png
-include("solvers.jl")
+include("src/solvers.jl")
 angles = Float32.([-1+sqrt(2)/2, -0.5 , 0.5 , 1-sqrt(2)/2])
 arr = _init()
 n = 100
@@ -317,62 +341,74 @@ plot(plots...)
 #+end_src
 
 #+caption: phase-field \( \phi \) after 500 time-steps with \(C \in \{-1 + \frac{\sqrt{2}}{2} , -0.5 , 0.5 , 1 - \frac{\sqrt{2}}{2} \}\)
-#+RESULTS: fig:angle-sqrt(2)
-[[file:images/angle-sqrt(2).png]]
+
 
 #+name: fig:random-square
 #+begin_src julia    :exports both
-using LaTeXStrings
-include("solvers.jl")
-θ = 5f-3
-arr = cu(rand(Float32,256,256)) .* 2 .- 1
+include("src/solvers.jl")
+θ = -5f-1
+n = 100
+arr = _init()
 d = domain(get_backend(arr) , 256 , size(arr))
 d(arr)
-solution = solve(arr , 5 , θ=θ)
-h1 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=5")
-solution = solve(arr , 50 , θ=θ)
-h2 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=50")
-solution = solve(arr , 500 , θ=θ)
-h3 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=500")
-solution = solve(arr , 5000 , θ=θ)
-h4 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=5000")
+h = 25e-5
+solution = solve(arr , n , θ=θ)
+h1 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"h=%$h")
+h = 20e-5
+solution = solve(arr , n , θ=θ)
+h2 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"h=%$h")
+h = 15e-5
+solution = solve(arr , n , θ=θ)
+h3 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"h=%$h")
+h = 10e-5
+solution = solve(arr , n , θ=θ)
+h4 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"h=%$h")
 plot(h1,h2,h3,h4)
 #+end_src
 
-#+caption: phase-field \( \phi \) after 100 time-steps with \( C=-\frac{\sqrt{2}}{2} \)
 #+RESULTS: fig:random-square
-[[file:/tmp/babel-g07KfA/julia-rwA51y.png]]
+[[file:/tmp/babel-frcHT2/julia-LrFbWa.png]]
 
+#+caption: phase-field \( \phi \) after 100 time-steps with \( C=-\frac{\sqrt{2}}{2} \)
 
+#+begin_src julia
+include("src/solvers.jl")
+θ = -5f-1
+n = 100
+arr = _init()
+d = domain(get_backend(arr) , 256 , size(arr))
+d(arr)
+anim = @animate for i=0e-5:1e-6:40e-5
+    solution = solve(arr , n , θ=θ , h=i)
+    heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"h=%$i")
+    end
+mp4(anim , "animations/h.mp4" , fps=24)
+#+end_src
 
-** more values
-further testing shows that with values for \( B_{ij} \in [-1,1] \) we are able to control the contact angle freely.
-** Boundary Normals
-we are interested in the contact angle of the interface on the boundary. ie.
-\begin{align}
-\label{eq:1}
-\frac{\nabla_d \phi_{ij} \cdot \mathbf{n}}{\|\nabla_{d} \phi_{ij}\|} &= \cos(\theta)& & \phi_{ij} \in \partial\Omega_{d} = 0
-\end{align}
-ie.
-\begin{align}
-\frac{\nabla_d \phi_{ij} \cdot \mathbf{n}}{\|\nabla_{d} \phi_{ij}\|} - \cos(\theta) &= 0 \\
-\frac{\nabla_d \phi_{ij} \cdot \mathbf{n}}{\|\nabla_{d} \phi_{ij}\|} - \cos(\theta) \mathbf{n} \cdot \mathbf{n} &= 0 \\
-\left(   \frac{\nabla_d \phi_{ij}}{\|\nabla_{d} \phi_{ij}\|} - \cos(\theta) \mathbf{n} \right) \cdot \mathbf{n} &= 0 \\
-\left(   \nabla_d \phi_{ij}- \cos(\theta) \|\nabla_{d} \phi_{ij}\|  \mathbf{n} \right) \cdot \mathbf{n} &= 0 \\
-\end{align}
-therefore we use
-\begin{align}
-\nabla \cdot \left(   \nabla_d \phi_{ij}- \cos(\theta) \|\nabla_{d} \phi_{ij}\|  \mathbf{n} \right) \cdot \mathbf{n} &= \nabla \cdot \nabla \phi_{ij} - \cos(\theta) div(\mathbf{n})\\
-\end{align}
-in our implementation we modify \( \nabla_d (G \nabla_d \phi_{ij})\).
-In essence our solver tries to ensure no flux boundary conditions ie. \( \nabla \phi_{ij} \cdot \mathbf{n} = 0 \).
-hence \( B_{ij} \) should be \( -\cos(\theta) \left| \nabla_d \phi_{ij}   \right|  div(\mathbf{n}) \)
+#+RESULTS:
+: Plots.AnimatedGif("/home/proceduraltree/Projects/JuliaGPUTest/animations/h.mp4")
 
+#+begin_src julia
+include("src/solvers.jl")
+θ = -5f-1
+n = 100
+arr = _init()
+d = domain(get_backend(arr) , 256 , size(arr))
+d(arr)
+anim = @animate for i=0e-5:1e-6:40e-5
+    solution = solve(arr , n , θ=θ, ε=i)
+    heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"\varepsilon=%$i")
+    end
+mp4(anim , "animations/epsilon.mp4" , fps=24)
+#+end_src
+
+#+RESULTS:
+: Plots.AnimatedGif("/home/proceduraltree/Projects/JuliaGPUTest/animations/epsilon.mp4")
 
 * Numerical evaluation on a circle
 ** Experiments
 The original solver presented in[cite:@SHIN20117441]  was able to solve the CH equation on arbitrary domains. Since the addition of our boundary function depends soley on the characteristic function of the discrete domain, we are able to use our approach on diferent Domains, by providing a different characteristic function. We present the results of which in this chapter.
-To show the behavior of the CH sover in [[fig:angle0c]], we first emplay no-flux boundary conditioons on a circular domain. We \ref{eq:01}  observe the interface perpendicular on the boundary, ans we expect.
+To show the behavior of the CH sover in [[fig:angle0c]], we first emplay no-flux boundary conditioons on a circular domain. We observe the interface perpendicular on the boundary, as we expect.
 
 #+begin_src julia
 @inline function G(I::CartesianIndex , Ids::CartesianIndices)::Float32
@@ -383,13 +419,21 @@ To show the behavior of the CH sover in [[fig:angle0c]], we first emplay no-flux
         end
     return 0.
 end
+
+h::Float32 = 3f-4
+Δt::Float32 = 1e-4
+ε::Float32 = 2e-4
+W′(x) = -x * (1 - x^2)
 #+end_src
+
+#+RESULTS:
+: W′ (generic function with 1 method)
 
 
 #+name: fig:angle0c
 #+begin_src julia  :exports results :results file :file images/angle0c.png
-include("solvers.jl")
-include("initial_conditions.jl")
+include("src/solvers.jl")
+include("src/initial_conditions.jl")
 arr = _init()
 d = domain(get_backend(arr) , 128 , size(arr))
 θ = 0
@@ -397,62 +441,67 @@ solution = solve(arr , 100 , θ=θ)
 heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
 #+end_src
 
-#+caption: \(\phi\) after 100 time steps on a circular domain with no-flux boundary-conditions after 100 time steps on a circular domain with no-flux boundary-conditions
+#+caption: \(\phi\) after 100 time steps on a circular domain with no-flux boundary-conditions after 100 time steps on a circular domain with no-flux
 #+RESULTS: fig:angle0c
 [[file:images/angle0c.png]]
 
 
 
-
+The results we oserve in [[fig:angle1c]] are similar to the reults on a square domain in [[fig:angle1]]. The contact angle is 18° i.e. the interface does not touch the boundary and runs parallel to it.
 #+name: fig:angle1c
-#+begin_src julia  :exports both :results drawer :wrap figure
-θ = -2f-2
+#+begin_src julia  :exports results :results file :file images/anfle1c.png
+θ = 1f0
 solution = solve(arr , 100 , θ=θ)
 heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
 #+end_src
 
-#+RESULTS: fig:angle1c
-#+begin_figure
-[[file:./.ob-julia-snail/jl_rQvSDEnExA.png]]
-#+end_figure
-
 #+caption: phase-field \( \phi \) after 100 time-steps with \( C=1 \)
+#+RESULTS: fig:angle1c
+[[file:images/anfle1c.png]]
 
+The results for \(C=-1\) in [[fig:angle-1c]] on the circular domain, are similar to the results in [[fig:angle-1]]  onth esqaure domain as well ,where the interface touches the boundary and iun parallel with a contact angle of 0°.
 #+name: fig:angle-1c
-#+begin_src julia   :results drawer :exports both
-include("solvers.jl")
+#+begin_src julia   :results file :file images/angle-1c.png
+include("src/solvers.jl")
 θ = -1f-0
 arr = _init()
 solution = solve(arr , 100 , θ=θ ,arrtype=cu)
 heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
 #+end_src
 
-#+RESULTS: fig:angle-1c
-#+begin_results
-[[file:./.ob-julia-snail/jl_54rwjYv0ja.png]]
-#+end_results
-
 #+caption: phase-field \( \phi \) after 100 time-steps with \( C=-1 \)
+#+RESULTS: fig:angle-1c
+[[file:images/angle-1c.png]]
 
-#+name: fig:angle-sqrt(2)c
-#+begin_src julia   :results drawer :exports both :async t
-include("solvers.jl")
-θ = Float32(-sqrt(2)/2)
-solution = solve(arr , 100 , θ=θ)
-heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
+
+#+name: fig:angle-multiplec
+#+begin_src julia   :exports results :results file :file images/angle-multiplec.png
+include("src/solvers.jl")
+angles = Float32.([-1+sqrt(2)/2, -0.5 , 0.5 , 1-sqrt(2)/2])
+arr = _init()
+n = 100
+plots = []
+for a in angles
+    solution = solve(arr , n , θ=a)
+    h = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
+    title!(h,L" C=%$a")
+    xlabel!(h,L"i")
+    ylabel!(h,L"j")
+    push!(plots, h)
+end
+plot(plots...)
 #+end_src
 
-#+RESULTS: fig:angle-sqrt(2)c
-#+begin_results
-[[file:./.ob-julia-snail/jl_F6fGfCLCDA.png]]
-#+end_results
+#+caption: phase-field \( \phi \) after 500 time-steps with \(C \in \{-1 + \frac{\sqrt{2}}{2} , -0.5 , 0.5 , 1 - \frac{\sqrt{2}}{2} \}\) on a circular domain.
+#+RESULTS: fig:angle-multiplec
+[[file:images/angle-multiplec.png]]
 
-#+caption: phase-field \( \phi \) after 100 time-steps with \( C=-\frac{\sqrt{2}}{2} \)
+
 
 #+name: fig:random-circle
-#+begin_src julia   :results drawer :exports both :wrap figure
+#+begin_src julia   :results file :file images/random-circle.png :exports none
 using LaTeXStrings
-include("solvers.jl")
+include("src/solvers.jl")
 θ = 5f-3
 arr = cu(rand(Float32,256,256)) .* 2 .- 1
 d = domain(get_backend(arr) , 256 , size(arr))
@@ -468,36 +517,230 @@ h4 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(
 plot(h1,h2,h3,h4)
 #+end_src
 
-#+caption: phase-field \( \phi \) after 100 time-steps with \( C=-\frac{\sqrt{2}}{2} \)
-
 #+RESULTS: fig:random-circle
-#+begin_results
-[[file:./.ob-julia-snail/jl_bapARITWtE.png]]
-#+end_results
+[[file:images/random-circle.png]]
 
-** more values
-further testing shows that with values for \( B_{ij} \in [-1,1] \) we are able to control the contact angle freely.
-** Boundary Normals :noexport:
-we are interested in the contact angle of the interface on the boundary. ie.
+
+
+* Relaxed
+#+begin_src julia
+using Plots
+using LaTeXStrings
+@inline function G(I::CartesianIndex , Ids::CartesianIndices)::Float32
+    Id = oneunit(I)
+    if I in 2*(Ids[begin]+Id):2*(Ids[end]-Id)
+        return 1
+    end
+    return 0
+    end
+
+h::Float32 = 3f-4
+Δt::Float32 = 1e-4
+ε::Float32 = 5e-4
+W′(x) = -x * (1 - x^2)
+
+include("src/relaxed_solver.jl")
+include("src/initial_conditions.jl")
+arr = _init()
+θ = 0
+n = 100
+solution = solve(arr , n)
+gr()
+heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06)
+title!(L"$\Phi$  after $%$n$ time-steps")
+xlabel!(L"i")
+ylabel!(L"j")
+#+end_src
+
+#+RESULTS:
+[[file:/tmp/babel-miHWkx/julia-h4yghb.png]]
+
+* Energy and mass behaviour :noexport:
+The Chan Hilliard equation was originally derrived from a Ginzburg-Landau Energy [cite:@Wu_2022]. This energy gives a meassure of total curvature, and is prooven to decrease in time for no-flux boundary condition for no-flux boundary conditions. The energy is given as
+\begin{equation}
+\label{eq:ginzburg-landau}
+E^{\text{bulk}}[\phi] = \int_{\Omega} \frac{\varepsilon^2}{2} |\nabla \phi |^2 + W(\phi) \, dx ,
+\end{equation}
+#+begin_src julia
+h::Float32 = 3f-4
+Δt::Float32 = 1e-4
+ε::Float32 = 2e-4
+W′(x) = -x * (1 - x^2)
+@inline function G(I::CartesianIndex , Ids::CartesianIndices)::Float32
+    @inline r  = Ids[end] - I
+    m = maximum(Tuple(Ids[end]))
+    if norm(Tuple(r)) < 0.8 * m
+        return 1.
+        end
+    return 0.
+end
+n = 100
+include("src/solvers.jl")
+include("src/initial_conditions.jl")
+include("src/util.jl")
+arr = _init()
+s,f = solve_and_evaluate(arr , n, bulk_energy ,  θ=0.5f0)
+plot(f , yaxis=:log)
+#+end_src
+
+#+RESULTS:
+[[file:/tmp/babel-frcHT2/julia-VNDrnf.png]]
+
+* Different stepsizes :noexport:
+
+#+begin_src julia   :results file :file images/random-circle.png :exports none
+using LaTeXStrings
+include("src/solvers.jl")
+θ = 5f-3
+arr = cu(rand(Float32,256,256)) .* 2 .- 1
+d = domain(get_backend(arr) , 256 , size(arr))
+d(arr)
+solution = solve(arr , 5 , θ=θ)
+h1 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=5")
+solution = solve(arr , 50 , θ=θ)
+h2 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=50")
+solution = solve(arr , 500 , θ=θ)
+h3 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=500")
+solution = solve(arr , 5000 , θ=θ)
+h4 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=5000")
+plot(h1,h2,h3,h4)
+#+end_src
+* angle
+In previous experiments we noted the changing angle of the interface with changing input parameter. While we do not have a mathematical derrivation of this relation, we aim to provide numerical insight in this chapter. We calculate this angle as
 \begin{align}
+\label{eq:1}
 \frac{\nabla_d \phi_{ij} \cdot \mathbf{n}}{\|\nabla_{d} \phi_{ij}\|} &= \cos(\theta)& & \phi_{ij} \in \partial\Omega_{d} = 0
 \end{align}
-ie.
-\begin{align}
-\frac{\nabla_d \phi_{ij} \cdot \mathbf{n}}{\|\nabla_{d} \phi_{ij}\|} - \cos(\theta) &= 0 \\
-\frac{\nabla_d \phi_{ij} \cdot \mathbf{n}}{\|\nabla_{d} \phi_{ij}\|} - \cos(\theta) \mathbf{n} \cdot \mathbf{n} &= 0 \\
-\left(   \frac{\nabla_d \phi_{ij}}{\|\nabla_{d} \phi_{ij}\|} - \cos(\theta) \mathbf{n} \right) \cdot \mathbf{n} &= 0 \\
-\left(   \nabla_d \phi_{ij}- \cos(\theta) \|\nabla_{d} \phi_{ij}\|  \mathbf{n} \right) \cdot \mathbf{n} &= 0 \\
-\end{align}
-therefore we use
-\begin{align}
-\nabla \cdot \left(   \nabla_d \phi_{ij}- \cos(\theta) \|\nabla_{d} \phi_{ij}\|  \mathbf{n} \right) \cdot \mathbf{n} &= \nabla \cdot \nabla \phi_{ij} - \cos(\theta) div(\mathbf{n})\\
-\end{align}
-in our implementation we modify \( \nabla_d (G \nabla_d \phi_{ij})\).
-In essence our solver tries to ensure no flux boundary conditions ie. \( \nabla \phi_{ij} \cdot \mathbf{n} = 0 \).
-hence \( B_{ij} \) should be \( -\cos(\theta) \left| \nabla_d \phi_{ij}   \right|  div(\mathbf{n}) \)
+for a single point P on the interface and near the boundary. Since we need a finite diference to evaluate \ref{eq:1}, we do not select a point directly on the boundary and since we need a point on the interface where \(\nabla \phi_{ij}\) is large, we select
+\begin{equation}
+\label{eq:2}
+P = argmax \nabla \phi_{ij} \qquad \phi_{ij} \in \partial \Omega
+\end{equation}
+#+begin_src julia :results file :file images/angle.png
+using LatexStrings
+n = 500
+h::Float32 = 1f-4
+Δt::Float32 = 1e-4
+ε::Float32 = 1e-4
+W′(x) = -x * (1 - x^2)
+@inline function G(I::CartesianIndex , Ids::CartesianIndices)::Float32
+    @inline r  = Ids[end] - I
+    m = maximum(Tuple(Ids[end]))
+    if norm(Tuple(r)) < 0.8 * m
+        return 1.
+        end
+    return 0.
+end
+using LinearAlgebra
+include("src/solvers.jl")
+include("src/initial_conditions.jl")
+@inline function normal_vec(P::CartesianIndex , Ids::CartesianIndices)
+    p = [P[1],P[2]]
+    n =[128,128]  - p
+    return  normalize(n)
+end
+function grad(field , I::CartesianIndex)
+    Ix = CartesianIndex(1,0)
+    Iy = CartesianIndex(0,1)
+  dx = (field[I + Ix ] - field[I - Ix]) / 2h
+  dy = (field[I + Iy ] - field[I - Iy]) / 2h
+    return [dx,dy] ./ h
+    end
+arr = _init()
+s = solve(arr , n, θ=-1f-0)
+
+include("src/angle.jl")
+out = CUDA.zeros(size(s))
+a = calculate_angle(get_backend(s) , 256 , size(s))
+bh = border_halo(get_backend(s) , 256 , size(s))
+f1 = CUDA.zeros(size(s))
+f2 = CUDA.zeros(size(s))
+bh(f1, 5)
+bh(f2 , 20)
+f = f2 .* f1
+a(out , s , f )
+A = Array(out)
+I_min = argmax(A)
+heatmap(Array(s)' , aspect_ratio=:equal)
+n = normal_vec(I_min , CartesianIndices(s))
+g = normalize(grad(Array(s) , I_min))
+P = [I_min[1] , I_min[2]]
+#acosd((g' * n)/(norm(g) * norm(n)))
+scatter!(Tuple(I_min), label=L"P")
+quiver!([P[1]] , [P[2]] , quiver=([g[1]] , [g[2]]) .* 50)
+quiver!([[P[1]]] , [[P[2]]], quiver= ([n[1]] , [n[2]] ) .* 50)
+title!("$(acosd((g' * n))) °")
+#+end_src
+
+#+RESULTS:
+[[file:images/angle.png]]
+
+#+name: angle-table
+#+begin_src julia :results table
+using DataFrames
+iter = 200
+df = DataFrame(theta=Float64[] , angle=Float64[])
+for theta=-0.1:0.005:0.1
+    arr = _init()
+    s = solve(arr , iter, θ=Float32(theta))
+    A = Array(out)
+    Index = argmax(A)
+    n = normal_vec(Index , CartesianIndices(s))
+    g = normalize(grad(Array(s) , Index))
+    angle = acosd(g' * n)
+    push!(df  , (theta , angle))
+end
+Array(df)
+#+end_src
+
+#+caption: value for \theta and corresponding angle \alpha after 200 time-steps
+#+attr_latex: :environment longtable
+#+RESULTS: angle-table
+|   -0.1 |  173.49096591056502 |
+| -0.095 |  173.10715739345923 |
+|  -0.09 |  172.18364087939332 |
+| -0.085 |  171.54740091859054 |
+|  -0.08 |   171.3054040677464 |
+| -0.075 |   171.1455632002332 |
+|  -0.07 |  171.02869693204397 |
+| -0.065 |   170.3901810227686 |
+|  -0.06 |   170.0449796355949 |
+| -0.055 |  173.27274052589075 |
+|  -0.05 |   170.3373892767722 |
+| -0.045 |  168.11953739721892 |
+|  -0.04 |  167.41386769034298 |
+| -0.035 |  166.62088559081457 |
+|  -0.03 |   164.9014365935728 |
+| -0.025 |   162.8061312020723 |
+|  -0.02 |  159.92337650959868 |
+| -0.015 |  155.82320048245077 |
+|  -0.01 |   147.4707481361878 |
+| -0.005 |  129.77836444929315 |
+|    0.0 |   91.28977210940522 |
+|  0.005 |   47.27538237804684 |
+|   0.01 |   26.60911004838421 |
+|  0.015 |   6.306468865037136 |
+|   0.02 |  11.495581754132852 |
+|  0.025 |   8.059259459078769 |
+|   0.03 |   2.997826637980469 |
+|  0.035 |   2.442790881259583 |
+|   0.04 |   2.314200756133827 |
+|  0.045 |   1.883610279597664 |
+|   0.05 |  1.3567468712125557 |
+|  0.055 |  0.8024311153759808 |
+|   0.06 |  0.5869880299417852 |
+|  0.065 |  0.4356076759230446 |
+|   0.07 | 0.32719257485287145 |
+|  0.075 | 0.03099970458170946 |
+|   0.08 | 0.37685133141547533 |
+|  0.085 |  0.4151229191583983 |
+|   0.09 |  0.7049376111739059 |
+|  0.095 |  0.8671639875701463 |
+|    0.1 |  1.0282690721714873 |
+
 
 * Summary and outlook
+
 * References
 #+PRINT_BIBLIOGRAPHY:
 
@@ -505,3 +748,5 @@ hence \( B_{ij} \) should be \( -\cos(\theta) \left| \nabla_d \phi_{ij}   \right
 # #julia-snail-extensions: (ob-julia)
 # #julia-snail/ob-julia-capture-io: nil
 # End:
+
+
