@@ -32,7 +32,7 @@ This work shows sensitivity of boundary conditions for two different finite diff
 #+end_abstract
 
 * Introduction
-This project thesis builds upon the work in our bachelor thesis, by introducing a simple boundary condition approach to a variation of the solver used therein. In Chapter [[Fundamentals]] we introduce the Cahn-Hilliard Equation in the formulation that we use for this project. This project used a two-dimensional second order version of this CH equation rather than the usual 1D 4th order one, to simplify the numerical implementation. The solver itself builds upon a finite difference discretization of this equation. In Chapter [[Numerical Solver]], together with the discrete domains, on which we run our numerical solver, we introduce a Jacoby iteration to solve the linear system derived from the aforementioned discretization.  The numerical solver in this thesis is GPU accelerated, and the discretization we chose to base our solver on is capable to calculate on all domains as long as a characteristic function is given. Therefore, we introduce two domains, on which we present our findings. The primary goal of this work is then the boundary condition approach in Chapter [[Boundary adaptation]]. Conceptionally the boundary condition we introduce simply consists of a constant value added in the linear system to all equations corresponding to grid cells on the boundary. The actual implementation is capable of doing this for arbitrary domains. We present the results of this method on two Domains, a square one in [[Numerical evaluation]] and a circular domain in [[Numerical evaluation on a circle]]
+This project thesis builds upon the work in our bachelor thesis, by introducing a simple boundary condition approach to a variation of the solver used therein. In Chapter [[Fundamentals]] we introduce the Cahn-Hilliard equation in the formulation that we use for this project. This project used a two-dimensional second order version of this CH equation rather than the usual 1D 4th order one, to simplify the numerical implementation. The solver itself builds upon a finite difference discretization of this equation. In Chapter [[Numerical Solver]], together with the discrete domains, on which we run our numerical solver, we introduce a Jacoby iteration to solve the linear system derived from the aforementioned discretization.  The numerical solver in this thesis is GPU accelerated, and the discretization we chose to base our solver on is capable to calculate on all domains as long as a characteristic function is given. Therefore, we introduce two domains, on which we present our findings. The primary goal of this work is then the boundary condition approach in Chapter [[Boundary adaptation]]. Conceptionally the boundary condition we introduce simply consists of a constant value added in the linear system to all equations corresponding to grid-cells on the boundary. The actual implementation is capable of doing this for arbitrary domains. We present the results of this method on two Domains, a square one in [[Numerical evaluation]] and a circular domain in [[Numerical evaluation on a circle]] where we show the phase field for different boundary conditions which manifest in a variable contact angle of the interface on the boundary mimicking the behavior of hydrophobic/hydrophilic material.
 * Fundamentals
 The Cahn-Hilliard (CH) equation is a diffuse interface coupling equation used for interpolating between different approach in different formulas. We use it in the following form:
 \begin{equation}
@@ -157,7 +157,7 @@ heatmap(arr, title=L"\partial\Omega_d" , clim=(0,1),
 
 
 
-We then state the adapted approach as :
+We then state the adapted approach as:
 \begin{equation}
 \label{eq:second-order-adapted-ansatz}
 \begin{aligned}
@@ -248,10 +248,9 @@ end
 
 
 * Numerical evaluation
-** Experiments
 To begin our evaluations we tested constant values for \( B_{ij} \) on the boundary.
-Initially we tested setting \(C=0\) as it is equivalent to the no-flux boundary condition of the unmodified solver. For \( C = 0 \) ,as seen in [[fig:angle0]] the interface lies orthogonal on the boundary as expected for a CH solver with no-flux boundary conditions.
-For \( B_{ij} \in \{-1,1\} \) we observed behaviour expected of hydrophobic / hydrophilic substances on the boundary, where \( B_{ij}=1 \) resulted in the one phase pearling of the boundary, while the other semed attracted. this manifested on apparent contact angles of 180° and 0° respectivly. Using \( B_{ij} = -1 \) results in the opposite behavior.
+Initially we tested setting \(C=0\) as it is equivalent to the no-flux boundary condition of the unmodified solver. For \( C = 0 \), as seen in [[fig:angle0]] the interface lies orthogonal on the boundary as expected for a CH solver with no-flux boundary conditions.
+For \( B_{ij} \in \{-1,1\} \) we observed behavior expected of hydrophobic / hydrophilic substances on the boundary, where \( B_{ij}=1 \) resulted in the one phase pearling of the boundary, while the other seemed attracted. This manifested on apparent contact angles of 180° and 0° respectively. Using \( B_{ij} = -1 \) results in the opposite behavior.
 
 
 #+name: fig:angle0
@@ -287,7 +286,7 @@ ylabel!(L"j")
 #+RESULTS: fig:angle0
 [[file:images/baseline.png]]
 
-To showcase the relative stability, and the effect off the constant boundary proposed in TODO we evaluate our solver with different constant values \(C\). In [[fig:angle1]] we employ a constant value of \(C=1\) and observe the phase corresponding to \(\phi = 1\) puling away from the boundary. the contact angle between phase 1 and the boundary approaches 180° ie. the interface runs parallel to the boundary.
+To showcase the relative stability, and the effect off the constant boundary proposed in TODO we evaluate our solver with different constant values \(C\). In [[fig:angle1]] we employ a constant value of \(C=1\) and observe the phase corresponding to \(\phi = 1\) puling away from the boundary. The contact angle between phase 1 and the boundary approaches 180° i.e. the interface runs parallel to the boundary.
 #+name: fig:angle1
 #+begin_src julia  :results file :file images/angle1.png
 θ = 1f0
@@ -406,9 +405,8 @@ mp4(anim , "animations/epsilon.mp4" , fps=24)
 : Plots.AnimatedGif("/home/proceduraltree/Projects/JuliaGPUTest/animations/epsilon.mp4")
 
 * Numerical evaluation on a circle
-** Experiments
-The original solver presented in[cite:@SHIN20117441]  was able to solve the CH equation on arbitrary domains. Since the addition of our boundary function depends soley on the characteristic function of the discrete domain, we are able to use our approach on diferent Domains, by providing a different characteristic function. We present the results of which in this chapter.
-To show the behavior of the CH sover in [[fig:angle0c]], we first emplay no-flux boundary conditioons on a circular domain. We observe the interface perpendicular on the boundary, as we expect.
+The original solver presented in[cite:@SHIN20117441]  was able to solve the CH equation on arbitrary domains. Since the addition of our boundary function depends soley on the characteristic function of the discrete domain, we are able to use our approach on different Domains, by providing a different characteristic function. We present the results of which in this chapter.
+To show the behavior of the CH solver in [[fig:angle0c]], we first employ no-flux boundary conditioons on a circular domain. We observe the interface perpendicular on the boundary, as we expect.
 
 #+begin_src julia
 @inline function G(I::CartesianIndex , Ids::CartesianIndices)::Float32
@@ -447,7 +445,7 @@ heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solut
 
 
 
-The results we oserve in [[fig:angle1c]] are similar to the reults on a square domain in [[fig:angle1]]. The contact angle is 18° i.e. the interface does not touch the boundary and runs parallel to it.
+The results we observe in [[fig:angle1c]] are similar to the results on a square domain in [[fig:angle1]]. The contact angle is 180° i.e. the interface does not touch the boundary and runs parallel to it.
 #+name: fig:angle1c
 #+begin_src julia  :exports results :results file :file images/anfle1c.png
 θ = 1f0
@@ -459,7 +457,7 @@ heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solut
 #+RESULTS: fig:angle1c
 [[file:images/anfle1c.png]]
 
-The results for \(C=-1\) in [[fig:angle-1c]] on the circular domain, are similar to the results in [[fig:angle-1]]  onth esqaure domain as well ,where the interface touches the boundary and iun parallel with a contact angle of 0°.
+The results for \(C=-1\) in [[fig:angle-1c]] on the circular domain, are similar to the results in [[fig:angle-1]]  on the square domain as well ,where the interface touches the boundary and runs parallel with a contact angle of 0°.
 #+name: fig:angle-1c
 #+begin_src julia   :results file :file images/angle-1c.png
 include("src/solvers.jl")
@@ -473,7 +471,7 @@ heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solut
 #+RESULTS: fig:angle-1c
 [[file:images/angle-1c.png]]
 
-
+When evaluating intermediate contact angles in [[fig:angle-multiplec]], the results are similar to the square domain again, however, especially for shallow angles, we observe some artifacts of one phase appearing in places where previously was none. We observe similar behavior on square domains only in the corners, i.e. points where the boundary has high curvature.
 #+name: fig:angle-multiplec
 #+begin_src julia   :exports results :results file :file images/angle-multiplec.png
 include("src/solvers.jl")
@@ -498,6 +496,7 @@ plot(plots...)
 
 
 
+When using random initial phasefields, the results look the comparable to the square domain, and exhibit the for the CH equation expected behavior, where as time goes on, the many small parts coalles into larger parts.
 #+name: fig:random-circle
 #+begin_src julia   :results file :file images/random-circle.png :exports none
 using LaTeXStrings
@@ -517,6 +516,7 @@ h4 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(
 plot(h1,h2,h3,h4)
 #+end_src
 
+#+caption: random initial data after increasing  numer of time-steps.
 #+RESULTS: fig:random-circle
 [[file:images/random-circle.png]]
 
@@ -553,10 +553,10 @@ ylabel!(L"j")
 #+end_src
 
 #+RESULTS:
-[[file:/tmp/babel-miHWkx/julia-h4yghb.png]]
+[[file:/tmp/babel-vWVcH5/julia-9IokNN.png]]
 
-* Energy and mass behaviour :noexport:
-The Chan Hilliard equation was originally derrived from a Ginzburg-Landau Energy [cite:@Wu_2022]. This energy gives a meassure of total curvature, and is prooven to decrease in time for no-flux boundary condition for no-flux boundary conditions. The energy is given as
+* Energy and mass behavior :noexport:
+The Cahn-Hilliard equation was originally derived from a Ginzburg-Landau Energy [cite:@Wu_2022]. This energy gives a measure of total curvature, and is proven to decrease in time for no-flux boundary condition for no-flux boundary conditions. The energy is given as
 \begin{equation}
 \label{eq:ginzburg-landau}
 E^{\text{bulk}}[\phi] = \int_{\Omega} \frac{\varepsilon^2}{2} |\nabla \phi |^2 + W(\phi) \, dx ,
@@ -579,8 +579,8 @@ include("src/solvers.jl")
 include("src/initial_conditions.jl")
 include("src/util.jl")
 arr = _init()
-s,f = solve_and_evaluate(arr , n, bulk_energy ,  θ=0.5f0)
-plot(f , yaxis=:log)
+s,f = solve_and_evaluate(arr , n, bulk_energy ,  θ=0.0f0)
+plot(f[50:end] , yaxis=:log)
 #+end_src
 
 #+RESULTS:
@@ -740,6 +740,8 @@ Array(df)
 
 
 * Summary and outlook
+In this project we examined an numerical model o the CH equation, with simple neumann boundary conditions. We introduced a simplified version of the solver used in[cite:@Ulmer_CHRelaxed_2024] and derived from[cite:@SHIN20117441]. Which due to GPU acceleration is significantly faster on our available hardware. We have shown a simple neuman boundary approach that runs stable on both tested domains.
+
 
 * References
 #+PRINT_BIBLIOGRAPHY:
