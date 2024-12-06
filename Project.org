@@ -28,11 +28,11 @@
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
 
 #+begin_abstract
-This work shows sensitivity of boundary conditions for two different finite difference approaches to solving the cahn hilliard equation
+This work shows sensitivity of boundary conditions for two different finite difference approaches to solving the Cahn-Hilliard equation
 #+end_abstract
 
 * Introduction
-This project thesis builds upon the work in our bachelor thesis, by introducing a simple boudary condition approach to a variation of the solver useed therein. In Chapter [[Fundamentals]] we introduce the Cahn Hilliard Equation in the fomulation that we use for this project. This project used a two dimensional second order version of  this CH equation rather than the usual 1D 4th order one, to simplify the numerical implementation. The solver itself biulds upon a finite difference discretization of this equation. In Chapter [[Numerical Solver]], together with the discrete domains, on wich we run our numerical solver ,we introduce a jacoby iteration to solve the linear system derrived from the afforementioned discretization.  The numerical solver in this thesis is gpu accelerated, and the discretization we chose to base our solver on is capable to calculate on all domains as long as a characteristic function is given. Therefore, we introduce two domains, on which we present our findings. The primary goal of this work is then the boundary condition approach in Chapter [[Boundary adaptation]]. Conceptionally the boundary condition we introduce simply consists of a constant value added in the linear system to all equations corresponding to gridcells on the boundary. The actual implementation is capable of doing this for arbitrary domains. We present the reults of this method on two Domains, a square one in [[Numerical evaluation]] and a circular domain in [[Numerical evaluation on a circle]]
+This project thesis builds upon the work in our bachelor thesis, by introducing a simple boundary condition approach to a variation of the solver used therein. In Chapter [[Fundamentals]] we introduce the Cahn-Hilliard Equation in the formulation that we use for this project. This project used a two-dimensional second order version of this CH equation rather than the usual 1D 4th order one, to simplify the numerical implementation. The solver itself builds upon a finite difference discretization of this equation. In Chapter [[Numerical Solver]], together with the discrete domains, on which we run our numerical solver, we introduce a Jacoby iteration to solve the linear system derived from the aforementioned discretization.  The numerical solver in this thesis is GPU accelerated, and the discretization we chose to base our solver on is capable to calculate on all domains as long as a characteristic function is given. Therefore, we introduce two domains, on which we present our findings. The primary goal of this work is then the boundary condition approach in Chapter [[Boundary adaptation]]. Conceptionally the boundary condition we introduce simply consists of a constant value added in the linear system to all equations corresponding to grid cells on the boundary. The actual implementation is capable of doing this for arbitrary domains. We present the results of this method on two Domains, a square one in [[Numerical evaluation]] and a circular domain in [[Numerical evaluation on a circle]]
 * Fundamentals
 The Cahn-Hilliard (CH) equation is a diffuse interface coupling equation used for interpolating between different approach in different formulas. We use it in the following form:
 \begin{equation}
@@ -91,11 +91,11 @@ G_{ij}=
 0 \,, x_{ij} \not\in \Omega \\
 \end{cases}
 \end{equation}
-The accommodate different boundary conditions, we bias \( \nabla_d \cdot (G_{ij} \nabla_d \phi_{ij}) \) in grid points next to the boundary. We determine those points using a centred difference scheme on \( G \)
+To accommodate different boundary conditions, we bias \( \nabla_d \cdot (G_{ij} \nabla_d \phi_{ij}) \) in grid points next to the boundary. We determine those points using a centered difference scheme on \( G \)
 \begin{equation}
 B_{ij} = \max\left(  |G_{i+\frac{1}{2}j} - G_{i-\frac{1}{2}j}| , |G_{ij+\frac{1}{2}} - G_{ij-\frac{1}{2}}|\right) * C
 \end{equation}
-where \( C \) is a constant we chose freely. For example on a 32x32 Domain with \( C=1 \) the Boundary fiels \( \mathbf{B} \) appears as follows
+Where \( C \) is a constant we chose freely. For example on a 32x32 Domain with \( C=1 \) the Boundary fiels \( \mathbf{B} \) appears as follows
 
 
 #+name: fig:boundary-square
@@ -157,11 +157,11 @@ heatmap(arr, title=L"\partial\Omega_d" , clim=(0,1),
 
 
 
-We then state the adapted approach as:
+We then state the adapted approach as :
 \begin{equation}
 \label{eq:second-order-adapted-ansatz}
 \begin{aligned}
-\frac{\phi_{ij}^{n+1} - \phi_{ij}^n}{\Delta t}  &=  \nabla _d \cdot (G_{ij} \nabla_d \mu_{ij}^{n+\frac{1}{2}} )  \\
+\frac{\phi_{ij}^{n+1} - \phi_{ij}n}{\Delta t}  &=  \nabla _d \cdot (G_{ij} \nabla_d \mu_{ij}^{n+\frac{1}{2}} )  \\
  \mu_{ij}^{n+\frac{1}{2}} &= 2\phi_{ij}^{n+1} - \varepsilon^2  \nabla_d \cdot  (G_{ij} \nabla _d \phi_{ij}^{n+1} ) + B_{ij} + W'(\phi_{ij}^n) - 2\phi _{ij}^n
 \end{aligned}
 \end{equation}
@@ -249,8 +249,8 @@ end
 
 * Numerical evaluation
 ** Experiments
-to begin our evaluations we tested constant values for \( B_{ij} \) on the boundary.
-initially we tested setting \(C=0\) as it is equivalent to the no-flux boundary condition of the unmodified solver. For \( C = 0 \) ,as seen in [[fig:angle0]] the interface lies orthogonal on the boundary as expected for a CH solver with no-flux boundary conditions.
+To begin our evaluations we tested constant values for \( B_{ij} \) on the boundary.
+Initially we tested setting \(C=0\) as it is equivalent to the no-flux boundary condition of the unmodified solver. For \( C = 0 \) ,as seen in [[fig:angle0]] the interface lies orthogonal on the boundary as expected for a CH solver with no-flux boundary conditions.
 For \( B_{ij} \in \{-1,1\} \) we observed behaviour expected of hydrophobic / hydrophilic substances on the boundary, where \( B_{ij}=1 \) resulted in the one phase pearling of the boundary, while the other semed attracted. this manifested on apparent contact angles of 180° and 0° respectivly. Using \( B_{ij} = -1 \) results in the opposite behavior.
 
 

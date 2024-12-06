@@ -53,11 +53,12 @@ end
     @Const(iterations)
 )
     I   = @index(Global, Cartesian)
-    Id  = oneunit(I)
-    Ids = CartesianIndices(M)
-    Ix = CartesianIndex(1, 0)
-    Iy = CartesianIndex(0, 1)
+    @private Id  = oneunit(I)
+    @private Ids = CartesianIndices(Φ)
+    @private Ix = CartesianIndex(1, 0)
+    @private Iy = CartesianIndex(0, 1)
     if I in (Ids[begin]+Id:Ids[end]-Id)
+        @print("hi")
         g = G(2 * I + Ix, Ids) + G(2 * I + Iy, Ids) + G(2 * I - Ix, Ids) + G(2 * I - Iy, Ids)
         a1 = 1/Δt
         a2 = -1* ε^2/h^2 * g  - 2
