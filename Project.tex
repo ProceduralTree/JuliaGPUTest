@@ -1,4 +1,4 @@
-% Created 2024-12-08 So 14:08
+% Created 2024-12-09 Mo 14:43
 % Intended LaTeX compiler: lualatex
 \documentclass{mimosis}
                   \usepackage[hyperref,x11names]{xcolor}
@@ -15,183 +15,14 @@ unicode
 \setmonofont{DejaVu Sans Mono}[Scale=0.8]
 \newenvironment{abstract} {}{}
 \usepackage{abstract}
-\DeclareMathOperator*{\arg}{arg\,max}
+\DeclareMathOperator*{\argmax}{arg\,\max}
 
 %% ox-latex features:
 %   !announce-start, bibliography-biblatex, !guess-pollyglossia, !guess-babel,
-%   !guess-inputenc, engraved-code, caption, image,
-%   bibliography-biblatex-resources, !announce-end.
+%   !guess-inputenc, caption, image, bibliography-biblatex-resources,
+%   !announce-end.
 
 \usepackage{biblatex}
-
-
-% Setup for code blocks [1/2]
-
-\usepackage{fvextra}
-
-\fvset{%
-  commandchars=\\\{\},
-  highlightcolor=white!95!black!80!blue,
-  breaklines=true,
-  breaksymbol=\color{white!60!black}\tiny\ensuremath{\hookrightarrow}}
-
-% Make line numbers smaller and grey.
-\renewcommand\theFancyVerbLine{\footnotesize\color{black!40!white}\arabic{FancyVerbLine}}
-
-\usepackage{xcolor}
-
-% In case engrave-faces-latex-gen-preamble has not been run.
-\providecolor{EfD}{HTML}{f7f7f7}
-\providecolor{EFD}{HTML}{28292e}
-
-% Define a Code environment to prettily wrap the fontified code.
-\usepackage[breakable,xparse]{tcolorbox}
-\providecommand{\codefont}{\footnotesize}
-\DeclareTColorBox[]{Code}{o}%
-{colback=EfD!98!EFD, colframe=EfD!95!EFD,
-  fontupper=\setlength{\fboxsep}{0pt}\codefont,
-  colupper=EFD,
-  IfNoValueTF={#1}%
-  {boxsep=2pt, arc=2.5pt, outer arc=2.5pt,
-    boxrule=0.5pt, left=2pt}%
-  {boxsep=2.5pt, arc=0pt, outer arc=0pt,
-    boxrule=0pt, leftrule=1.5pt, left=0.5pt},
-  right=2pt, top=1pt, bottom=0.5pt,
-  breakable}
-
-% Support listings with captions
-\usepackage{float}
-\floatstyle{plain}
-\newfloat{listing}{htbp}{lst}
-\newcommand{\listingsname}{Listing}
-\floatname{listing}{\listingsname}
-\newcommand{\listoflistingsname}{List of Listings}
-\providecommand{\listoflistings}{\listof{listing}{\listoflistingsname}}
-
-
-% Setup for code blocks [2/2]: syntax highlighting colors
-
-\newcommand\efstrut{\vrule height 2.1ex depth 0.8ex width 0pt}
-\definecolor{EFD}{HTML}{000000}
-\definecolor{EfD}{HTML}{ffffff}
-\newcommand{\EFD}[1]{\textcolor{EFD}{#1}} % default
-\definecolor{EFvp}{HTML}{000000}
-\newcommand{\EFvp}[1]{\textcolor{EFvp}{#1}} % variable-pitch
-\definecolor{EFh}{HTML}{7f7f7f}
-\newcommand{\EFh}[1]{\textcolor{EFh}{#1}} % shadow
-\definecolor{EFsc}{HTML}{228b22}
-\newcommand{\EFsc}[1]{\textcolor{EFsc}{\textbf{#1}}} % success
-\definecolor{EFw}{HTML}{ff8e00}
-\newcommand{\EFw}[1]{\textcolor{EFw}{\textbf{#1}}} % warning
-\definecolor{EFe}{HTML}{ff0000}
-\newcommand{\EFe}[1]{\textcolor{EFe}{\textbf{#1}}} % error
-\definecolor{EFl}{HTML}{ff0000}
-\newcommand{\EFl}[1]{\textcolor{EFl}{#1}} % link
-\definecolor{EFlv}{HTML}{ff0000}
-\newcommand{\EFlv}[1]{\textcolor{EFlv}{#1}} % link-visited
-\definecolor{EFhi}{HTML}{ff0000}
-\newcommand{\EFhi}[1]{\textcolor{EFhi}{#1}} % highlight
-\definecolor{EFc}{HTML}{b22222}
-\newcommand{\EFc}[1]{\textcolor{EFc}{#1}} % font-lock-comment-face
-\definecolor{EFcd}{HTML}{b22222}
-\newcommand{\EFcd}[1]{\textcolor{EFcd}{#1}} % font-lock-comment-delimiter-face
-\definecolor{EFs}{HTML}{8b2252}
-\newcommand{\EFs}[1]{\textcolor{EFs}{#1}} % font-lock-string-face
-\definecolor{EFd}{HTML}{8b2252}
-\newcommand{\EFd}[1]{\textcolor{EFd}{#1}} % font-lock-doc-face
-\definecolor{EFm}{HTML}{008b8b}
-\newcommand{\EFm}[1]{\textcolor{EFm}{#1}} % font-lock-doc-markup-face
-\definecolor{EFk}{HTML}{9370db}
-\newcommand{\EFk}[1]{\textcolor{EFk}{#1}} % font-lock-keyword-face
-\definecolor{EFb}{HTML}{483d8b}
-\newcommand{\EFb}[1]{\textcolor{EFb}{#1}} % font-lock-builtin-face
-\definecolor{EFf}{HTML}{0000ff}
-\newcommand{\EFf}[1]{\textcolor{EFf}{#1}} % font-lock-function-name-face
-\definecolor{EFv}{HTML}{a0522d}
-\newcommand{\EFv}[1]{\textcolor{EFv}{#1}} % font-lock-variable-name-face
-\definecolor{EFt}{HTML}{228b22}
-\newcommand{\EFt}[1]{\textcolor{EFt}{#1}} % font-lock-type-face
-\definecolor{EFo}{HTML}{008b8b}
-\newcommand{\EFo}[1]{\textcolor{EFo}{#1}} % font-lock-constant-face
-\definecolor{EFwr}{HTML}{ff0000}
-\newcommand{\EFwr}[1]{\textcolor{EFwr}{\textbf{#1}}} % font-lock-warning-face
-\newcommand{\EFnc}[1]{#1} % font-lock-negation-char-face
-\definecolor{EFpp}{HTML}{483d8b}
-\newcommand{\EFpp}[1]{\textcolor{EFpp}{#1}} % font-lock-preprocessor-face
-\newcommand{\EFrc}[1]{\textbf{#1}} % font-lock-regexp-grouping-construct
-\newcommand{\EFrb}[1]{\textbf{#1}} % font-lock-regexp-grouping-backslash
-\newcommand{\EFob}[1]{#1} % org-block
-\newcommand{\EFobb}[1]{#1} % org-block-begin-line
-\newcommand{\EFobe}[1]{#1} % org-block-end-line
-\definecolor{EFOa}{HTML}{0000ff}
-\newcommand{\EFOa}[1]{\textcolor{EFOa}{#1}} % outline-1
-\definecolor{EFOb}{HTML}{a0522d}
-\newcommand{\EFOb}[1]{\textcolor{EFOb}{#1}} % outline-2
-\definecolor{EFOc}{HTML}{a020f0}
-\newcommand{\EFOc}[1]{\textcolor{EFOc}{#1}} % outline-3
-\definecolor{EFOd}{HTML}{b22222}
-\newcommand{\EFOd}[1]{\textcolor{EFOd}{#1}} % outline-4
-\definecolor{EFOe}{HTML}{228b22}
-\newcommand{\EFOe}[1]{\textcolor{EFOe}{#1}} % outline-5
-\definecolor{EFOf}{HTML}{008b8b}
-\newcommand{\EFOf}[1]{\textcolor{EFOf}{#1}} % outline-6
-\definecolor{EFOg}{HTML}{483d8b}
-\newcommand{\EFOg}[1]{\textcolor{EFOg}{#1}} % outline-7
-\definecolor{EFOh}{HTML}{8b2252}
-\newcommand{\EFOh}[1]{\textcolor{EFOh}{#1}} % outline-8
-\definecolor{EFhn}{HTML}{008b8b}
-\newcommand{\EFhn}[1]{\textcolor{EFhn}{#1}} % highlight-numbers-number
-\definecolor{EFhq}{HTML}{9370db}
-\newcommand{\EFhq}[1]{\textcolor{EFhq}{#1}} % highlight-quoted-quote
-\definecolor{EFhs}{HTML}{008b8b}
-\newcommand{\EFhs}[1]{\textcolor{EFhs}{#1}} % highlight-quoted-symbol
-\definecolor{EFrda}{HTML}{707183}
-\newcommand{\EFrda}[1]{\textcolor{EFrda}{#1}} % rainbow-delimiters-depth-1-face
-\definecolor{EFrdb}{HTML}{7388d6}
-\newcommand{\EFrdb}[1]{\textcolor{EFrdb}{#1}} % rainbow-delimiters-depth-2-face
-\definecolor{EFrdc}{HTML}{909183}
-\newcommand{\EFrdc}[1]{\textcolor{EFrdc}{#1}} % rainbow-delimiters-depth-3-face
-\definecolor{EFrdd}{HTML}{709870}
-\newcommand{\EFrdd}[1]{\textcolor{EFrdd}{#1}} % rainbow-delimiters-depth-4-face
-\definecolor{EFrde}{HTML}{907373}
-\newcommand{\EFrde}[1]{\textcolor{EFrde}{#1}} % rainbow-delimiters-depth-5-face
-\definecolor{EFrdf}{HTML}{6276ba}
-\newcommand{\EFrdf}[1]{\textcolor{EFrdf}{#1}} % rainbow-delimiters-depth-6-face
-\definecolor{EFrdg}{HTML}{858580}
-\newcommand{\EFrdg}[1]{\textcolor{EFrdg}{#1}} % rainbow-delimiters-depth-7-face
-\definecolor{EFrdh}{HTML}{80a880}
-\newcommand{\EFrdh}[1]{\textcolor{EFrdh}{#1}} % rainbow-delimiters-depth-8-face
-\definecolor{EFrdi}{HTML}{887070}
-\newcommand{\EFrdi}[1]{\textcolor{EFrdi}{#1}} % rainbow-delimiters-depth-9-face
-\definecolor{EFany}{HTML}{CDCD00}
-\newcommand{\EFany}[1]{\textcolor{EFany}{#1}} % ansi-color-yellow
-\definecolor{EFanr}{HTML}{CD0000}
-\newcommand{\EFanr}[1]{\textcolor{EFanr}{#1}} % ansi-color-red
-\definecolor{EFanb}{HTML}{000000}
-\newcommand{\EFanb}[1]{\textcolor{EFanb}{#1}} % ansi-color-black
-\definecolor{EFang}{HTML}{00CD00}
-\newcommand{\EFang}[1]{\textcolor{EFang}{#1}} % ansi-color-green
-\definecolor{EFanB}{HTML}{0000EE}
-\newcommand{\EFanB}[1]{\textcolor{EFanB}{#1}} % ansi-color-blue
-\definecolor{EFanc}{HTML}{00CDCD}
-\newcommand{\EFanc}[1]{\textcolor{EFanc}{#1}} % ansi-color-cyan
-\definecolor{EFanw}{HTML}{E5E5E5}
-\newcommand{\EFanw}[1]{\textcolor{EFanw}{#1}} % ansi-color-white
-\definecolor{EFanm}{HTML}{CD00CD}
-\newcommand{\EFanm}[1]{\textcolor{EFanm}{#1}} % ansi-color-magenta
-\definecolor{EFANy}{HTML}{EEEE00}
-\newcommand{\EFANy}[1]{\textcolor{EFANy}{#1}} % ansi-color-bright-yellow
-\definecolor{EFANr}{HTML}{EE0000}
-\newcommand{\EFANr}[1]{\textcolor{EFANr}{#1}} % ansi-color-bright-red
-\newcommand{\EFANb}[1]{#1} % ansi-color-bright-black
-\definecolor{EFANg}{HTML}{00EE00}
-\newcommand{\EFANg}[1]{\textcolor{EFANg}{#1}} % ansi-color-bright-green
-\definecolor{EFANB}{HTML}{0000FF}
-\newcommand{\EFANB}[1]{\textcolor{EFANB}{#1}} % ansi-color-bright-blue
-\definecolor{EFANc}{HTML}{00EEEE}
-\newcommand{\EFANc}[1]{\textcolor{EFANc}{#1}} % ansi-color-bright-cyan
-\newcommand{\EFANw}[1]{#1} % ansi-color-bright-white
-\newcommand{\EFANm}[1]{#1} % ansi-color-bright-magenta
 
 
 \usepackage{capt-of}
@@ -202,11 +33,11 @@ unicode
 
 %% end ox-latex features
 
-\author{Jonathan Ulmer}
+\author{ProceduralTree}
 \date{\today}
 \title{Project Thesis}
 \hypersetup{
- pdfauthor={Jonathan Ulmer},
+ pdfauthor={ProceduralTree},
  pdftitle={Project Thesis},
  pdfkeywords={},
  pdfsubject={},
@@ -222,34 +53,41 @@ unicode
 This work shows sensitivity of boundary conditions for two different finite difference approaches to solving the Cahn-Hilliard equation
 \end{abstract}
 \chapter{Introduction}
-\label{sec:orgf941a5f}
-This project thesis builds upon the work in our bachelor thesis, by introducing a simple boundary condition approach to a variation of the solver used therein. In Chapter \ref{sec:orgeaee126} we introduce the Cahn-Hilliard equation in the formulation that we use for this project. This project used a two-dimensional second order version of this CH equation rather than the usual 1D 4th order one, to simplify the numerical implementation. The solver itself builds upon a finite difference discretization of this equation. In Chapter \ref{sec:org124f00a}, together with the discrete domains, on which we run our numerical solver, we introduce a Jacoby iteration to solve the linear system derived from the aforementioned discretization.  The numerical solver in this thesis is GPU accelerated, and the discretization we chose to base our solver on is capable to calculate on all domains as long as a characteristic function is given. Therefore, we introduce two domains, on which we present our findings. The primary goal of this work is then the boundary condition approach in Chapter \ref{sec:orgcf87d69}. Conceptionally the boundary condition we introduce simply consists of a constant value added in the linear system to all equations corresponding to grid-cells on the boundary. The actual implementation is capable of doing this for arbitrary domains. We present the results of this method on two Domains, a square one in \ref{sec:org1da7c06} and a circular domain in \ref{sec:org8ce69dd} where we show the phase field for different boundary conditions which manifest in a variable contact angle of the interface on the boundary mimicking the behavior of hydrophobic/hydrophilic material. While we are unable to provide explicit formulae in relation to the constant, in Chapter \ref{sec:orgdd8448a} we provide numerical insight in this relationship, and a table with precomputed values.
+\label{sec:orgb38f6a5}
+This project thesis builds upon the work in our bachelor thesis, by introducing a simple boundary condition approach to a variation of the solver used therein. In Chapter \ref{sec:org755846c} we introduce the Cahn-Hilliard equation in the formulation that we use for this project. This project used a two-dimensional second order version of this CH equation rather than the usual 1D 4th order one, to simplify the numerical implementation. The solver itself builds upon a finite difference discretization of this equation. In Chapter \ref{sec:orgeeaed4d}, together with the discrete domains, on which we run our numerical solver, we introduce a Jacoby iteration to solve the linear system derived from the aforementioned discretization.  The numerical solver in this thesis is GPU accelerated, and the discretization we chose to base our solver on is capable to calculate on all domains as long as a characteristic function is given. Therefore, we introduce two domains, on which we present our findings. The primary goal of this work is then the boundary condition approach in Chapter \ref{sec:orgb84ef3a}. Conceptionally the boundary condition we introduce simply consists of a constant value added in the linear system to all equations corresponding to grid-cells on the boundary. The actual implementation is capable of doing this for arbitrary domains. We present the results of this method on two Domains, a square one in \ref{sec:orgb47f456} and a circular domain in \ref{sec:org8f4cb79} where we show the phase field for different boundary conditions which manifest in a variable contact angle of the interface on the boundary mimicking the behavior of hydrophobic/hydrophilic material. While we are unable to provide explicit formulae in relation to the constant, in Chapter \ref{sec:org214e230} we provide numerical insight in this relationship, and a table with precomputed values.
 \chapter{Fundamentals}
-\label{sec:orgeaee126}
-The Cahn-Hilliard (CH) equation is a diffuse interface coupling equation used for interpolating between different approach in different formulas. We use it in the following form:
+\label{sec:org755846c}
+This work concerns itself with boundary conditions on the CH equation. The CH equation is a fourth order differential equation that provides a phasefield \(\phi\) which is used for implicit interface formulation. The Cahn Hilliard equation, in the formulaton we use here, is derived from the \textbf{Ginzburg-Landau} energy, an example on how this is done is given by \autocite{Wu_2022}.
+\begin{align}
+\label{eq:energy}
+E^{\text{bulk}}[\phi] &= \int_{\Omega} \frac{\varepsilon^2}{2} |\nabla \phi |^2 + W(\phi) \, dx ,
+\end{align}
+There they introduce a chemical potential \(\mu\) derived as derivative of the \textbf{Ginzburg-Landay} energy.
+\begin{align}
+\label{eq:chemical-potential}
+ \mu &= \frac{\delta E_{bulk}(\phi)}{\delta \phi} = -\varepsilon^2 \Delta \phi + W'(\phi)
+\end{align}
+where \(W(\phi)\) in the energy,is a double well potential. In our case we orient us at the work of\autocite{SHIN20117441}, where they use
+\begin{equation}
+\label{eq:6}
+W(\phi) = \frac{(1-\phi^2)^2}{4}.
+\end{equation}
+they Cahn Hilliard equation in this thesis is then given as
 \begin{equation}
 \begin{aligned}
-\partial_{t}\phi(x,t) &=  \nabla \cdot(M(\phi)\nabla\mu) \\
-\mu &= - \varepsilon^2 \Delta\phi  + W'(\phi)
+\partial_{t}\phi(x,t) &=  \Delta\mu \\
+\mu &= - \varepsilon^2 \Delta\phi  + W'(\phi).
 \end{aligned}
 \end{equation}
-Furthermore, our solver implements the ansatz proposed by the authors \autocite{SHIN20117441}.
+one thing to note is, that this way of writing the CH equation is secend order two dimensional rather than the one dimensional fourth order often given.
 \begin{equation}
-\label{eq:ansatz}
-\begin{aligned}
-\frac{\phi_{ij}^{n+1} - \phi_{ij}^n}{\Delta t}  &=  \nabla _d \cdot (G_{ij} \nabla_d \mu_{ij}^{n+\frac{1}{2}} )  \\
- \mu_{ij}^{n+\frac{1}{2}} &= 2\phi_{ij}^{n+1} - \varepsilon^2  \nabla_d \cdot  (G_{ij} \nabla _d \phi_{ij}^{n+1} ) + W'(\phi_{ij}^n) - 2\phi _{ij}^n
-\end{aligned}
+\label{eq:7}
+\partial_t \phi(\vec{x} , t) = - \Delta(\varepsilon^2  \Delta \phi + W\prime(\phi))
 \end{equation}
-This approach provides a semi implicit time discretization were linear terms are evaluated implicitly and the nonlinear double well potential is evaluated explicitly.
-
-\begin{center}
-\includegraphics[width=.9\linewidth]{images/domain.png}
-\label{}
-\end{center}
+this choice is deliberate, and aligns with the numerical implementation.
 \section{Notation}
-\label{sec:org585710c}
-This project uses a discrete, rectangular grid, which is required to fit the domain we solve for. The solver we use are two-dimensional, and therefore our grid is as well.
+\label{sec:orgc5a0896}
+This project solves the CH equation on a regular rectangular grid with grid-size \(h\). The computational domain, is therefore discretized as
 \begin{align}
 \label{eq:4}
 \vec{x}_{ij} &:= \frac{i}{h} * e_{1} + \frac{j}{h} e_2
@@ -272,7 +110,7 @@ And define a discrete gradient as.
 \end{equation}
 See \autocite{Ulmer_CHRelaxed_2024}
 \chapter{Boundary adaptation}
-\label{sec:orgcf87d69}
+\label{sec:orgb84ef3a}
 The solver we use as reference guaranties no flux boundary conditions at a discrete level by setting \(\nabla \phi_{ij} = 0\) for \(\phi_{ij} \in \partial \Omega_{d}\) this is done by multiplying with the Characteristic function of \(\Omega_{d}\)
 \begin{equation}
 G_{ij}=
@@ -310,8 +148,23 @@ We then state the adapted approach as:
  \mu_{ij}^{n+\frac{1}{2}} &= 2\phi_{ij}^{n+1} - \varepsilon^2  \nabla_d \cdot  (G_{ij} \nabla _d \phi_{ij}^{n+1} ) + B_{ij} + W'(\phi_{ij}^n) - 2\phi _{ij}^n
 \end{aligned}
 \end{equation}
+
+*Furthermore, our solver implements the ansatz proposed by the authors \autocite{SHIN20117441}.
+\begin{equation}
+\label{eq:ansatz}
+\begin{aligned}
+\frac{\phi_{ij}^{n+1} - \phi_{ij}^n}{\Delta t}  &=  \nabla _d \cdot (G_{ij} \nabla_d \mu_{ij}^{n+\frac{1}{2}} )  \\
+ \mu_{ij}^{n+\frac{1}{2}} &= 2\phi_{ij}^{n+1} - \varepsilon^2  \nabla_d \cdot  (G_{ij} \nabla _d \phi_{ij}^{n+1} ) + W'(\phi_{ij}^n) - 2\phi _{ij}^n
+\end{aligned}
+\end{equation}
+This approach provides a semi implicit time discretization were linear terms are evaluated implicitly and the nonlinear double well potential is evaluated explicitly.
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{images/domain.png}
+\label{}
+\end{center}
 \chapter{Numerical solver}
-\label{sec:org124f00a}
+\label{sec:orgeeaed4d}
 Contrary to the solver proposed in\autocite{Ulmer_CHRelaxed_2024} we do not use a multi-grid Gauss-Seidel Solver to solve the linear system, and use a Jacoby solver instead, since it is easier to paralyze.
 Similar to \autocite{Ulmer_CHRelaxed_2024} we linearize \eqref{eq:second-order-adapted-ansatz} to
 \begin{equation}
@@ -349,51 +202,49 @@ G_{i+\frac{1}{2}j}\phi_{i+1j}^{n+1,m}
 \end{aligned}
 \end{equation}
 Our implementation makes use of the julia programming language, to dispatch the solution for each element in paralell on the GPU. The full implementation of the jacoby iteration is given as:
-\begin{Code}
-\begin{Verbatim}
-\color{EFD}\textcolor[HTML]{483d8b}{\textbf{@kernel}} \EFk{function} jacoby!(
+\begin{verbatim}
+@kernel function jacoby!(
     Φ,
     M,
-    \textcolor[HTML]{483d8b}{\textbf{@Const}}(Ξ),
-    \textcolor[HTML]{483d8b}{\textbf{@Const}}(Ψ),
-    \textcolor[HTML]{483d8b}{\textbf{@Const}}(h),
-    \textcolor[HTML]{483d8b}{\textbf{@Const}}(ε),
-    \textcolor[HTML]{483d8b}{\textbf{@Const}}(Δt),
-    \textcolor[HTML]{483d8b}{\textbf{@Const}}(iterations)
+    @Const(Ξ),
+    @Const(Ψ),
+    @Const(h),
+    @Const(ε),
+    @Const(Δt),
+    @Const(iterations)
 )
-    I   = \textcolor[HTML]{483d8b}{\textbf{@index}}(Global, Cartesian)
+    I   = @index(Global, Cartesian)
     Id  = oneunit(I)
     Ids = CartesianIndices(M)
-    Ix = CartesianIndex(\EFhn{1}, \EFhn{0})
-    Iy = CartesianIndex(\EFhn{0}, \EFhn{1})
-    \EFk{if} I in (Ids[\EFk{begin}]\EFt{+}Id:Ids[\EFk{end}]\EFt{-}Id)
-        g = G(\EFhn{2} \EFt{*} I \EFt{+} Ix, Ids) \EFt{+} G(\EFhn{2} \EFt{*} I \EFt{+} Iy, Ids) \EFt{+} G(\EFhn{2} \EFt{*} I \EFt{-} Ix, Ids) \EFt{+} G(\EFhn{2} \EFt{*} I \EFt{-} Iy, Ids)
-        a1 = \EFhn{1}\EFt{/}Δt
-        a2 = \EFt{-}\EFhn{1}\EFt{*} ε\EFt{\char94{}}\EFhn{2}\EFt{/}h\EFt{\char94{}}\EFhn{2} \EFt{*} g  \EFt{-} \EFhn{2}
-        b1 = \EFhn{1}\EFt{/}h\EFt{\char94{}}\EFhn{2} \EFt{*} g
-        b2 = \EFhn{1}
-        \EFk{for} \_ \EFk{=} \EFhn{1}:iterations
+    Ix = CartesianIndex(1, 0)
+    Iy = CartesianIndex(0, 1)
+    if I in (Ids[begin]+Id:Ids[end]-Id)
+        g = G(2 * I + Ix, Ids) + G(2 * I + Iy, Ids) + G(2 * I - Ix, Ids) + G(2 * I - Iy, Ids)
+        a1 = 1/Δt
+        a2 = -1* ε^2/h^2 * g  - 2
+        b1 = 1/h^2 * g
+        b2 = 1
+        for _ = 1:iterations
 
-            Σμ = G(\EFhn{2} \EFt{*} I \EFt{+} Ix, Ids) \EFt{*} M[I\EFt{+}Ix] \EFt{+} G(\EFhn{2} \EFt{*} I \EFt{+} Iy, Ids) \EFt{*} M[I\EFt{+}Iy] \EFt{+} G(\EFhn{2} \EFt{*} I \EFt{-} Ix, Ids) \EFt{*} M[I\EFt{-}Ix] \EFt{+} G(\EFhn{2} \EFt{*} I \EFt{-} Iy, Ids) \EFt{*} M[I\EFt{-}Iy]
+            Σμ = G(2 * I + Ix, Ids) * M[I+Ix] + G(2 * I + Iy, Ids) * M[I+Iy] + G(2 * I - Ix, Ids) * M[I-Ix] + G(2 * I - Iy, Ids) * M[I-Iy]
 
-            Σϕ = G(\EFhn{2} \EFt{*} I \EFt{+} Ix, Ids) \EFt{*} Φ[I\EFt{+}Ix] \EFt{+} G(\EFhn{2} \EFt{*} I \EFt{+} Iy, Ids) \EFt{*} Φ[I\EFt{+}Iy] \EFt{+}G(\EFhn{2} \EFt{*} I \EFt{-} Ix, Ids) \EFt{*} Φ[I\EFt{-}Ix] \EFt{+}G(\EFhn{2} \EFt{*} I \EFt{-} Iy, Ids) \EFt{*} Φ[I\EFt{-}Iy]
+            Σϕ = G(2 * I + Ix, Ids) * Φ[I+Ix] + G(2 * I + Iy, Ids) * Φ[I+Iy] +G(2 * I - Ix, Ids) * Φ[I-Ix] +G(2 * I - Iy, Ids) * Φ[I-Iy]
 
-            c1 = Ξ[I] \EFt{+} \EFhn{1}\EFt{/}h\EFt{\char94{}}\EFhn{2}   \EFt{*} Σμ
-            c2 = Ψ[I] \EFt{-} ε\EFt{\char94{}}\EFhn{2}\EFt{/}h\EFt{\char94{}}\EFhn{2} \EFt{*} Σϕ
+            c1 = Ξ[I] + 1/h^2   * Σμ
+            c2 = Ψ[I] - ε^2/h^2 * Σϕ
 
-            \EFcd{\#} \EFc{stupid matrix solve}
-            \textcolor[HTML]{483d8b}{\textbf{@inline}} Φ[I] = (c1\EFt{*}b2 \EFt{-} c2\EFt{*}b1) \EFt{/} (a1\EFt{*}b2 \EFt{-} a2\EFt{*}b1)
-            \textcolor[HTML]{483d8b}{\textbf{@inline}} M[I] = (a1\EFt{*}c2 \EFt{-} a2\EFt{*}c1) \EFt{/} (a1\EFt{*}b2 \EFt{-} a2\EFt{*}b1)
-            \EFcd{\#}
-            \textcolor[HTML]{483d8b}{\textbf{@synchronize}}()
-        \EFk{end}
+            # stupid matrix solve
+            @inline Φ[I] = (c1*b2 - c2*b1) / (a1*b2 - a2*b1)
+            @inline M[I] = (a1*c2 - a2*c1) / (a1*b2 - a2*b1)
+            #
+            @synchronize()
+        end
 
-    \EFk{end}
-\EFk{end}
-\end{Verbatim}
-\end{Code}
+    end
+end
+\end{verbatim}
 \chapter{Numerical evaluation}
-\label{sec:org1da7c06}
+\label{sec:orgb47f456}
 We set constant values for B\textsubscript{ij} on the boundary to begin with our evaluations.
 One may note that C = 0 is equivalent to the no-flux condition of the original solver introduced in the Bachelor thesis. Now, as a preliminary verification step we set C = 0 as our first choice.
 Consequently, for \(C = 0\), the interface lies orthogonal on the boundary (see Fig. \ref{fig:angle0}), which we expect for a CH solver with no-flux boundary conditions.
@@ -422,36 +273,39 @@ In \ref{fig:angle-1} we try the reverse situation. And we observe corresponding 
 \end{figure}
 
 The most interesting behavior are noted for values between \((-1,1)\), where we observe the contact angle of the interface at the boundary changes from parallel 0° to parallel 180°.
-\begin{Code}
-\begin{Verbatim}
-\color{EFD}include(\EFs{"src/solvers.jl"})
-θ = \EFt{-}\EFhn{5}f\EFt{-}\EFhn{1}
-n = \EFhn{100}
-arr = \_init()
-d = domain(get\_backend(arr) , \EFhn{256} , size(arr))
+\begin{center}
+\includegraphics[width=.9\linewidth]{images/angle-sqrt(2).png}
+\label{fig:angle-multiple}
+\end{center}
+
+\begin{verbatim}
+include("src/solvers.jl")
+θ = -5f-1
+n = 100
+arr = _init()
+d = domain(get_backend(arr) , 256 , size(arr))
 d(arr)
-h = \EFhn{25e-5}
+h = 25e-5
 solution = solve(arr , n , θ=θ)
-h1 = heatmap(Array(solution) , aspect\_ratio=\textcolor[HTML]{008b8b}{:equal} , clims=(\EFt{-}\EFhn{1},\EFhn{1}), lims=(\EFhn{0},size(solution,\EFhn{1})), widen=\EFhn{1.06} , title=L\EFs{"h=\%\$h"})
-h = \EFhn{20e-5}
+h1 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"h=%$h")
+h = 20e-5
 solution = solve(arr , n , θ=θ)
-h2 = heatmap(Array(solution) , aspect\_ratio=\textcolor[HTML]{008b8b}{:equal} , clims=(\EFt{-}\EFhn{1},\EFhn{1}), lims=(\EFhn{0},size(solution,\EFhn{1})), widen=\EFhn{1.06} , title=L\EFs{"h=\%\$h"})
-h = \EFhn{15e-5}
+h2 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"h=%$h")
+h = 15e-5
 solution = solve(arr , n , θ=θ)
-h3 = heatmap(Array(solution) , aspect\_ratio=\textcolor[HTML]{008b8b}{:equal} , clims=(\EFt{-}\EFhn{1},\EFhn{1}), lims=(\EFhn{0},size(solution,\EFhn{1})), widen=\EFhn{1.06} , title=L\EFs{"h=\%\$h"})
-h = \EFhn{10e-5}
+h3 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"h=%$h")
+h = 10e-5
 solution = solve(arr , n , θ=θ)
-h4 = heatmap(Array(solution) , aspect\_ratio=\textcolor[HTML]{008b8b}{:equal} , clims=(\EFt{-}\EFhn{1},\EFhn{1}), lims=(\EFhn{0},size(solution,\EFhn{1})), widen=\EFhn{1.06} , title=L\EFs{"h=\%\$h"})
+h4 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"h=%$h")
 plot(h1,h2,h3,h4)
-\end{Verbatim}
-\end{Code}
+\end{verbatim}
 
 \begin{center}
-\includegraphics[width=.9\linewidth]{/tmp/babel-frcHT2/julia-LrFbWa.png}
+\includegraphics[width=.9\linewidth]{images/random-square.png}
 \label{fig:random-square}
 \end{center}
 \chapter{Numerical evaluation on a circle}
-\label{sec:org8ce69dd}
+\label{sec:org8f4cb79}
 The original solver presented in \autocite{SHIN20117441} was able to solve the CH equation on arbitrary domains. Since the addition of our boundary function depends solely on the characteristic function of the discrete domain, we are able to use our approach on different Domains, by providing a different characteristic function. We present the results of which in this chapter.
 To show the behavior of the CH solver in \ref{fig:angle0c}, we first employ no-flux boundary conditions on a circular domain. We observe the interface perpendicular on the boundary, as we expect.
 
@@ -496,27 +350,40 @@ When evaluating intermediate contact angles in \ref{fig:angle-multiplec}, the re
 
 When using random initial phase-fields, the results look the comparable to the square domain, and exhibit the for the CH equation expected behavior, whereas time goes on, the many small parts coalesce into larger parts.
 \chapter{angle}
-\label{sec:orgdd8448a}
+\label{sec:org214e230}
 In previous experiments we noted that the angle of the interface changes with different input parameters. While we do not have a mathematical derivation of this relation, we aim to provide numerical insight in this chapter. We calculate this angle using the gradient of the phase-field \(\nabla \phi_{ij}\) and the normal of our domains' boundary.
 \begin{align}
 \label{eq:1}
 \frac{\nabla_d \phi_{ij} \cdot \mathbf{n}_{ij}}{\|\nabla_{d} \phi_{ij}\|} &= \cos(\theta)& & \phi_{ij} \in \partial\Omega_{d}
 \end{align}
+For a single point \(\vec{x}_{ij}\) on the interface and near the boundary. Since we need a finite difference to evaluate \ref{eq:1}, we do not select a point directly on the boundary and since we need a point on the interface, where \(\nabla \phi_{ij}\) is large, we calculate the angle at
+\begin{equation}
+\label{eq:2}
+P_{ij} = arg\max_{\vec{x}_{ij}} \nabla \phi_{ij} \qquad \phi_{ij} \in \partial \Omega
+\end{equation}
+\phantomsection
+\label{angle-function}
+\begin{verbatim}
+angle (generic function with 1 method)
+\end{verbatim}
+\section{circle}
+\label{sec:org7d89b0f}
 The normal the circular domain in our second example is
 \begin{equation}
 \label{eq:3}
 \mathbf{n}_{ij} := \mathbf{n}(\vec{x}_{ij}) = \frac{\vec{c} - \vec{x}_{ij}}{\| \vec{c} - \vec{x}_{ij}\|}
 \end{equation}
 Where \(\vec{c}\) is the center of the domain.
-For a single point \(\vec{x}_{ij}\) on the interface and near the boundary. Since we need a finite difference to evaluate \ref{eq:1}, we do not select a point directly on the boundary and since we need a point on the interface, where \(\nabla \phi_{ij}\) is large, we calculate the angle at
-\begin{equation}
-\label{eq:2}
-P_{ij} = arg\max_{\vec{x}_{ij}} \nabla \phi_{ij} \qquad \phi_{ij} \in \partial \Omega
-\end{equation}
 \begin{center}
 \includegraphics[width=.9\linewidth]{images/angle.png}
-\label{}
+\label{angle-on-circle}
 \end{center}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{images/angle.png}
+\label{angle-evaluation}
+\end{center}
+
 
 \begin{longtable}{rr}
 \caption{\label{angle-table}value for \(\theta\) and corresponding angle \(\alpha\) after 200 time-steps}
@@ -564,9 +431,9 @@ P_{ij} = arg\max_{\vec{x}_{ij}} \nabla \phi_{ij} \qquad \phi_{ij} \in \partial \
 0.1 & 1.0282690721714873\\
 \end{longtable}
 \chapter{Summary and outlook}
-\label{sec:org55ba570}
+\label{sec:org0664668}
 In this project we examined a numerical model o the CH equation, with simple Neumann boundary conditions. We introduced a simplified version of the solver used in \autocite{Ulmer_CHRelaxed_2024} and derived from \autocite{SHIN20117441}. Which due to GPU acceleration is significantly faster on our available hardware. We have shown a simple Neumann boundary approach that runs stable on both tested domains. The approach introduced by us is able to freely affect the angle of the phase interface on the boundary,
 \chapter{References}
-\label{sec:org8737994}
+\label{sec:org34e895a}
 \printbibliography
 \end{document}
