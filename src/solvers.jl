@@ -31,7 +31,7 @@ function solve(initialCondition::T, timesteps::Int ; arrtype=T , θ=0 , h=1e-4 ,
 
     Φ = copy(initialCondition) |> arrtype
     println(sum(Φ))
-    jacoby_step = jacoby!(device, 1, size(Φ))
+    jacoby_step = jacoby!(device, 256, size(Φ))
 
     b(tmp)
     Neumann2 += θ * tmp

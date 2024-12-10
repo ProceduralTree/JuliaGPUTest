@@ -1,0 +1,136 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{SHIN20117441}{article}{}
+      \name{author}{3}{}{%
+        {{hash=90c7b0a14125f5d7891cf30fbfab199e}{%
+           family={Shin},
+           familyi={S\bibinitperiod},
+           given={Jaemin},
+           giveni={J\bibinitperiod}}}%
+        {{hash=4be217b7f252bcee3aab8bdb89089968}{%
+           family={Jeong},
+           familyi={J\bibinitperiod},
+           given={Darae},
+           giveni={D\bibinitperiod}}}%
+        {{hash=30cf8944aef5c84ff549c5ad627a9adf}{%
+           family={Kim},
+           familyi={K\bibinitperiod},
+           given={Junseok},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{1f61d3a449be68be991cb529fb4ab3b0}
+      \strng{fullhash}{1f61d3a449be68be991cb529fb4ab3b0}
+      \strng{bibnamehash}{1f61d3a449be68be991cb529fb4ab3b0}
+      \strng{authorbibnamehash}{1f61d3a449be68be991cb529fb4ab3b0}
+      \strng{authornamehash}{1f61d3a449be68be991cb529fb4ab3b0}
+      \strng{authorfullhash}{1f61d3a449be68be991cb529fb4ab3b0}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We propose an efficient finite difference scheme for solving the Cahn–Hilliard equation with a variable mobility in complex domains. Our method employs a type of unconditionally gradient stable splitting discretization. We also extend the scheme to compute the Cahn–Hilliard equation in arbitrarily shaped domains. We prove the mass conservation property of the proposed discrete scheme for complex domains. The resulting discretized equations are solved using a multigrid method. Numerical simulations are presented to demonstrate that the proposed scheme can deal with complex geometries robustly. Furthermore, the multigrid efficiency is retained even if the embedded domain is present.}
+      \field{issn}{0021-9991}
+      \field{journaltitle}{Journal of Computational Physics}
+      \field{number}{19}
+      \field{title}{A conservative numerical method for the Cahn–Hilliard equation in complex domains}
+      \field{volume}{230}
+      \field{year}{2011}
+      \field{pages}{7441\bibrangedash 7455}
+      \range{pages}{15}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.jcp.2011.06.009
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0021999111003585
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0021999111003585
+      \endverb
+      \keyw{Cahn–Hilliard equation,Degenerate mobility,Multigrid method,Phase separation,Complex domain}
+    \endentry
+    \entry{Ulmer_CHRelaxed_2024}{thesis}{}
+      \name{author}{1}{}{%
+        {{hash=a2dffc493d1a2b134db7dfc203f3375a}{%
+           family={Ulmer},
+           familyi={U\bibinitperiod},
+           given={Jonathan},
+           giveni={J\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {University of Stuttgart}%
+      }
+      \strng{namehash}{a2dffc493d1a2b134db7dfc203f3375a}
+      \strng{fullhash}{a2dffc493d1a2b134db7dfc203f3375a}
+      \strng{bibnamehash}{a2dffc493d1a2b134db7dfc203f3375a}
+      \strng{authorbibnamehash}{a2dffc493d1a2b134db7dfc203f3375a}
+      \strng{authornamehash}{a2dffc493d1a2b134db7dfc203f3375a}
+      \strng{authorfullhash}{a2dffc493d1a2b134db7dfc203f3375a}
+      \field{sortinit}{U}
+      \field{sortinithash}{6901a00e45705986ee5e7ca9fd39adca}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Untitled1}
+      \field{type}{Bachelor Thesis}
+      \field{year}{3000}
+    \endentry
+    \entry{Wu_2022}{article}{}
+      \name{author}{1}{}{%
+        {{hash=d0d5a12b1f5bae45ea7780158b3b35c8}{%
+           family={Wu},
+           familyi={W\bibinitperiod},
+           given={Hao},
+           giveni={H\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {American Institute of Mathematical Sciences ({AIMS})}%
+      }
+      \strng{namehash}{d0d5a12b1f5bae45ea7780158b3b35c8}
+      \strng{fullhash}{d0d5a12b1f5bae45ea7780158b3b35c8}
+      \strng{bibnamehash}{d0d5a12b1f5bae45ea7780158b3b35c8}
+      \strng{authorbibnamehash}{d0d5a12b1f5bae45ea7780158b3b35c8}
+      \strng{authornamehash}{d0d5a12b1f5bae45ea7780158b3b35c8}
+      \strng{authorfullhash}{d0d5a12b1f5bae45ea7780158b3b35c8}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Electronic Research Archive}
+      \field{number}{8}
+      \field{title}{A review on the Cahn{–}Hilliard equation: classical results and recent advances in dynamic boundary conditions}
+      \field{volume}{30}
+      \field{year}{2022}
+      \field{pages}{2788\bibrangedash 2832}
+      \range{pages}{45}
+      \verb{doi}
+      \verb 10.3934/era.2022143
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.3934%2Fera.2022143
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.3934%2Fera.2022143
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

@@ -118,9 +118,6 @@ heatmap(M, title=L"\Omega_d" , clim=(0,1),
             gridlinewidth=2 , axis_equal_image=true , extra_kwargs=:subplot , xlims=(1 ,66) , ylims=(1,66), xlabel=L"x_1",ylabel=L"x_2")
 #+end_src
 
-#+RESULTS:
-[[file:images/domain.png]]
-
 
 * Boundary adaptation
 The solver from [cite:@SHIN20117441], that we use as reference guaranties no flux boundary conditions at a discrete level by setting \( \nabla \phi_{ij} = 0\) for \( \phi_{ij} \in \partial \Omega_{d} \) this is done by multiplying with the Characteristic function of \( \Omega_{d} \)
@@ -136,7 +133,7 @@ To accommodate different boundary conditions, we modify \( \nabla_d \cdot (G_{ij
 B_{ij} = \max\left(  |G_{i+\frac{1}{2}j} - G_{i-\frac{1}{2}j}| , |G_{ij+\frac{1}{2}} - G_{ij-\frac{1}{2}}|\right) * C
 \end{equation}
 We present an  example on a 32x32 Domain with \( C=1 \) of the Boundary field \( \mathbf{B} \) for a square domain [[fig:boundary-square]] and an example on a circular domain in [[fig:boundary-circle]].
-In this Project we use the fodllowing adaptation of [[TODO]]
+In this Project we use the following adaptation of the discretization from [cite:@SHIN20117441].
 \begin{equation}
 \label{eq:second-order-adapted-ansatz}
 \begin{aligned}
@@ -170,8 +167,6 @@ heatmap(arr, title=L"\partial\Omega_d" , clim=(0,1),
 
 
 #+caption: visualization of all grid-cells adjacent to the boundary \(\partial \Omega_{d}\) of a square domain
-#+RESULTS: fig:boundary-square
-[[file:images/boundary.png]]
 
 #+name: fig:boundary-circle
 #+begin_src julia :results file :file images/boundary-circle.png
@@ -481,6 +476,7 @@ heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solut
 When evaluating intermediate contact angles in [[fig:angle-multiplec]], the results are similar to the square domain again, however, especially for shallow angles, we observe some artifacts of one phase appearing in places where previously was none. We observe similar behavior on square domains only in the corners, i.e. points where the boundary has high curvature.
 #+name: fig:angle-multiplec
 #+begin_src julia   :exports results :results file :file images/angle-multiplec.png
+using LaTeXStrings
 include("src/solvers.jl")
 angles = Float32.([-1+sqrt(2)/2, -0.5 , 0.5 , 1-sqrt(2)/2])
 arr = _init()
@@ -633,7 +629,7 @@ function angle(field)
     I_min = argmax(A)
     n = normal_vec(I_min , CartesianIndices(field))
     g = normalize(grad(Array(field) , I_min))
-    return g , n , P
+    return g , n , I_min
 end
 #+end_src
 
@@ -650,9 +646,9 @@ Where \(\vec{c}\) is the center of the domain.
 #+begin_src julia :results file :file images/angle.png
 using LaTeXStrings
 n = 500
-h::Float32 = 1f-4
+h::Float32 = 3f-4
 Δt::Float32 = 1e-4
-ε::Float32 = 1e-4
+ε::Float32 = 2e-4
 W′(x) = -x * (1 - x^2)
 @inline function G(I::CartesianIndex , Ids::CartesianIndices)::Float32
     @inline r  = Ids[end] - I
@@ -672,7 +668,7 @@ g,n,P = angle(s)
 
 heatmap(Array(s)' , aspect_ratio=:equal)
 #acosd((g' * n)/(norm(g) * norm(n)))
-scatter!(Tuple(I_min), label=L"P")
+scatter!(Tuple(P), label=L"P")
 quiver!([P[1]] , [P[2]] , quiver=([g[1]] , [g[2]]) .* 50)
 quiver!([[P[1]]] , [[P[2]]], quiver= ([n[1]] , [n[2]] ) .* 50)
 title!("$(acosd((g' * n))) °")
@@ -681,8 +677,6 @@ title!("$(acosd((g' * n))) °")
 #+RESULTS: angle-on-circle
 [[file:images/angle.png]]
 
-#+RESULTS: angle-evaluation
-[[file:images/angle.png]]
 
 
 #+name: angle-table
@@ -749,20 +743,27 @@ Array(df)
 * Different step sizes and \varepsilon :noexport:
 #+begin_src julia
 include("src/solvers.jl")
-θ = -5f-1
-n = 100
 arr = _init()
 d = domain(get_backend(arr) , 256 , size(arr))
 d(arr)
-anim = @animate for i=0e-5:1e-6:40e-5
+eps = 0e-5:1e-5:40e-5
+Angles = []
+anim = @animate for i=eps
+    n = 250
+    θ = -5f-1
+    arr = _init()
+    d(arr)
     solution = solve(arr , n , θ=θ , h=i)
     heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"h=%$i")
+    p,n,P = angle(solution)
+    push!(Angles, acosd(g' * n))
     end
 mp4(anim , "animations/h.mp4" , fps=24)
+plot(eps , Angles .% 90)
 #+end_src
 
 #+RESULTS:
-: Plots.AnimatedGif("/home/proceduraltree/Projects/JuliaGPUTest/animations/h.mp4")
+: julia-async:0b7e7f2a-0774-45da-aae2-8df2ecfb2b6c
 
 #+begin_src julia
 include("src/solvers.jl")
@@ -771,11 +772,15 @@ n = 100
 arr = _init()
 d = domain(get_backend(arr) , 256 , size(arr))
 d(arr)
-anim = @animate for i=0e-5:1e-6:40e-5
+Grids = 0e-5:1e-6:40e-5
+Angles = []
+anim = @animate for i=Grids
     solution = solve(arr , n , θ=θ, ε=i)
     heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"\varepsilon=%$i")
+    push!(Angles, acosd(g' * n))
     end
 mp4(anim , "animations/epsilon.mp4" , fps=24)
+plot(eps , angle)
 #+end_src
 
 #+RESULTS:
