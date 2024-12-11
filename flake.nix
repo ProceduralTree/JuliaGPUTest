@@ -66,8 +66,6 @@
         };
         devShells.default = pkgs.devshell.mkShell {
           packages = with pkgs; [
-            level-zero
-            intel-compute-runtime
             cudatoolkit
             #cudaPackages.cudnn
             git
