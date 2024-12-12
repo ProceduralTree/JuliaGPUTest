@@ -34,7 +34,7 @@ This project examines the effect of a simple Neumann boundary approach on a fini
 * Introduction
 This project thesis builds upon the work in our bachelor thesis, by introducing a simple boundary condition approach to a variation of the solver used therein. In Chapter [[Fundamentals]] we introduce the Cahn-Hilliard equation in the formulation that we use for this project. This project used a two-dimensional second order version of this CH equation rather than the usual 1D 4th order one, to simplify the numerical implementation. The solver itself builds upon a finite difference discretization of this equation. In Chapter [[Numerical Solver]], together with the discrete domains, on which we run our numerical solver, we introduce a Jacoby iteration to solve the linear system derived from the aforementioned discretization.  The numerical solver in this thesis is GPU accelerated, and the discretization we chose to base our solver on is capable to calculate on all domains as long as a characteristic function is given. Therefore, we introduce two domains, on which we present our findings. The primary goal of this work is then the boundary condition approach in Chapter [[Boundary adaptation]]. Conceptionally the boundary condition we introduce simply consists of a constant value added in the linear system to all equations corresponding to grid-cells on the boundary. The actual implementation is capable of doing this for arbitrary domains. We present the results of this method on two Domains, a square one in [[Numerical evaluation]] and a circular domain in [[Numerical evaluation on a circle]] where we show the phase field for different boundary conditions which manifest in a variable contact angle of the interface on the boundary mimicking the behavior of hydrophobic/hydrophilic material. While we are unable to provide explicit formulae in relation to the constant, in Chapter [[Angle]] we provide numerical insight in this relationship, and a table with precomputed values.
 * Fundamentals
-This work concerns itself with boundary conditions on the CH equation. The CH equation is a fourth order differential equation that provides a phase-field \(\phi\) which is used for implicit interface formulation. The Cahn-Hilliard equation, in the formulation we use here, is derived from the *Ginzburg-Landau* energy \eqref{eq:energy}, an example on how this is done is given by [cite:@Wu_2022].
+This work concerns itself with boundary conditions on the Cahn-Hilliard equation. The Cahn-Hilliard (CH) equation is a fourth order partial differential equation (PDE) used to describe phase seperation in binary mixtures. It models how a mixture of two components (e.g., two liquids or alloys) evolves over time to separate into distinct regions with different concentrations of each component. To achive this it provides a phase-field \(\phi\) which is used for an implicit representation of the interface between both phases. The Cahn-Hilliard equation, in the formulation we use here, is derived from the *Ginzburg-Landau* energy \eqref{eq:energy}, an example on how this is done is given by [cite:@Wu_2022].
 #+name: eq:energy
 \begin{align}
 E^{\text{bulk}}[\phi] &= \int_{\Omega} \frac{\varepsilon^2}{2} |\nabla \phi |^2 + W(\phi) \, dx ,
@@ -56,7 +56,7 @@ the Cahn-Hilliard equation in this thesis is then given as
 \mu &= - \varepsilon^2 \Delta\phi  + W'(\phi).
 \end{aligned}
 \end{equation}
-One thing to note is, that this way of writing the CH equation is second order two-dimensional rather than the one dimensional fourth order often given.
+One thing to note is, that this way of writing the CH equation presents a second order, two-dimensional system, rather than the one dimensional fourth order system \eqref{eq:7} often given.
 \begin{equation}
 \label{eq:7}
 \partial_t \phi(\vec{x} , t) = \Delta(-\varepsilon^2  \Delta \phi + W\prime(\phi))
@@ -131,11 +131,11 @@ G_{ij}=
 0 \,, x_{ij} \not\in \Omega \\
 \end{cases}
 \end{equation}
-To accommodate different boundary conditions, we modify \( \nabla_d \cdot (G_{ij} \nabla_d \phi_{ij}) \) with a constant term \(C\) on grid points next to the boundary. To do this, we introduce a boundary field \(B_{ij}\) that we add to \(\mu_{ij}\). We determine the value of \(B_{ij}\) using a centered difference scheme on \( G \)
+To accommodate different boundary conditions, we modify \( \nabla_d \cdot (G_{ij} \nabla_d \phi_{ij}) \) with a constant term \(C\) on grid points next to the boundary. To do this, we introduce a boundary field \(B_{ij}\) that we add to \(\mu_{ij}\). We determine the value of \(B_{ij}\) using a central difference scheme on \( G \)
 \begin{equation}
 B_{ij} = \max\left(  |G_{i+\frac{1}{2}j} - G_{i-\frac{1}{2}j}| , |G_{ij+\frac{1}{2}} - G_{ij-\frac{1}{2}}|\right) * C
 \end{equation}
-We present an example on a 32x32 Domain with \( C=1 \) of the Boundary field \( \mathbf{B} \) for a square domain [[fig:boundary-square]] and an example on a circular domain in [[fig:boundary-circle]].
+We present an example in case of a 32x32 domain with \( C=1 \) of the boundary fields \( \mathbf{B} \) for a square domain [[fig:boundary-square]] and an example on a circular domain in [[fig:boundary-circle]].
 In this Project we use the following adaptation of the discretization from [cite:@SHIN20117441].
 \begin{equation}
 \label{eq:second-order-adapted-ansatz}
@@ -169,7 +169,7 @@ heatmap(arr, title=L"\partial\Omega_d" , clim=(0,1),
 #+end_src
 
 
-#+caption: visualization of all grid-cells adjacent to the boundary \(\partial \Omega_{d}\) of a square domain
+#+caption: Visualization of all grid-cells adjacent to the boundary \(\partial \Omega_{d}\) of a square domain
 
 #+name: fig:boundary-circle
 #+begin_src julia :results file :file images/boundary-circle.png
@@ -194,14 +194,14 @@ heatmap(arr, title=L"\partial\Omega_d" , clim=(0,1),
             gridlinewidth=2 , axis_equal_image=true , extra_kwargs=:subplot , xlims=(1 ,64) , ylims=(1,64), xlabel=L"x_1" , ylabel=L"x_2")
 #+end_src
 
-#+caption: visualization of all grid-cells adjacent to the boundary \(\partial \Omega_{d}\) of a circular domain
+#+caption: Visualization of all grid-cells adjacent to the boundary \(\partial \Omega_{d}\) of a circular domain
 #+RESULTS: fig:boundary-circle
 [[file:images/boundary-circle.png]]
 
 
 
 * Numerical solver
-Contrary to the solver proposed in[cite:@Ulmer_CHRelaxed_2024] we do not use a multi-grid Gauss-Seidel Solver to solve the linear system, and use a Jacoby solver instead, since it is easier to paralyze.
+Contrary to the solver proposed in [cite:@Ulmer_CHRelaxed_2024] we do not use a multi-grid Gauss-Seidel Solver to solve the linear system, instead we use a Jacoby solver, as this will eventually assist in parallelizing the computation.
 Similar to [cite:@Ulmer_CHRelaxed_2024] we linearize \eqref{eq:second-order-adapted-ansatz} to
 \begin{equation}
 \begin{aligned}
@@ -209,7 +209,9 @@ Similar to [cite:@Ulmer_CHRelaxed_2024] we linearize \eqref{eq:second-order-adap
  \mu_{ij}^{n+\frac{1}{2}} - 2\phi_{ij}^{n+1} + \varepsilon^2  \nabla_d \cdot  (G_{ij} \nabla _d \phi_{ij}^{n+1} ) + B_{ij} &=2\phi _{ij}^n - W'(\phi_{ij}^n)
 \end{aligned}
 \end{equation}
-After some rearranging we note, that the left-hand side is linear and, the right-hand side is solely dependent on the previous time step. Therefore, this constitutes a linear system, which we solve with a Jacoby method, the element wise formula of which is given as follows:
+One may note, that after rearanging some terms leads to a linear system with a right-hand side wich is exclusively dependant on the previous time step.
+We use Jacobi's method to solve the resulting linear system given above, and the corresponding element wise representation of the same is given in the following.
+
 Provided the \( mth \) Jacoby iteration has been computed, the \( m+1th \) iteration is computed by solving
 \begin{equation}
 \begin{aligned}
@@ -237,7 +239,7 @@ G_{i+\frac{1}{2}j}\phi_{i+1j}^{n+1,m}
 \right)\phi_{ij}^{n+1,m+1}
 \end{aligned}
 \end{equation}
-Our implementation makes use of the julia programming language, to dispatch the solution for each element in paralell on the GPU. The full implementation of the Jacoby iteration is given as:
+Our implementation is done in julia to transmit the solution for each element in parallel on the GPU. In the following we described the complete implementation of the Jacobi's iteration.
 #+begin_src julia :eval never :exports code
 @kernel function jacoby!(
     Φ,
@@ -279,7 +281,6 @@ Our implementation makes use of the julia programming language, to dispatch the 
     end
 end
 #+end_src
-
 * Numerical evaluation
 We set constant values for B_ij on the boundary to begin with our evaluations.
 One may note that C = 0 is equivalent to the no-flux condition of the original solver introduced in the Bachelor thesis. Now, as a preliminary verification step we set C = 0 as our first choice.
@@ -522,7 +523,6 @@ plot(h1,h2,h3,h4)
 #+caption: random initial data after increasing  numer of time-steps.
 #+RESULTS: fig:random-circle
 [[file:images/random-circle.png]]
-
 
 * Relaxed :noexport:
 #+begin_src julia
