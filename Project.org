@@ -763,7 +763,7 @@ plot(eps , Angles .% 90)
 #+end_src
 
 #+RESULTS:
-: julia-async:0b7e7f2a-0774-45da-aae2-8df2ecfb2b6c
+[[file:/tmp/babel-eNQ4eO/julia-bgvr3g.png]]
 
 #+begin_src julia
 include("src/solvers.jl")
@@ -772,7 +772,7 @@ n = 100
 arr = _init()
 d = domain(get_backend(arr) , 256 , size(arr))
 d(arr)
-Grids = 0e-5:1e-6:40e-5
+Grids = 0e-5:1e-5:40e-5
 Angles = []
 anim = @animate for i=Grids
     solution = solve(arr , n , θ=θ, ε=i)
@@ -780,7 +780,7 @@ anim = @animate for i=Grids
     push!(Angles, acosd(g' * n))
     end
 mp4(anim , "animations/epsilon.mp4" , fps=24)
-plot(eps , angle)
+plot(eps , Angles .% 90)
 #+end_src
 
 #+RESULTS:
