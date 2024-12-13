@@ -2,13 +2,14 @@
 \contentsline {chapter}{\numberline {1}Introduction}{7}{chapter.1}%
 \contentsline {chapter}{\numberline {2}Fundamentals}{9}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Notation}{10}{section.2.1}%
-\contentsline {chapter}{\numberline {3}Boundary adaptation}{11}{chapter.3}%
-\contentsline {chapter}{\numberline {4}Numerical solver}{15}{chapter.4}%
-\contentsline {chapter}{\numberline {5}Numerical evaluation}{17}{chapter.5}%
-\contentsline {chapter}{\numberline {6}Numerical evaluation on a circle}{21}{chapter.6}%
-\contentsline {chapter}{\numberline {7}angle}{25}{chapter.7}%
-\contentsline {section}{\numberline {7.1}circle}{25}{section.7.1}%
-\contentsline {chapter}{\numberline {8}Summary and outlook}{29}{chapter.8}%
-\contentsline {chapter}{\numberline {9}References}{31}{chapter.9}%
-\contentsline {chapter}{\nonumberline Bibliography}{33}{chapter*.13}%
+\contentsline {chapter}{\numberline {3}Boundary adaptation}{13}{chapter.3}%
+\contentsline {chapter}{\numberline {4}Numerical solver}{17}{chapter.4}%
+\contentsline {chapter}{\numberline {5}Numerical evaluation}{19}{chapter.5}%
+\contentsline {chapter}{\numberline {6}Numerical evaluation on a circle}{23}{chapter.6}%
+\contentsline {chapter}{\numberline {7}Angle}{27}{chapter.7}%
+\contentsline {section}{\numberline {7.1}circle}{27}{section.7.1}%
+\contentsline {section}{\numberline {7.2}square}{29}{section.7.2}%
+\contentsline {chapter}{\numberline {8}Summary and outlook}{37}{chapter.8}%
+\contentsline {chapter}{\numberline {9}References}{39}{chapter.9}%
+\contentsline {chapter}{\nonumberline Bibliography}{41}{chapter*.13}%
 \providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

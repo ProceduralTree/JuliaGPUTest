@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.17.0 (TeX Live 2023/nixos.org)  (format=lualatex 1980.1.1)  9 DEC 2024 21:33
+This is LuaHBTeX, Version 1.17.0 (TeX Live 2023/nixos.org)  (format=lualatex 1980.1.1)  12 DEC 2024 20:23
  system commands enabled.
 **Project.tex
 (./Project.tex
@@ -2308,135 +2308,136 @@ chapter 2.
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [9]
-[10]
+[10] [11] [12
+
+
+]
 chapter 3.
-<images/boundary.png, id=117, 317.5062pt x 297.2706pt>
+<images/boundary.png, id=132, 317.5062pt x 297.2706pt>
 File: images/boundary.png Graphic file (type png)
 <use images/boundary.png>
-Package luatex.def Info: images/boundary.png  used on input line 322.
+Package luatex.def Info: images/boundary.png  used on input line 326.
 (luatex.def)             Requested size: 358.50233pt x 335.65784pt.
-<images/boundary-circle.png, id=118, 317.5062pt x 297.2706pt>
+<images/boundary-circle.png, id=133, 317.5062pt x 297.2706pt>
 File: images/boundary-circle.png Graphic file (type png)
 <use images/boundary-circle.png>
-Package luatex.def Info: images/boundary-circle.png  used on input line 328.
+Package luatex.def Info: images/boundary-circle.png  used on input line 334.
 (luatex.def)             Requested size: 358.50233pt x 335.65784pt.
-[11
-
-
-] [12<./images/boundary.png>] [13<./images/boundary-circle.png>] [14
+[13] [14<./images/boundary.png>] [15<./images/boundary-circle.png>] [16
 
 
 ]
 chapter 4.
 LaTeX Font Info:    Font shape `TU/DejaVuSansMono(0)/m/n' will be
-(Font)              scaled to size 7.20003pt on input line 371.
+(Font)              scaled to size 7.20003pt on input line 379.
 LaTeX Font Info:    Font shape `TU/DejaVuSansMono(0)/b/n' will be
-(Font)              scaled to size 7.20003pt on input line 372.
+(Font)              scaled to size 7.20003pt on input line 380.
 LaTeX Font Info:    Font shape `TU/DejaVuSansMono(0)/m/n' will be
-(Font)              scaled to size 4.80002pt on input line 388.
-
-Underfull \vbox (badness 5161) has occurred while \output is active []
-
- [15]
-[16]
+(Font)              scaled to size 4.80002pt on input line 396.
+[17] [18]
 chapter 5.
-<images/baseline.png, id=161, 602.25pt x 401.5pt>
+<images/baseline.png, id=175, 602.25pt x 401.5pt>
 File: images/baseline.png Graphic file (type png)
 <use images/baseline.png>
-Package luatex.def Info: images/baseline.png  used on input line 423.
+Package luatex.def Info: images/baseline.png  used on input line 430.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-<images/angle1.png, id=163, 602.25pt x 401.5pt>
+<images/angle1.png, id=177, 602.25pt x 401.5pt>
 File: images/angle1.png Graphic file (type png)
 <use images/angle1.png>
-Package luatex.def Info: images/angle1.png  used on input line 430.
+Package luatex.def Info: images/angle1.png  used on input line 437.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-[17
+[19
 
 
 <./images/baseline.png>]
-<images/angle-.png, id=173, 602.25pt x 401.5pt>
+<images/angle-.png, id=187, 602.25pt x 401.5pt>
 File: images/angle-.png Graphic file (type png)
 <use images/angle-.png>
-Package luatex.def Info: images/angle-.png  used on input line 438.
+Package luatex.def Info: images/angle-.png  used on input line 445.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-<images/angle-sqrt(2).png, id=174, 602.25pt x 401.5pt>
+<images/angle-sqrt(2).png, id=188, 602.25pt x 401.5pt>
 File: images/angle-sqrt(2).png Graphic file (type png)
 <use images/angle-sqrt(2).png>
-Package luatex.def Info: images/angle-sqrt(2).png  used on input line 444.
+Package luatex.def Info: images/angle-sqrt(2).png  used on input line 451.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [18<./images/angle1.png>] [19<./images/angle-.png><./images/angle-sqrt(2).png>]
-<images/random-square.png, id=185, 602.25pt x 401.5pt>
+ [20<./images/angle1.png>] [21<./images/angle-.png><./images/angle-sqrt(2).png>]
+<images/random-square.png, id=200, 602.25pt x 401.5pt>
 File: images/random-square.png Graphic file (type png)
 <use images/random-square.png>
-Package luatex.def Info: images/random-square.png  used on input line 473.
+Package luatex.def Info: images/random-square.png  used on input line 480.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
- [20<./images/random-square.png>]
+ [22<./images/random-square.png>]
 chapter 6.
 LaTeX Font Info:    Font shape `TU/DejaVuSansMono(0)/m/n' will be
-(Font)              scaled to size 8.76003pt on input line 483.
-<images/angle0c.png, id=192, 602.25pt x 401.5pt>
+(Font)              scaled to size 8.76003pt on input line 490.
+<images/angle0c.png, id=207, 602.25pt x 401.5pt>
 File: images/angle0c.png Graphic file (type png)
 <use images/angle0c.png>
-Package luatex.def Info: images/angle0c.png  used on input line 491.
+Package luatex.def Info: images/angle0c.png  used on input line 498.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-<images/anfle1c.png, id=195, 602.25pt x 401.5pt>
+<images/anfle1c.png, id=210, 602.25pt x 401.5pt>
 File: images/anfle1c.png Graphic file (type png)
 <use images/anfle1c.png>
-Package luatex.def Info: images/anfle1c.png  used on input line 500.
+Package luatex.def Info: images/anfle1c.png  used on input line 507.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-[21
+[23
 
 
 <./images/angle0c.png>]
-<images/angle-1c.png, id=206, 602.25pt x 401.5pt>
+<images/angle-1c.png, id=220, 602.25pt x 401.5pt>
 File: images/angle-1c.png Graphic file (type png)
 <use images/angle-1c.png>
-Package luatex.def Info: images/angle-1c.png  used on input line 507.
+Package luatex.def Info: images/angle-1c.png  used on input line 514.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-<images/angle-multiplec.png, id=208, 602.25pt x 401.5pt>
+<images/angle-multiplec.png, id=222, 602.25pt x 401.5pt>
 File: images/angle-multiplec.png Graphic file (type png)
 <use images/angle-multiplec.png>
-Package luatex.def Info: images/angle-multiplec.png  used on input line 514.
+Package luatex.def Info: images/angle-multiplec.png  used on input line 521.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
- [22<./images/anfle1c.png>] [23<./images/angle-1c.png><./images/angle-multiplec.
-png>] [24
+ [24<./images/anfle1c.png>] [25<./images/angle-1c.png><./images/angle-multiplec.
+png>] [26
 
 
 ]
 chapter 7.
-<images/angle.png, id=226, 602.25pt x 401.5pt>
-File: images/angle.png Graphic file (type png)
-<use images/angle.png>
-Package luatex.def Info: images/angle.png  used on input line 547.
+<images/angle-circle.png, id=241, 602.25pt x 401.5pt>
+File: images/angle-circle.png Graphic file (type png)
+<use images/angle-circle.png>
+Package luatex.def Info: images/angle-circle.png  used on input line 555.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [25]
-File: images/angle.png Graphic file (type png)
-<use images/angle.png>
-Package luatex.def Info: images/angle.png  used on input line 552.
+ [27]
+[28<./images/angle-circle.png>]
+<images/angle-square.png, id=257, 602.25pt x 401.5pt>
+File: images/angle-square.png Graphic file (type png)
+<use images/angle-square.png>
+Package luatex.def Info: images/angle-square.png  used on input line 616.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
 
-[26<./images/angle.png>] [27] [28]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [29]
+[30<./images/angle-square.png>] [31] [32] [33] [34] [35] [36]
 chapter 8.
-[29
+[37
 
 
-] [30
+] [38
 
 
 ]
 chapter 9.
-[31] [32
+[39] [40
 
 
 ]
 chapter without number
-[33] (./tex/Project.aux)
+[41] (./tex/Project.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2020/03/25>
@@ -2449,15 +2450,15 @@ Package logreq Info: Writing requests to 'Project.run.xml'.
 )
 
 Here is how much of LuaTeX's memory you used:
- 56083 strings out of 476447
- 100000,2848258 words of node,token memory allocated
- 1354 words of node memory still in use:
-   7 hlist, 2 vlist, 2 rule, 2 glue, 4 kern, 1 penalty, 2 sub_mlist, 2 glyph, 27
-8 attribute, 94 glue_spec, 41 attribute_list, 2 write, 3 pdf_action nodes
-   avail lists: 1:2,2:10105,3:335,4:626,5:413,6:130,7:4922,8:67,9:1511,10:28,11:
-355
- 76931 multiletter control sequences out of 65536+600000
- 95 fonts using 36830575 bytes
+ 56107 strings out of 476447
+ 156265,2848258 words of node,token memory allocated
+ 1418 words of node memory still in use:
+   7 hlist, 2 vlist, 2 rule, 2 glue, 4 kern, 1 penalty, 2 sub_mlist, 2 glyph, 30
+6 attribute, 94 glue_spec, 45 attribute_list, 2 write, 3 pdf_action nodes
+   avail lists: 1:5,2:10106,3:341,4:629,5:427,6:134,7:14241,8:67,9:1638,10:28,11
+:378
+ 76943 multiletter control sequences out of 65536+600000
+ 95 fonts using 36830475 bytes
  122i,20n,114p,10958b,2459s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype/public/
 lm/lmroman10-italic.otf></nix/store/iivr3nlmgwnpfd54c0l420xj0mqqg3vw-dejavu-font
@@ -2476,10 +2477,10 @@ ntype/public/lm/lmroman10-regular.otf></nix/store/swxn2kgfg47a8r0igh45r51c7x3mk9
 2s-lm-2.005-tex/fonts/opentype/public/lm/lmroman12-regular.otf></nix/store/swxn2
 kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype/public/lm/lmromancaps10-
 regular.otf>
-Output written on Project.pdf (33 pages, 597918 bytes).
+Output written on Project.pdf (41 pages, 653733 bytes).
 
-PDF statistics: 401 PDF objects out of 1000 (max. 8388607)
- 314 compressed objects within 4 object streams
- 85 named destinations out of 1000 (max. 131072)
- 112 words of extra memory for PDF output out of 10000 (max. 100000000)
+PDF statistics: 450 PDF objects out of 1000 (max. 8388607)
+ 354 compressed objects within 4 object streams
+ 97 named destinations out of 1000 (max. 131072)
+ 120 words of extra memory for PDF output out of 10000 (max. 100000000)
 

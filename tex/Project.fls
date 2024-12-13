@@ -373,9 +373,10 @@ INPUT ./images/angle-1c.png
 INPUT ./images/angle-1c.png
 INPUT ./images/angle-multiplec.png
 INPUT ./images/angle-multiplec.png
-INPUT ./images/angle.png
-INPUT ./images/angle.png
-INPUT ./images/angle.png
+INPUT ./images/angle-circle.png
+INPUT ./images/angle-circle.png
+INPUT ./images/angle-square.png
+INPUT ./images/angle-square.png
 INPUT /home/proceduraltree/.texlive2023/texmf-var/luatex-cache/generic/fonts/otl/lmroman10-italic.luc
 INPUT ./tex/Project.aux
 INPUT ./tex/Project.out

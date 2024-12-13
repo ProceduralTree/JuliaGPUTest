@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber tex/Project"] 1733776402.16335 "tex/Project.bcf" "tex/Project.bbl" "tex/Project" 1733776412.02176 0
+["biber tex/Project"] 1734031380.65163 "tex/Project.bcf" "tex/Project.bbl" "tex/Project" 1734031387.62346 0
   "/home/proceduraltree/org/resources/bibliography/refs.bib" 1732118202.40122 3537 00f5e8e882e49a4d447c500a700df710 ""
-  "tex/Project.bcf" 1733776411.67345 108490 24859e13e5e1266b0b11c89634e50170 "lualatex"
+  "tex/Project.bcf" 1734031387.27348 108490 24859e13e5e1266b0b11c89634e50170 "lualatex"
   (generated)
   "tex/Project.bbl"
   "tex/Project.blg"
   (rewritten before read)
-["lualatex"] 1733776408.93086 "Project.tex" "Project.pdf" "Project" 1733776412.02197 0
+["lualatex"] 1734031384.50812 "Project.tex" "Project.pdf" "Project" 1734031387.62366 0
   "/home/proceduraltree/.texlive2023/texmf-var/luatex-cache/generic/fonts/otl/dejavusansmono-bold.luc" 1731157916.11956 349245 35504240089da8f1d717797d11814f31 ""
   "/home/proceduraltree/.texlive2023/texmf-var/luatex-cache/generic/fonts/otl/dejavusansmono-boldoblique.luc" 1731157916.08056 270944 1be66c015b6349ab5cd032e6af8c3344 ""
   "/home/proceduraltree/.texlive2023/texmf-var/luatex-cache/generic/fonts/otl/dejavusansmono-oblique.luc" 1731157916.15156 270313 869dfce94e0826a84de5f8f3e4f642d4 ""
@@ -341,25 +341,26 @@
   "/nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype/public/lm/lmroman8-regular.otf" 1 111948 cee9e390fd6d23cfb4d6871ba2a9ee5b ""
   "/nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype/public/lm/lmromancaps10-regular.otf" 1 108740 82741d58d9334b5242a3acb1d982bd05 ""
   "/nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype/public/lm/lmromanslant10-regular.otf" 1 118508 34f973aec7dfcf01fb8c0a36b108dcd2 ""
-  "Project.tex" 1733776398.07052 31314 ad87739f143151ba351d6e4f33332ef6 ""
+  "Project.tex" 1734031380.57853 40151 389a700ef1e1eca66bc6757496247cec ""
   "images/anfle1c.png" 1733770673.77977 36054 f3b065e0c35f06d11e11a3be359e9025 ""
   "images/angle-.png" 1733735443.63338 44528 b773a69b54063589d63d6566acdb17cd ""
   "images/angle-1c.png" 1733770961.10654 36108 1924b3660c61c0b6c4c9f20bf1278d56 ""
+  "images/angle-circle.png" 1734030687.99157 41308 150bb631bd2efdf8d1fc4049d05f4011 ""
   "images/angle-multiplec.png" 1733772059.86705 53662 b89915a6d1fea44a78077bd48b62e56b ""
   "images/angle-sqrt(2).png" 1733735628.05723 61024 04178f8d8e43bdebfb24fd9acadbbb0c ""
-  "images/angle.png" 1733668846.43118 41443 37546d406eac9db1e0a99613033317b2 ""
+  "images/angle-square.png" 1734030830.84549 40102 b7d78911d49b5ca6850af017bcfa769b ""
   "images/angle0c.png" 1733770332.43682 31903 1b0272b43f4bb0a6a08243b95cc1ff0b ""
   "images/angle1.png" 1733735190.65481 46726 70c9362749512fe4cc290668fe427ab9 ""
   "images/baseline.png" 1733734999.86596 45501 4a496611b3d53420eeb4e13b8527d522 ""
   "images/boundary-circle.png" 1732127406.80989 16393 7dfc3d9ae657e4b716186340a7dd5e0c ""
-  "images/boundary.png" 1732127400.3789 16203 5ca81cb0b861d7a913c380a2d8f6ae1b ""
+  "images/boundary.png" 1734031365.69463 16203 5ca81cb0b861d7a913c380a2d8f6ae1b ""
   "images/random-square.png" 1733735657.29991 63776 5b05eee6a063aaf02a6aed0107d2aec3 ""
   "mimosis.cls" 1718361618.78921 6797 3f97825bf032b3871f84ff5ed7c30aff ""
-  "tex/Project.aux" 1733776411.66645 12858 4baba91362f1e2bfb8c97f0c334e0e35 "lualatex"
-  "tex/Project.bbl" 1733776402.7565 5611 761e9e9e613415cdfdc63cd20fadcc54 "biber tex/Project"
-  "tex/Project.out" 1733776410.66246 0 d41d8cd98f00b204e9800998ecf8427e "lualatex"
-  "tex/Project.run.xml" 1733776411.67345 2475 702538ccc2047f27012413583cd20432 "lualatex"
-  "tex/Project.toc" 1733776411.67345 957 7568f7ab6249de8dde0f7656cd05a2a8 "lualatex"
+  "tex/Project.aux" 1734031387.26648 13601 6f3ac4a6ba5519d1c5ed3db377c57cce "lualatex"
+  "tex/Project.bbl" 1734031381.29152 5611 761e9e9e613415cdfdc63cd20fadcc54 "biber tex/Project"
+  "tex/Project.out" 1734031386.21149 0 d41d8cd98f00b204e9800998ecf8427e "lualatex"
+  "tex/Project.run.xml" 1734031387.27348 2475 702538ccc2047f27012413583cd20432 "lualatex"
+  "tex/Project.toc" 1734031387.27348 1024 a2254d57ddc0a746b9e6ccd52b466bd7 "lualatex"
   (generated)
   "Project.pdf"
   "tex/Project.aux"
