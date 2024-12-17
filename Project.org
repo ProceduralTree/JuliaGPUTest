@@ -677,7 +677,7 @@ The method we use to calculate the interface-boundary angle is not stable under 
 
 *** TODO fix point ofevaluation
 #+name: fig:angle-table
-#+begin_src julia :results file :eval never :file/images/angle-values-circle.png
+#+begin_src julia :results file :eval never-export :file/images/angle-values-circle.png
 using DataFrames
 iter = 200
 df = DataFrame(theta=Float64[] , angle=Float64[])
@@ -694,6 +694,9 @@ ylabel!(L"\alpha")
 #+end_src
 
 #+caption: value for \theta and corresponding angle \alpha after 200 time-steps
+#+RESULTS: fig:angle-table
+[[file:/tmp/babel-9eE7ky/julia-94QJx8.png]]
+
 #+attr_latex: :environment multicoltable
 #+RESULTS: angle-table
 |   -0.1 |  173.49096591056502 |
@@ -791,11 +794,11 @@ title!("$(acosd((g' * n))) °")
 
 
 #+name: fig:angle-table-square
-#+begin_src julia :results table :eval never-export
+#+begin_src julia :results file :eval never-export :file images/angle-values-square.png
 using DataFrames
 iter = 200
 df = DataFrame(theta=Float64[] , angle=Float64[])
-for theta=-0.1:0.001:0.1
+for theta=-0.1:0.005:0.1
     arr = _init()
     s = solve(arr , iter, θ=Float32(theta))
     g,n,P = angle(s)
