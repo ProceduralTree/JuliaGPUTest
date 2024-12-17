@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber tex/Project"] 1734031380.65163 "tex/Project.bcf" "tex/Project.bbl" "tex/Project" 1734031387.62346 0
+["biber tex/Project"] 1734282844.07145 "tex/Project.bcf" "tex/Project.bbl" "tex/Project" 1734282852.6129 0
   "/home/proceduraltree/org/resources/bibliography/refs.bib" 1732118202.40122 3537 00f5e8e882e49a4d447c500a700df710 ""
-  "tex/Project.bcf" 1734031387.27348 108490 24859e13e5e1266b0b11c89634e50170 "lualatex"
+  "tex/Project.bcf" 1734282852.26223 108490 24859e13e5e1266b0b11c89634e50170 "lualatex"
   (generated)
   "tex/Project.bbl"
   "tex/Project.blg"
   (rewritten before read)
-["lualatex"] 1734031384.50812 "Project.tex" "Project.pdf" "Project" 1734031387.62366 0
+["lualatex"] 1734282848.62613 "Project.tex" "Project.pdf" "Project" 1734282852.6131 0
   "/home/proceduraltree/.texlive2023/texmf-var/luatex-cache/generic/fonts/otl/dejavusansmono-bold.luc" 1731157916.11956 349245 35504240089da8f1d717797d11814f31 ""
   "/home/proceduraltree/.texlive2023/texmf-var/luatex-cache/generic/fonts/otl/dejavusansmono-boldoblique.luc" 1731157916.08056 270944 1be66c015b6349ab5cd032e6af8c3344 ""
   "/home/proceduraltree/.texlive2023/texmf-var/luatex-cache/generic/fonts/otl/dejavusansmono-oblique.luc" 1731157916.15156 270313 869dfce94e0826a84de5f8f3e4f642d4 ""
@@ -267,6 +267,7 @@
   "/nix/store/g94a8yzvh47gzpq4c4gzx5ypdysgbyrv-texlive-combined-full-2023-final-texmfdist/tex/latex/tex-ini-files/lualatexquotejobname.lua" 1 1021 ae37ae5e20605f170274bb33ea1a0e3d ""
   "/nix/store/g94a8yzvh47gzpq4c4gzx5ypdysgbyrv-texlive-combined-full-2023-final-texmfdist/tex/latex/tools/array.sty" 1 12667 e4b5eb11e4b7239e6c8a52bbe074a6c6 ""
   "/nix/store/g94a8yzvh47gzpq4c4gzx5ypdysgbyrv-texlive-combined-full-2023-final-texmfdist/tex/latex/tools/longtable.sty" 1 12935 94a3291359b5f73ff1b19345a6983105 ""
+  "/nix/store/g94a8yzvh47gzpq4c4gzx5ypdysgbyrv-texlive-combined-full-2023-final-texmfdist/tex/latex/tools/multicol.sty" 1 32515 51caec75eda9c8890135f12f1a4eddc3 ""
   "/nix/store/g94a8yzvh47gzpq4c4gzx5ypdysgbyrv-texlive-combined-full-2023-final-texmfdist/tex/latex/tools/tabularx.sty" 1 7147 d45559f8a31b8c53ada0640516660003 ""
   "/nix/store/g94a8yzvh47gzpq4c4gzx5ypdysgbyrv-texlive-combined-full-2023-final-texmfdist/tex/latex/tools/verbatim.sty" 1 7500 db31c3d04f8bc9010e47a5efbbace9ff ""
   "/nix/store/g94a8yzvh47gzpq4c4gzx5ypdysgbyrv-texlive-combined-full-2023-final-texmfdist/tex/latex/tools/xspace.sty" 1 4545 9f5ea23ab1c91476c42749893f790666 ""
@@ -341,7 +342,7 @@
   "/nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype/public/lm/lmroman8-regular.otf" 1 111948 cee9e390fd6d23cfb4d6871ba2a9ee5b ""
   "/nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype/public/lm/lmromancaps10-regular.otf" 1 108740 82741d58d9334b5242a3acb1d982bd05 ""
   "/nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype/public/lm/lmromanslant10-regular.otf" 1 118508 34f973aec7dfcf01fb8c0a36b108dcd2 ""
-  "Project.tex" 1734031380.57853 40151 389a700ef1e1eca66bc6757496247cec ""
+  "Project.tex" 1734282843.99024 40423 cbce4fb239b66c61e4ad68ca9c3e9d6f ""
   "images/anfle1c.png" 1733770673.77977 36054 f3b065e0c35f06d11e11a3be359e9025 ""
   "images/angle-.png" 1733735443.63338 44528 b773a69b54063589d63d6566acdb17cd ""
   "images/angle-1c.png" 1733770961.10654 36108 1924b3660c61c0b6c4c9f20bf1278d56 ""
@@ -356,11 +357,11 @@
   "images/boundary.png" 1734031365.69463 16203 5ca81cb0b861d7a913c380a2d8f6ae1b ""
   "images/random-square.png" 1733735657.29991 63776 5b05eee6a063aaf02a6aed0107d2aec3 ""
   "mimosis.cls" 1718361618.78921 6797 3f97825bf032b3871f84ff5ed7c30aff ""
-  "tex/Project.aux" 1734031387.26648 13601 6f3ac4a6ba5519d1c5ed3db377c57cce "lualatex"
-  "tex/Project.bbl" 1734031381.29152 5611 761e9e9e613415cdfdc63cd20fadcc54 "biber tex/Project"
-  "tex/Project.out" 1734031386.21149 0 d41d8cd98f00b204e9800998ecf8427e "lualatex"
-  "tex/Project.run.xml" 1734031387.27348 2475 702538ccc2047f27012413583cd20432 "lualatex"
-  "tex/Project.toc" 1734031387.27348 1024 a2254d57ddc0a746b9e6ccd52b466bd7 "lualatex"
+  "tex/Project.aux" 1734282852.25623 13620 59e3a0ec08ef97e17bde4335ca74d301 "lualatex"
+  "tex/Project.bbl" 1734282844.68724 5611 761e9e9e613415cdfdc63cd20fadcc54 "biber tex/Project"
+  "tex/Project.out" 1734282850.33524 0 d41d8cd98f00b204e9800998ecf8427e "lualatex"
+  "tex/Project.run.xml" 1734282852.26223 2475 702538ccc2047f27012413583cd20432 "lualatex"
+  "tex/Project.toc" 1734282852.26223 1024 12fad5ca3142ad6b5cefc1295f591f25 "lualatex"
   (generated)
   "Project.pdf"
   "tex/Project.aux"

@@ -19,9 +19,10 @@
 #+latex_header: \setmonofont{DejaVu Sans Mono}[Scale=0.8]
 #+latex_header: \newenvironment{abstract} {}{}
 #+latex_header: \usepackage{abstract}
+#+latex_header: \usepackage{multicol}
+#+latex_header: \usepackage{supertabular,booktabs}
 #+latex_header: \DeclareMathOperator*{\argmax}{arg\,\max}
-#+latex_header:
-#+latex_header:
+#+latex_header: \newenvironment{multicoltable}[1][4] {\begin{multicols}{#1} \begin{supertabular}} {\end{supertabular} \end{multicols}}
 #+latex_header:
 #+cite_export: biblatex
 #+options:  toc:1
@@ -681,7 +682,7 @@ title!("$(acosd((g' * n))) °")
 
 
 #+name: angle-table
-#+begin_src julia :results table :eval never
+#+begin_src julia :results table :eval never :exports results
 using DataFrames
 iter = 200
 df = DataFrame(theta=Float64[] , angle=Float64[])
@@ -696,7 +697,7 @@ Array(df)
 #+end_src
 
 #+caption: value for \theta and corresponding angle \alpha after 200 time-steps
-#+attr_latex: :environment longtable
+#+attr_latex: :environment multicoltable
 #+RESULTS: angle-table
 |   -0.1 |  173.49096591056502 |
 | -0.095 |  173.10715739345923 |
@@ -808,7 +809,7 @@ Array(df)
 #+end_src
 
 #+caption: value for \theta and corresponding angle \alpha after 200 time-steps
-#+attr_latex: :environment longtable
+#+attr_latex: :environment multicoltable
 #+RESULTS: angle-table-square
 |   -0.1 | 177.95311184304808 |
 | -0.099 | 109.40440982717261 |
