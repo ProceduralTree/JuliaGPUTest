@@ -8,8 +8,8 @@
 \contentsline {chapter}{\numberline {6}Numerical evaluation on a circle}{23}{chapter.6}%
 \contentsline {chapter}{\numberline {7}Angle}{27}{chapter.7}%
 \contentsline {section}{\numberline {7.1}circle}{27}{section.7.1}%
-\contentsline {section}{\numberline {7.2}square}{29}{section.7.2}%
-\contentsline {chapter}{\numberline {8}Summary and outlook}{37}{chapter.8}%
-\contentsline {chapter}{\numberline {9}References}{39}{chapter.9}%
-\contentsline {chapter}{\nonumberline Bibliography}{41}{chapter*.13}%
+\contentsline {section}{\numberline {7.2}square}{28}{section.7.2}%
+\contentsline {chapter}{\numberline {8}Summary and outlook}{31}{chapter.8}%
+\contentsline {chapter}{\numberline {9}References}{33}{chapter.9}%
+\contentsline {chapter}{\nonumberline Bibliography}{35}{chapter*.15}%
 \providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

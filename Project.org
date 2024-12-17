@@ -19,6 +19,8 @@
 #+latex_header: \setmonofont{DejaVu Sans Mono}[Scale=0.8]
 #+latex_header: \newenvironment{abstract} {}{}
 #+latex_header: \usepackage{abstract}
+#+latex_header: \usepackage{multicol}
+#+latex_header: \usepackage{supertabular,booktabs}
 #+latex_header: \DeclareMathOperator*{\argmax}{arg\,\max}
 #+latex_header: \usepackage{booktabs}
 #+latex_header: \usepackage{multicol}
@@ -692,7 +694,49 @@ ylabel!(L"\alpha")
 #+end_src
 
 #+caption: value for \theta and corresponding angle \alpha after 200 time-steps
-#+attr_latex: :environment longtable
+#+attr_latex: :environment multicoltable
+#+RESULTS: angle-table
+|   -0.1 |  173.49096591056502 |
+| -0.095 |  173.10715739345923 |
+|  -0.09 |  172.18364087939332 |
+| -0.085 |  171.54740091859054 |
+|  -0.08 |   171.3054040677464 |
+| -0.075 |   171.1455632002332 |
+|  -0.07 |  171.02869693204397 |
+| -0.065 |   170.3901810227686 |
+|  -0.06 |   170.0449796355949 |
+| -0.055 |  173.27274052589075 |
+|  -0.05 |   170.3373892767722 |
+| -0.045 |  168.11953739721892 |
+|  -0.04 |  167.41386769034298 |
+| -0.035 |  166.62088559081457 |
+|  -0.03 |   164.9014365935728 |
+| -0.025 |   162.8061312020723 |
+|  -0.02 |  159.92337650959868 |
+| -0.015 |  155.82320048245077 |
+|  -0.01 |   147.4707481361878 |
+| -0.005 |  129.77836444929315 |
+|    0.0 |   91.28977210940522 |
+|  0.005 |   47.27538237804684 |
+|   0.01 |   26.60911004838421 |
+|  0.015 |   6.306468865037136 |
+|   0.02 |  11.495581754132852 |
+|  0.025 |   8.059259459078769 |
+|   0.03 |   2.997826637980469 |
+|  0.035 |   2.442790881259583 |
+|   0.04 |   2.314200756133827 |
+|  0.045 |   1.883610279597664 |
+|   0.05 |  1.3567468712125557 |
+|  0.055 |  0.8024311153759808 |
+|   0.06 |  0.5869880299417852 |
+|  0.065 |  0.4356076759230446 |
+|   0.07 | 0.32719257485287145 |
+|  0.075 | 0.03099970458170946 |
+|   0.08 | 0.37685133141547533 |
+|  0.085 |  0.4151229191583983 |
+|   0.09 |  0.7049376111739059 |
+|  0.095 |  0.8671639875701463 |
+|    0.1 |  1.0282690721714873 |
 
 ** square
 The normal vector on a square domain is a little bit more complicated than the circle normal. For the following we use the normal
@@ -764,7 +808,7 @@ ylabel!(L"\alpha")
 #+end_src
 
 #+caption: value for \theta and corresponding angle \alpha after 200 time-steps
-#+attr_latex: :environment longtable
+#+attr_latex: :environment multicoltable
 #+RESULTS: angle-table-square
 |   -0.1 | 177.95311184304808 |
 | -0.099 | 109.40440982717261 |
