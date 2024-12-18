@@ -810,6 +810,9 @@ xlabel!(L"C")
 ylabel!(L"\alpha")
 #+end_src
 
+#+RESULTS: fig:angle-table-square
+[[file:images/angle-values-square.png]]
+
 #+caption: value for \theta and corresponding angle \alpha after 200 time-steps
 #+attr_latex: :environment multicoltable
 #+RESULTS: angle-table-square
@@ -1087,5 +1090,5 @@ Further research may concern itself, with the following topics. First and foremo
 
 # Local Variables:
 # #julia-snail-extensions: (ob-julia)
-# #julia-snail/ob-julia-capture-io: nil
+# julia-snail/ob-julia-capture-io: nil
 # End:
