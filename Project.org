@@ -1,6 +1,8 @@
 #+title: Analyzing the influence of non-neutral contact angle on the Cahn-Hilliard model
 #+startup: latexpreview t
 #+latex_class: mimosis
+#+BIND: org-latex-title-command ""
+#+options: toc:nil
 #+BIBLIOGRAPHY: ~/org/resources/bibliography/refs.bib
 #+PROPERTY: header-args:julia  :eval never-export :noweb no-export :session *julia* :async t :exports results
 #+latex_compiler: lualatex
@@ -27,13 +29,49 @@
 #+latex_header: \usepackage{siunitx}
 #+latex_header: \newenvironment{multicoltable}[1][3]{\begin{multicols}{#1}\begin{supertabular}}{\end{supertabular}\end{multicols}}
 #+cite_export: biblatex
-#+options:  toc:1
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+
+
+#+begin_export latex
+\frontmatter
+\makeatletter
+\begin{titlepage}
+    \centering
+\includegraphics[width=1\textwidth]{pics/combined.png}
+\includegraphics[width=0.19\textwidth]{pics/_simtech.png}
+\par
+	\vspace{1.5cm}
+	{\scshape\huge Project Thesis \par}
+	\vspace{1.5cm}
+	{\Huge\bfseries  \@title \par}
+	\vspace{2cm}
+	{\LARGE \@author \par}
+	{\Large Matriculation Number: 3545737 \par}
+	\vspace{1.5cm}
+	{\large Supervisor: Tufan Gosh\par}
+	\vspace{1.5cm}
+	{\large Department of Hydromechanics and Modelling of Hydrosystems \par}
+
+
+
+	\vfill
+
+% Bottom of the page
+	{\large Completed 19.12.2024 \par}
+\end{titlepage}
+\makeatother
+
+#+end_export
 
 #+begin_abstract
 This project examines the effect of a simple Neumann boundary condition on a finite difference solver for the Cahn-Hilliard equation. It presents the results of the proposed method on different domains (for a square and a circule). There it is apparent, that the approach is able to affect the contact angle of the interface on the boundary. Additionally, this project gives a rudimentary technique to calculate this angle.
 #+end_abstract
 
+#+TOC: headlines 3
+#+begin_export latex
+\listoffigures
+\mainmatter
+#+end_export
 * Introduction
 This project thesis builds upon the work in our bachelor thesis, by introducing a simple boundary condition approach to a variation of the solver used therein. In Chapter [[Fundamentals]] we introduce the Cahn-Hilliard equation in the formulation that we use for this project. This project used a coupled second order version of this CH equation rather than the usual single 4th order one, to simplify the numerical implementation. The solver itself builds upon a finite difference discretization of this equation. In Chapter [[Numerical Solver]], together with the discrete domains, on which we run our numerical solver, we introduce a Jacobi iteration to solve the linear system derived from the aforementioned discretization.  The numerical solver in this thesis is GPU accelerated, and the discretization we chose to base our solver on is capable to calculate on all domains as long as a characteristic function is given. Therefore, we introduce two domains, on which we present our findings. The primary goal of this work is then the boundary condition approach in Chapter [[Boundary adaptation]]. Conceptionally the boundary condition we introduce simply consists of a constant value added in the linear system to all equations corresponding to grid-cells on the boundary. The actual implementation is capable of doing this for arbitrary domains. We present the results of this method on two Domains, a square one in Chapter [[Numerical evaluation]] and a circular domain in Chapter [[Numerical evaluation on a circle]] where we show the phase field for different boundary conditions which manifest in a variable contact angle of the interface on the boundary mimicking the behavior of hydrophobic/hydrophilic material. While we are unable to provide explicit formulae in relation to contact, in Chapter [[Angle]] we provide numerical insight in this relationship, and a table with precomputed values.
 * Fundamentals
@@ -372,44 +410,17 @@ end
 plot(plots...)
 #+end_src
 
+#+caption: phase-field \( \phi \) after 500 time-steps with \(C \in \{-1 + \frac{\sqrt{2}}{2} , -0.5 , 0.5 , 1 - \frac{\sqrt{2}}{2} \}\)
 #+RESULTS: fig:angle-multiple
 [[file:images/angle-sqrt(2).png]]
 
-#+caption: phase-field \( \phi \) after 500 time-steps with \(C \in \{-1 + \frac{\sqrt{2}}{2} , -0.5 , 0.5 , 1 - \frac{\sqrt{2}}{2} \}\)
 
 
-#+name: fig:random-square
-#+begin_src julia    :exports both :results file :file images/random-square.png
-include("src/solvers.jl")
-θ = -5f-1
-n = 100
-arr = _init()
-d = domain(get_backend(arr) , 256 , size(arr))
-d(arr)
-h = 25e-5
-solution = solve(arr , n , θ=θ)
-h1 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"h=%$h")
-h = 20e-5
-solution = solve(arr , n , θ=θ)
-h2 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"h=%$h")
-h = 15e-5
-solution = solve(arr , n , θ=θ)
-h3 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"h=%$h")
-h = 10e-5
-solution = solve(arr , n , θ=θ)
-h4 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"h=%$h")
-plot(h1,h2,h3,h4)
-#+end_src
-
-#+RESULTS: fig:random-square
-[[file:images/random-square.png]]
-
-#+caption: phase-field \( \phi \) after 100 time-steps with \( C=-\frac{\sqrt{2}}{2} \)
 * Numerical evaluation on a circle
 The original solver presented in [cite:@SHIN20117441] was able to solve the CH equation on arbitrary domains. Since the addition of our boundary function depends solely on the characteristic function of the discrete domain, we are able to use our approach on different domains, by providing a different characteristic function. We present the results of which in this chapter.
 To show the behavior of the CH solver in Fig. [[fig:angle0c]], we first employ no-flux boundary conditions on a circular domain. We observe the interface perpendicular on the boundary, as we expect.
 
-#+begin_src julia
+#+begin_src julia :exports nil
 @inline function G(I::CartesianIndex , Ids::CartesianIndices)::Float32
     @inline r  = Ids[end] - I
     m = maximum(Tuple(Ids[end]))
@@ -503,7 +514,7 @@ When using random initial phase-fields, the results look the comparable to the s
 #+begin_src julia   :results file :file images/random-circle.png :exports none
 using LaTeXStrings
 include("src/solvers.jl")
-θ = 5f-3
+θ = 0
 arr = cu(rand(Float32,256,256)) .* 2 .- 1
 d = domain(get_backend(arr) , 256 , size(arr))
 d(arr)
@@ -513,12 +524,15 @@ solution = solve(arr , 50 , θ=θ)
 h2 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=50")
 solution = solve(arr , 500 , θ=θ)
 h3 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=500")
-solution = solve(arr , 5000 , θ=θ)
+solution = solve(arr , 1000 , θ=θ)
 h4 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=5000")
 plot(h1,h2,h3,h4)
 #+end_src
 
-#+caption: random initial data after increasing  numer of time-steps.
+#+caption: random initial data after increasing  number of time-steps.
+#+RESULTS: fig:random-circle
+[[file:images/random-circle.png]]
+
 
 * Relaxed :noexport:
 #+begin_src julia
@@ -593,7 +607,7 @@ For a single point \(\vec{x}_{ij}\) on the interface and near the boundary. Sinc
 P_{ij} = arg\max_{\vec{x}_{ij}} \nabla \phi_{ij} \qquad \text{where} \quad \phi_{ij} \in \partial \Omega
 \end{equation}
 #+name: angle-function
-#+begin_src julia
+#+begin_src julia :exports none
 include("src/angle.jl")
 @inline function normal_vec(P::CartesianIndex , Ids::CartesianIndices)
     p = [P[1],P[2]]
@@ -609,7 +623,7 @@ function grad(field , I::CartesianIndex)
     return [dx,dy] ./ h
 end
 
-function angle(field, point=None)
+function argmax_gradient(field)
     out = CUDA.zeros(size(field))
     a = calculate_angle(get_backend(s) , 256 , size(field))
     bh = border_halo(get_backend(field) , 256 , size(field))
@@ -620,16 +634,19 @@ function angle(field, point=None)
     f = f2 .* f1
     a(out , field , f )
     A = Array(out)
-    if point == None
-        I_min = argmax(A)
-    else
-        I_min = point
+    return argmax(A)
     end
-    n = normal_vec(I_min , CartesianIndices(field))
-    g = normalize(grad(Array(field) , I_min))
-    return g , n , I_min
+
+function angle(field,point)
+    n = normal_vec(point , CartesianIndices(field))
+    g = normalize(grad(Array(field) , point))
+    return g , n
 end
 #+end_src
+
+#+RESULTS: angle-function
+: angle (generic function with 2 methods)
+
 ** Circle
 The normal of the circular domain in our second example is
 \begin{equation}
@@ -659,8 +676,8 @@ include("src/solvers.jl")
 include("src/initial_conditions.jl")
 arr = _init()
 s = solve(arr , n, θ=-1f-0)
-
-g,n,P = angle(s)
+P = argmax_gradient(s)
+g,n = angle(s , P)
 
 heatmap(Array(s)' , aspect_ratio=:equal)
 #acosd((g' * n)/(norm(g) * norm(n)))
@@ -670,23 +687,26 @@ quiver!([[P[1]]] , [[P[2]]], quiver= ([n[1]] , [n[2]] ) .* 50)
 title!("$(acosd((g' * n))) °")
 #+end_src
 
+#+caption: Plot of the boundary and surface normals on a circular domain
 #+RESULTS: fig:angle-on-circle
 [[file:images/angle-circle.png]]
 
 
-The method we use to calculate the interface-boundary angle is not stable under small changes in \(C\) as seen in  Fig. [[fig:angle-table]] this is unsurprising, since the selection criterion for the point, where we calculate the angle is prone to change as the maximum derrivative of the phase-field is approximately the same everywhere on the phase-field
+The method we use to calculate the interface-boundary angle is not stable under small changes in \(C\) as seen in  Fig. [[fig:angle-table]] this is unsurprising, since the selection criterion for the point, where we calculate the angle is prone to change as the maximum derivative of the phase-field is approximately the same everywhere on the phase-field. To combat this effect, we chose the point to evaluate at once for all iterations. This however only works if the interface doesn't move from the point selected. The results in Fig. [[fig:angle-table]] shows, that the contact angle is proportional to the value we use for \(C\). Since the other hyperparameters (\varepsilon and \(h\)) may have an effect on the angel as well, we cannot give an exact realtion.
 
-*** TODO fix point ofevaluation
 #+name: fig:angle-table
-#+begin_src julia :results file :eval never-export :file/images/angle-values-circle.png
+#+begin_src julia :results file :file/images/angle-values-circle.png
 using DataFrames
 iter = 200
 df = DataFrame(theta=Float64[] , angle=Float64[])
-P = None
-for theta=-0.1:0.005:0.1
+arr = _init()
+s = solve(arr , iter, θ=0)
+P = argmax_gradient(s)
+for theta=-0.5:0.005:0.5
     arr = _init()
     s = solve(arr , iter, θ=Float32(theta))
-    g,n,P = angle(s, point=P)
+    g,n = angle(s, P)
+    #local point = P
     alpha = acosd(g' * n)
     push!(df  , (theta , alpha))
 end
@@ -695,53 +715,10 @@ xlabel!(L"C")
 ylabel!(L"\alpha")
 #+end_src
 
-#+caption: value for \theta and corresponding angle \alpha after 200 time-steps
+#+caption: value for \(C\) and corresponding angle \alpha after 200 time-steps
 #+RESULTS: fig:angle-table
-[[file:/tmp/babel-9eE7ky/julia-94QJx8.png]]
+[[file:/tmp/babel-9eE7ky/julia-fngElO.png]]
 
-#+attr_latex: :environment multicoltable
-#+RESULTS: angle-table
-|   -0.1 |  173.49096591056502 |
-| -0.095 |  173.10715739345923 |
-|  -0.09 |  172.18364087939332 |
-| -0.085 |  171.54740091859054 |
-|  -0.08 |   171.3054040677464 |
-| -0.075 |   171.1455632002332 |
-|  -0.07 |  171.02869693204397 |
-| -0.065 |   170.3901810227686 |
-|  -0.06 |   170.0449796355949 |
-| -0.055 |  173.27274052589075 |
-|  -0.05 |   170.3373892767722 |
-| -0.045 |  168.11953739721892 |
-|  -0.04 |  167.41386769034298 |
-| -0.035 |  166.62088559081457 |
-|  -0.03 |   164.9014365935728 |
-| -0.025 |   162.8061312020723 |
-|  -0.02 |  159.92337650959868 |
-| -0.015 |  155.82320048245077 |
-|  -0.01 |   147.4707481361878 |
-| -0.005 |  129.77836444929315 |
-|    0.0 |   91.28977210940522 |
-|  0.005 |   47.27538237804684 |
-|   0.01 |   26.60911004838421 |
-|  0.015 |   6.306468865037136 |
-|   0.02 |  11.495581754132852 |
-|  0.025 |   8.059259459078769 |
-|   0.03 |   2.997826637980469 |
-|  0.035 |   2.442790881259583 |
-|   0.04 |   2.314200756133827 |
-|  0.045 |   1.883610279597664 |
-|   0.05 |  1.3567468712125557 |
-|  0.055 |  0.8024311153759808 |
-|   0.06 |  0.5869880299417852 |
-|  0.065 |  0.4356076759230446 |
-|   0.07 | 0.32719257485287145 |
-|  0.075 | 0.03099970458170946 |
-|   0.08 | 0.37685133141547533 |
-|  0.085 |  0.4151229191583983 |
-|   0.09 |  0.7049376111739059 |
-|  0.095 |  0.8671639875701463 |
-|    0.1 |  1.0282690721714873 |
 
 ** Square
 The normal vector on a square domain is a little bit more complicated than the normal for the circle. In this case we use the normal
@@ -749,7 +726,7 @@ The normal vector on a square domain is a little bit more complicated than the n
 \label{eq:9}
 \mathbf{n}_{ij} = \mathbf{n}(\vec{x}_{ij}) = \max(\vec{c} - \vec{x}_{ij}) e_{\argmax_{i,j}(\vec{c} - \vec{x}_{ij})}
 \end{equation}
-The results are presented in Fig. [[fig:angle-on-square]]
+The angle on a square domain is presented in Fig. [[fig:angle-on-square]]
 #+name: fig:angle-on-square
 #+begin_src julia :results file :file images/angle-square.png
 @inline function normal_vec(P::CartesianIndex , Ids::CartesianIndices)
@@ -789,21 +766,26 @@ quiver!([[P[1]]] , [[P[2]]], quiver= ([n[1]] , [n[2]] ) .* 50)
 title!("$(acosd((g' * n))) °")
 #+end_src
 
+#+caption: Plot of the boundary and surface normals on a circular domain
 #+RESULTS: fig:angle-on-square
 [[file:images/angle-square.png]]
 
 
 
-
+The relation between the contact angle and \(C\), as seen in Fig. [[fig:angle-table-square]] is about the same as in the circular domain
 #+name: fig:angle-table-square
 #+begin_src julia :results file :eval never-export :file images/angle-values-square.png
 using DataFrames
 iter = 200
 df = DataFrame(theta=Float64[] , angle=Float64[])
-for theta=-0.1:0.005:0.1
+arr = _init()
+s = solve(arr , iter, θ=0)
+P = argmax_gradient(s)
+for theta=-0.5:0.005:0.5
     arr = _init()
     s = solve(arr , iter, θ=Float32(theta))
-    g,n,P = angle(s)
+    g,n = angle(s, P)
+    #local point = P
     alpha = acosd(g' * n)
     push!(df  , (theta , alpha))
 end
@@ -812,213 +794,10 @@ xlabel!(L"C")
 ylabel!(L"\alpha")
 #+end_src
 
+#+caption: value for \theta and corresponding angle \alpha after 200 time-steps
 #+RESULTS: fig:angle-table-square
 [[file:images/angle-values-square.png]]
 
-#+caption: value for \theta and corresponding angle \alpha after 200 time-steps
-#+attr_latex: :environment multicoltable
-#+RESULTS: angle-table-square
-|   -0.1 | 177.95311184304808 |
-| -0.099 | 109.40440982717261 |
-| -0.098 | 113.75621160591214 |
-| -0.097 | 105.41178782179448 |
-| -0.096 | 102.88914136385036 |
-| -0.095 | 100.11964229844625 |
-| -0.094 | 103.81071062215845 |
-| -0.093 |  95.69795700045161 |
-| -0.092 |  95.67336816077285 |
-| -0.091 |  99.40375428329858 |
-|  -0.09 | 106.41888954576633 |
-| -0.089 |  178.0077678154438 |
-| -0.088 |  178.3025715727096 |
-| -0.087 |   178.316114694492 |
-| -0.086 |  178.2255733054392 |
-| -0.085 |  95.46277809162602 |
-| -0.084 |  178.3549136743765 |
-| -0.083 | 178.26719963602554 |
-| -0.082 | 178.32251888851366 |
-| -0.081 |  178.3565799403403 |
-|  -0.08 | 178.35467577409685 |
-| -0.079 | 178.38020838014717 |
-| -0.078 |  95.20563164308682 |
-| -0.077 |  95.14172673016061 |
-| -0.076 |  95.14296499007257 |
-| -0.075 | 105.44742113736852 |
-| -0.074 |  93.98032429805323 |
-| -0.073 |  93.93639872551873 |
-| -0.072 |  93.90397166303447 |
-| -0.071 |  95.04923946745302 |
-|  -0.07 | 178.78211729473668 |
-| -0.069 | 102.99168583129313 |
-| -0.068 |  94.93247349592393 |
-| -0.067 |  94.89895399516479 |
-| -0.066 |  94.88468241056746 |
-| -0.065 |  94.83389070992926 |
-| -0.064 | 178.92443595960236 |
-| -0.063 | 100.16055296439168 |
-| -0.062 |  94.75596984934359 |
-| -0.061 |    101.27470856133 |
-|  -0.06 |  179.0930181995219 |
-| -0.059 | 105.64189890451894 |
-| -0.058 |  94.61890118077682 |
-| -0.057 |  105.2681437129132 |
-| -0.056 |  94.55977561405972 |
-| -0.055 |  94.53388712342255 |
-| -0.054 |  93.34691119445903 |
-| -0.053 | 179.33441528850165 |
-| -0.052 |   93.2910844897572 |
-| -0.051 |  93.24648058021675 |
-|  -0.05 |  93.23521452164574 |
-| -0.049 | 179.16701750513553 |
-| -0.048 |  179.2966784153456 |
-| -0.047 |  94.23632639847965 |
-| -0.046 | 179.29473359110352 |
-| -0.045 | 179.37255040579183 |
-| -0.044 | 101.54088044034116 |
-| -0.043 |   94.1661313225638 |
-| -0.042 |  94.12197781117199 |
-| -0.041 |  94.12000946956198 |
-|  -0.04 |   94.0721925427342 |
-| -0.039 | 108.89374993386689 |
-| -0.038 | 179.63202655555918 |
-| -0.037 | 109.68666272268365 |
-| -0.036 | 108.51834091791333 |
-| -0.035 | 108.72075987854112 |
-| -0.034 |  92.74812555828719 |
-| -0.033 |  92.71114315877244 |
-| -0.032 | 109.35418670763997 |
-| -0.031 | 108.77670875273492 |
-|  -0.03 |  92.61596109538934 |
-| -0.029 | 108.40044962449264 |
-| -0.028 |  92.56516258112002 |
-| -0.027 | 109.79996459123538 |
-| -0.026 | 109.65918977762365 |
-| -0.025 |  110.3044265042822 |
-| -0.024 |  83.62357084082397 |
-| -0.023 | 111.54991541493794 |
-| -0.022 | 111.03194196511788 |
-| -0.021 | 114.64047084976055 |
-|  -0.02 | 109.05304432663621 |
-| -0.019 | 110.82994921660216 |
-| -0.018 |  92.24653067846398 |
-| -0.017 | 111.37975919462826 |
-| -0.016 | 113.65543027908225 |
-| -0.015 |   95.7731294576787 |
-| -0.014 | 110.03068049610467 |
-| -0.013 |  83.48278675686815 |
-| -0.012 | 114.18712728091695 |
-| -0.011 | 112.06506481164256 |
-|  -0.01 |  88.97890310519033 |
-| -0.009 |  88.93437302618706 |
-| -0.008 |  88.92621027458483 |
-| -0.007 |  113.9196518388393 |
-| -0.006 |   88.8748154828598 |
-| -0.005 |  86.97101403557363 |
-| -0.004 | 111.88388458499975 |
-| -0.003 | 114.84915820262506 |
-| -0.002 | 113.98233214194332 |
-| -0.001 |  95.92713614334707 |
-|    0.0 | 113.32020946225946 |
-|  0.001 | 114.32873475565437 |
-|  0.002 |  88.64471414125116 |
-|  0.003 |  86.73475050008524 |
-|  0.004 |  86.64299294912377 |
-|  0.005 |  88.36892220070804 |
-|  0.006 |  86.59429493690158 |
-|  0.007 |  98.65732746097177 |
-|  0.008 |   86.5904172845819 |
-|  0.009 |  86.46759774660268 |
-|   0.01 |  86.47786889099278 |
-|  0.011 |  86.49649245589079 |
-|  0.012 |  86.40563784781438 |
-|  0.013 |  86.33651818354659 |
-|  0.014 |  86.27783343769556 |
-|  0.015 |  86.18667749563494 |
-|  0.016 |  86.39821801641867 |
-|  0.017 |  86.21768848775416 |
-|  0.018 |  86.20656128064493 |
-|  0.019 |  86.24422054042941 |
-|   0.02 |  86.14661931403819 |
-|  0.021 |  86.24452599358314 |
-|  0.022 |  86.07925485738538 |
-|  0.023 |  86.04273807339838 |
-|  0.024 |  86.03922751662701 |
-|  0.025 |  85.99686516380959 |
-|  0.026 |  85.90542702435317 |
-|  0.027 |  85.85309029518746 |
-|  0.028 |   86.0330891413772 |
-|  0.029 |  85.83084772186491 |
-|   0.03 |  85.80380070559619 |
-|  0.031 |  85.75495062019647 |
-|  0.032 |  85.73494449356643 |
-|  0.033 |  85.78267050897831 |
-|  0.034 | 159.66794160038253 |
-|  0.035 |  85.66466805791654 |
-|  0.036 |  85.71079741144949 |
-|  0.037 |  85.57577052103707 |
-|  0.038 | 161.10166145787883 |
-|  0.039 |  85.60187813586091 |
-|   0.04 |  85.55578961267256 |
-|  0.041 |  91.54706243587353 |
-|  0.042 |   82.4478259247905 |
-|  0.043 |  85.98986247300422 |
-|  0.044 |  90.33035601585524 |
-|  0.045 |    86.019092020242 |
-|  0.046 |  86.09513749097509 |
-|  0.047 |  85.92736023132964 |
-|  0.048 |  82.61718340337106 |
-|  0.049 | 161.86923826388156 |
-|   0.05 |  177.4220744567218 |
-|  0.051 | 177.40353870713483 |
-|  0.052 | 177.36633804831473 |
-|  0.053 | 177.31175619981855 |
-|  0.054 | 177.27918695960085 |
-|  0.055 | 177.20060770371583 |
-|  0.056 |  91.09774195008896 |
-|  0.057 | 177.18972050909164 |
-|  0.058 | 177.24316583597977 |
-|  0.059 | 177.12485385461935 |
-|   0.06 | 176.10107235482425 |
-|  0.061 | 177.05223887985608 |
-|  0.062 | 176.07334642303667 |
-|  0.063 | 175.99698804768886 |
-|  0.064 |  176.9999733404206 |
-|  0.065 | 176.94751164680537 |
-|  0.066 | 175.95039284274893 |
-|  0.067 |  175.9082495880407 |
-|  0.068 |  175.8897212411926 |
-|  0.069 |    99.731362526186 |
-|   0.07 | 105.85378264391653 |
-|  0.071 |  175.7949947173414 |
-|  0.072 | 175.72222177353814 |
-|  0.073 |   175.728407033159 |
-|  0.074 | 175.69574900078072 |
-|  0.075 | 175.64171193057405 |
-|  0.076 | 175.57012583572595 |
-|  0.077 | 175.65746918915175 |
-|  0.078 | 105.57897708616683 |
-|  0.079 | 102.28726139379764 |
-|   0.08 | 175.46866309344034 |
-|  0.081 | 102.96816792863312 |
-|  0.082 | 102.63511936406039 |
-|  0.083 | 101.19114810827676 |
-|  0.084 | 175.38535145158926 |
-|  0.085 |  103.4655632099724 |
-|  0.086 | 103.62341228170168 |
-|  0.087 |  103.9030792249824 |
-|  0.088 | 103.67976184810772 |
-|  0.089 | 175.20984823407616 |
-|   0.09 |  102.9927434094263 |
-|  0.091 |  83.71112467848221 |
-|  0.092 |  83.74812231513913 |
-|  0.093 |  83.69429256748194 |
-|  0.094 | 102.11018607717594 |
-|  0.095 | 103.75109938930927 |
-|  0.096 |  104.5608960512815 |
-|  0.097 |   83.5030462660855 |
-|  0.098 |  83.54222287954207 |
-|  0.099 | 106.86440916136596 |
-|    0.1 |  83.45791163638641 |
 * Different step sizes and \varepsilon :noexport:
 #+begin_src julia
 include("src/solvers.jl")
@@ -1094,4 +873,6 @@ Further research may concern itself, with the following topics. First and foremo
 # Local Variables:
 # #julia-snail-extensions: (ob-julia)
 # julia-snail/ob-julia-capture-io: nil
+# mode: org
+# org-export-allow-bind-keywords: t
 # End:

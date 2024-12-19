@@ -7,6 +7,10 @@ Arrtype = cu
 
 
 function random_init(;arrtype=cu , SIZE=(256,256) )
+arr = arrtype(rand(SIZE...) .* 2 .- 1)
+d = domain(get_backend(arr) , 128 , size(arr))
+d(arr)
+    return arr
     end
 
 

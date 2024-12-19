@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.17.0 (TeX Live 2023/nixos.org)  (format=lualatex 1980.1.1)  15 DEC 2024 18:14
+This is LuaHBTeX, Version 1.17.0 (TeX Live 2023/nixos.org)  (format=lualatex 1980.1.1)  19 DEC 2024 13:05
  system commands enabled.
 **Project.tex
 (./Project.tex
@@ -2038,37 +2038,37 @@ Package csquotes Info: ... found 'babel' package.
  (./tex/Project.aux)
 \openout1 = Project.aux
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 218.
-LaTeX Font Info:    ... okay on input line 218.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 218.
-LaTeX Font Info:    ... okay on input line 218.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 218.
-LaTeX Font Info:    ... okay on input line 218.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 218.
-LaTeX Font Info:    ... okay on input line 218.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 218.
-LaTeX Font Info:    ... okay on input line 218.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 218.
-LaTeX Font Info:    ... okay on input line 218.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 218.
-LaTeX Font Info:    ... okay on input line 218.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 218.
-LaTeX Font Info:    ... okay on input line 218.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 218.
-LaTeX Font Info:    ... okay on input line 218.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 218.
-LaTeX Font Info:    ... okay on input line 218.
-Package scrbase Info: activating english \partname on input line 218.
-Package scrbase Info: activating english \chaptername on input line 218.
-Package scrbase Info: activating english \appendixname on input line 218.
-Package scrbase Info: activating english \figurename on input line 218.
-Package scrbase Info: activating english \tablename on input line 218.
-Package scrbase Info: activating english \contentsname on input line 218.
-Package scrbase Info: activating english \listfigurename on input line 218.
-Package scrbase Info: activating english \listtablename on input line 218.
-Package scrbase Info: activating english \bibname on input line 218.
-Package scrbase Info: activating english \indexname on input line 218.
-LaTeX Info: Redefining \up on input line 218.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 221.
+LaTeX Font Info:    ... okay on input line 221.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 221.
+LaTeX Font Info:    ... okay on input line 221.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 221.
+LaTeX Font Info:    ... okay on input line 221.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 221.
+LaTeX Font Info:    ... okay on input line 221.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 221.
+LaTeX Font Info:    ... okay on input line 221.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 221.
+LaTeX Font Info:    ... okay on input line 221.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 221.
+LaTeX Font Info:    ... okay on input line 221.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 221.
+LaTeX Font Info:    ... okay on input line 221.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 221.
+LaTeX Font Info:    ... okay on input line 221.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 221.
+LaTeX Font Info:    ... okay on input line 221.
+Package scrbase Info: activating english \partname on input line 221.
+Package scrbase Info: activating english \chaptername on input line 221.
+Package scrbase Info: activating english \appendixname on input line 221.
+Package scrbase Info: activating english \figurename on input line 221.
+Package scrbase Info: activating english \tablename on input line 221.
+Package scrbase Info: activating english \contentsname on input line 221.
+Package scrbase Info: activating english \listfigurename on input line 221.
+Package scrbase Info: activating english \listtablename on input line 221.
+Package scrbase Info: activating english \bibname on input line 221.
+Package scrbase Info: activating english \indexname on input line 221.
+LaTeX Info: Redefining \up on input line 221.
 
 (/nix/store/g94a8yzvh47gzpq4c4gzx5ypdysgbyrv-texlive-combined-full-2023-final-t
 exmfdist/tex/context/base/mkii/supp-pdf.mkii
@@ -2114,7 +2114,7 @@ File: translations-basic-dictionary-english.trsl (english translation file `tra
 nslations-basic-dictionary')
 )
 Package translations Info: loading dictionary `translations-basic-dictionary' f
-or `english'. on input line 218.
+or `english'. on input line 221.
 
 (/nix/store/g94a8yzvh47gzpq4c4gzx5ypdysgbyrv-texlive-combined-full-2023-final-t
 exmfdist/tex/latex/translations/translations-basic-dictionary-french.trsl
@@ -2122,7 +2122,7 @@ File: translations-basic-dictionary-french.trsl (french translation file `trans
 lations-basic-dictionary')
 )
 Package translations Info: loading dictionary `translations-basic-dictionary' f
-or `french'. on input line 218.
+or `french'. on input line 221.
 
 (/nix/store/g94a8yzvh47gzpq4c4gzx5ypdysgbyrv-texlive-combined-full-2023-final-t
 exmfdist/tex/latex/translations/translations-basic-dictionary-german.trsl
@@ -2130,8 +2130,8 @@ File: translations-basic-dictionary-german.trsl (german translation file `trans
 lations-basic-dictionary')
 )
 Package translations Info: loading dictionary `translations-basic-dictionary' f
-or `german'. on input line 218.
-Package hyperref Info: Link coloring ON on input line 218.
+or `german'. on input line 221.
+Package hyperref Info: Link coloring ON on input line 221.
 
 (./tex/Project.out) (./tex/Project.out)
 \@outlinefile=\write6
@@ -2144,7 +2144,7 @@ Class scrbook Info: loading recommended package `bookmark'.
 (scrbook)           `bookmarkpackage=false' before \begin{document} and
 (scrbook)           you can avoid this message adding:
 (scrbook)             \usepackage{bookmark}
-(scrbook)           before \begin{document} on input line 218.
+(scrbook)           before \begin{document} on input line 221.
 
 (/nix/store/g94a8yzvh47gzpq4c4gzx5ypdysgbyrv-texlive-combined-full-2023-final-t
 exmfdist/tex/latex/bookmark/bookmark.sty
@@ -2157,15 +2157,15 @@ File: bkm-pdftex.def 2023-12-10 v1.31 bookmark driver for pdfTeX and luaTeX (HO
 \BKM@id=\count553
 ))
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
-(Font)                  OT1/cmr/m/n --> TU/lmr/m/n on input line 218.
+(Font)                  OT1/cmr/m/n --> TU/lmr/m/n on input line 221.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/cmr/m/it --> TU/lmr/m/it on input line 218.
+(Font)                  OT1/cmr/m/it --> TU/lmr/m/it on input line 221.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/cmr/bx/n --> TU/lmr/bx/n on input line 218.
+(Font)                  OT1/cmr/bx/n --> TU/lmr/bx/n on input line 221.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 218.
+(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 221.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/cmss/bx/n --> TU/lmss/bx/n on input line 218.
+(Font)                  OT1/cmss/bx/n --> TU/lmss/bx/n on input line 221.
 
 Package fontspec Info: Font family 'latinmodern-math.otf(0)' created for font
 (fontspec)             'latinmodern-math.otf' with options
@@ -2209,16 +2209,16 @@ e=dflt;mathfontdimen=xetex;"
 (fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.: 
 
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `normal' on input line 218.
+(Font)              `operators' in the math version `normal' on input line 221.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/cmr/m/n --> TU/latinmodern-math.otf(1)/m/n on input
- line 218.
+ line 221.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `bold' on input line 218.
+(Font)              `operators' in the math version `bold' on input line 221.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
 (Font)                  OT1/cmr/bx/n --> TU/latinmodern-math.otf(1)/b/n on inpu
-t line 218.
+t line 221.
 
 Package fontspec Info: Font family 'latinmodern-math.otf(2)' created for font
 (fontspec)             'latinmodern-math.otf' with options
@@ -2244,15 +2244,15 @@ e=dflt;mathfontdimen=xetex;mathfontdimen=tex2;"
 (fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.: 
 
 LaTeX Font Info:    Encoding `OMS' has changed to `TU' for symbol font
-(Font)              `symbols' in the math version `normal' on input line 218.
+(Font)              `symbols' in the math version `normal' on input line 221.
 LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
 (Font)                  OMS/cmsy/m/n --> TU/latinmodern-math.otf(2)/m/n on inpu
-t line 218.
+t line 221.
 LaTeX Font Info:    Encoding `OMS' has changed to `TU' for symbol font
-(Font)              `symbols' in the math version `bold' on input line 218.
+(Font)              `symbols' in the math version `bold' on input line 221.
 LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
 (Font)                  OMS/cmsy/b/n --> TU/latinmodern-math.otf(2)/b/n on inpu
-t line 218.
+t line 221.
 
 Package fontspec Info: Font family 'latinmodern-math.otf(3)' created for font
 (fontspec)             'latinmodern-math.otf' with options
@@ -2279,16 +2279,16 @@ e=dflt;mathfontdimen=xetex;mathfontdimen=tex3;"
 
 LaTeX Font Info:    Encoding `OMX' has changed to `TU' for symbol font
 (Font)              `largesymbols' in the math version `normal' on input line 2
-18.
+21.
 LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
 (Font)                  OMX/cmex/m/n --> TU/latinmodern-math.otf(3)/m/n on inpu
-t line 218.
+t line 221.
 LaTeX Font Info:    Encoding `OMX' has changed to `TU' for symbol font
-(Font)              `largesymbols' in the math version `bold' on input line 218
+(Font)              `largesymbols' in the math version `bold' on input line 221
 .
 LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
 (Font)                  OMX/cmex/m/n --> TU/latinmodern-math.otf(3)/b/n on inpu
-t line 218.
+t line 221.
 Package biblatex Info: Trying to load language 'english'...
 Package biblatex Info: ... file 'english.lbx' found.
 
@@ -2332,25 +2332,44 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'Project.bbl' found.
  (./tex/Project.bbl)
-Package biblatex Info: Reference section=0 on input line 218.
-Package biblatex Info: Reference segment=0 on input line 218.
+Package biblatex Info: Reference section=0 on input line 221.
+Package biblatex Info: Reference segment=0 on input line 221.
+<pics/combined.png, id=7, 358.4592pt x 46.4937pt>
+File: pics/combined.png Graphic file (type png)
+<use pics/combined.png>
+Package luatex.def Info: pics/combined.png  used on input line 227.
+(luatex.def)             Requested size: 398.33864pt x 51.6689pt.
+<pics/_simtech.png, id=8, 4146.49126pt x 1179.65718pt>
+File: pics/_simtech.png Graphic file (type png)
+<use pics/_simtech.png>
+Package luatex.def Info: pics/_simtech.png  used on input line 228.
+(luatex.def)             Requested size: 75.6853pt x 21.5281pt.
  [1
 
 
 
+
+
 {/nix/store/9cm142cm0iznlmgyr1301ly2r9iqz6zv-texlive-combined-full-2023-final/sh
-are/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2
+are/texmf-var/fonts/map/pdftex/updmap/pdftex.map}<./pics/combined.png><./pics/_s
+imtech.png>] [2
+
+
+] [3] [4
 
 
 ] (./tex/Project.toc)
 \tf@toc=\write7
 
 \openout7 = Project.toc
- [3] [4
+ [5] [6
 
 
-]
-[5] [6
+] (./tex/Project.lof)
+\tf@lof=\write8
+
+\openout8 = Project.lof
+ [7] [8
 
 
 ]
@@ -2370,7 +2389,10 @@ Class scrbook Warning: \float@addtolists detected!
 (scrbook)              a package that still implements the
 (scrbook)              deprecated \float@addtolist interface.
 
-[7] [8
+[1
+
+
+] [2
 
 
 ]
@@ -2378,174 +2400,131 @@ chapter 2.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [9]
-[10] [11] [12
+ [3]
+[4] [5] [6
 
 
 ]
 chapter 3.
-<images/boundary.png, id=132, 317.5062pt x 297.2706pt>
+<images/boundary.png, id=180, 317.5062pt x 297.2706pt>
 File: images/boundary.png Graphic file (type png)
 <use images/boundary.png>
-Package luatex.def Info: images/boundary.png  used on input line 329.
+Package luatex.def Info: images/boundary.png  used on input line 360.
 (luatex.def)             Requested size: 358.50233pt x 335.65784pt.
-<images/boundary-circle.png, id=133, 317.5062pt x 297.2706pt>
+<images/boundary-circle.png, id=181, 317.5062pt x 297.2706pt>
 File: images/boundary-circle.png Graphic file (type png)
 <use images/boundary-circle.png>
-Package luatex.def Info: images/boundary-circle.png  used on input line 337.
+Package luatex.def Info: images/boundary-circle.png  used on input line 368.
 (luatex.def)             Requested size: 358.50233pt x 335.65784pt.
-[13] [14<./images/boundary.png>] [15<./images/boundary-circle.png>] [16
+[7] [8<./images/boundary.png>] [9<./images/boundary-circle.png>] [10
 
 
 ]
 chapter 4.
 LaTeX Font Info:    Font shape `TU/DejaVuSansMono(0)/m/n' will be
-(Font)              scaled to size 7.20003pt on input line 382.
+(Font)              scaled to size 7.20003pt on input line 406.
 LaTeX Font Info:    Font shape `TU/DejaVuSansMono(0)/b/n' will be
-(Font)              scaled to size 7.20003pt on input line 383.
+(Font)              scaled to size 7.20003pt on input line 407.
 LaTeX Font Info:    Font shape `TU/DejaVuSansMono(0)/m/n' will be
-(Font)              scaled to size 4.80002pt on input line 399.
-[17] [18]
+(Font)              scaled to size 4.80002pt on input line 423.
+
+Underfull \vbox (badness 2573) has occurred while \output is active []
+
+ [11]
+[12]
 chapter 5.
-<images/baseline.png, id=175, 602.25pt x 401.5pt>
+<images/baseline.png, id=220, 602.25pt x 401.5pt>
 File: images/baseline.png Graphic file (type png)
 <use images/baseline.png>
-Package luatex.def Info: images/baseline.png  used on input line 433.
+Package luatex.def Info: images/baseline.png  used on input line 457.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-<images/angle1.png, id=177, 602.25pt x 401.5pt>
+<images/angle1.png, id=222, 602.25pt x 401.5pt>
 File: images/angle1.png Graphic file (type png)
 <use images/angle1.png>
-Package luatex.def Info: images/angle1.png  used on input line 440.
+Package luatex.def Info: images/angle1.png  used on input line 464.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-[19
+[13
 
 
 <./images/baseline.png>]
-<images/angle-.png, id=187, 602.25pt x 401.5pt>
+<images/angle-.png, id=231, 602.25pt x 401.5pt>
 File: images/angle-.png Graphic file (type png)
 <use images/angle-.png>
-Package luatex.def Info: images/angle-.png  used on input line 448.
+Package luatex.def Info: images/angle-.png  used on input line 472.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-<images/angle-sqrt(2).png, id=188, 602.25pt x 401.5pt>
+<images/angle-sqrt(2).png, id=232, 602.25pt x 401.5pt>
 File: images/angle-sqrt(2).png Graphic file (type png)
 <use images/angle-sqrt(2).png>
-Package luatex.def Info: images/angle-sqrt(2).png  used on input line 454.
+Package luatex.def Info: images/angle-sqrt(2).png  used on input line 479.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
+ [14<./images/angle1.png>] [15<./images/angle-.png><./images/angle-sqrt(2).png>] [16
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [20<./images/angle1.png>] [21<./images/angle-.png><./images/angle-sqrt(2).png>]
-<images/random-square.png, id=200, 602.25pt x 401.5pt>
-File: images/random-square.png Graphic file (type png)
-<use images/random-square.png>
-Package luatex.def Info: images/random-square.png  used on input line 483.
-(luatex.def)             Requested size: 358.50233pt x 239.00879pt.
- [22<./images/random-square.png>]
+]
 chapter 6.
 LaTeX Font Info:    Font shape `TU/DejaVuSansMono(0)/m/n' will be
-(Font)              scaled to size 8.76003pt on input line 493.
-<images/angle0c.png, id=207, 602.25pt x 401.5pt>
+(Font)              scaled to size 8.76003pt on input line 507.
+<images/angle0c.png, id=248, 602.25pt x 401.5pt>
 File: images/angle0c.png Graphic file (type png)
 <use images/angle0c.png>
-Package luatex.def Info: images/angle0c.png  used on input line 501.
+Package luatex.def Info: images/angle0c.png  used on input line 515.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-<images/anfle1c.png, id=210, 602.25pt x 401.5pt>
+<images/anfle1c.png, id=251, 602.25pt x 401.5pt>
 File: images/anfle1c.png Graphic file (type png)
 <use images/anfle1c.png>
-Package luatex.def Info: images/anfle1c.png  used on input line 510.
+Package luatex.def Info: images/anfle1c.png  used on input line 524.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-[23
-
-
-<./images/angle0c.png>]
-<images/angle-1c.png, id=220, 602.25pt x 401.5pt>
+<images/angle-1c.png, id=254, 602.25pt x 401.5pt>
 File: images/angle-1c.png Graphic file (type png)
 <use images/angle-1c.png>
-Package luatex.def Info: images/angle-1c.png  used on input line 517.
+Package luatex.def Info: images/angle-1c.png  used on input line 531.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-<images/angle-multiplec.png, id=222, 602.25pt x 401.5pt>
+<images/angle-multiplec.png, id=256, 602.25pt x 401.5pt>
 File: images/angle-multiplec.png Graphic file (type png)
 <use images/angle-multiplec.png>
-Package luatex.def Info: images/angle-multiplec.png  used on input line 524.
+Package luatex.def Info: images/angle-multiplec.png  used on input line 538.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
- [24<./images/anfle1c.png>] [25<./images/angle-1c.png><./images/angle-multiplec.
-png>] [26
-
-
-]
+[17] [18<./images/angle0c.png><./images/anfle1c.png>] [19<./images/angle-1c.png>
+] [20<./images/angle-multiplec.png>]
 chapter 7.
-<images/angle-circle.png, id=241, 602.25pt x 401.5pt>
+<images/angle-circle.png, id=278, 602.25pt x 401.5pt>
 File: images/angle-circle.png Graphic file (type png)
 <use images/angle-circle.png>
-Package luatex.def Info: images/angle-circle.png  used on input line 558.
+Package luatex.def Info: images/angle-circle.png  used on input line 568.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [27]
-Overfull \hbox (56.62505pt too wide) in paragraph at lines 568--593
- [] 
- []
-
-
-Overfull \hbox (58.4537pt too wide) in paragraph at lines 593--610
- [] 
- []
-
-<images/angle-square.png, id=252, 602.25pt x 401.5pt>
-File: images/angle-square.png Graphic file (type png)
-<use images/angle-square.png>
-Package luatex.def Info: images/angle-square.png  used on input line 621.
+</tmp/babel-9eE7ky/julia-fngElO.png, id=281, 602.25pt x 401.5pt>
+File: /tmp/babel-9eE7ky/julia-fngElO.png Graphic file (type png)
+<use /tmp/babel-9eE7ky/julia-fngElO.png>
+Package luatex.def Info: /tmp/babel-9eE7ky/julia-fngElO.png  used on input line
+ 577.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [28<./images/angle-circle.png>] [29]
-Overfull \hbox (56.62505pt too wide) in paragraph at lines 631--656
- [] 
- []
-
-
-Overfull \hbox (56.62505pt too wide) in paragraph at lines 656--698
- [] 
- []
-
-
-Overfull \hbox (56.62505pt too wide) in paragraph at lines 698--740
- [] 
- []
-
-
-Overfull \hbox (52.9787pt too wide) in paragraph at lines 740--782
- [] 
- []
-
-
-Overfull \hbox (52.9787pt too wide) in paragraph at lines 782--824
- [] 
- []
-
-
-Overfull \hbox (52.9787pt too wide) in paragraph at lines 824--833
- [] 
- []
-
-[30<./images/angle-square.png>]
-chapter 8.
-[31
-
-
-] [32
+[21
 
 
 ]
-chapter 9.
-[33] [34
+<images/angle-square.png, id=292, 602.25pt x 401.5pt>
+File: images/angle-square.png Graphic file (type png)
+<use images/angle-square.png>
+Package luatex.def Info: images/angle-square.png  used on input line 590.
+(luatex.def)             Requested size: 358.50233pt x 239.00879pt.
+<images/angle-values-square.png, id=294, 602.25pt x 401.5pt>
+File: images/angle-values-square.png Graphic file (type png)
+<use images/angle-values-square.png>
+Package luatex.def Info: images/angle-values-square.png  used on input line 599
+.
+(luatex.def)             Requested size: 358.50233pt x 239.00879pt.
+ [22<./images/angle-circle.png>] [23</tmp/babel-9eE7ky/julia-fngElO.png><./image
+s/angle-square.png>] [24<./images/angle-values-square.png>]
+chapter 8.
+[25
+
+
+] [26
 
 
 ]
 chapter without number
-[35] (./tex/Project.aux)
+[27] (./tex/Project.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2020/03/25>
@@ -2558,16 +2537,15 @@ Package logreq Info: Writing requests to 'Project.run.xml'.
 )
 
 Here is how much of LuaTeX's memory you used:
- 56243 strings out of 476447
- 195338,2848258 words of node,token memory allocated
- 76458 words of node memory still in use:
-   622 hlist, 12 vlist, 203 rule, 100 disc, 6 local_par, 12 math, 2446 glue, 4 k
-ern, 9 penalty, 2 sub_mlist, 4667 glyph, 7558 attribute, 97 glue_spec, 1081 attr
-ibute_list, 2 write, 3 pdf_action, 2 pdf_colorstack nodes
-   avail lists: 1:5,2:2280,3:333,4:627,5:427,6:129,7:11325,8:67,9:1338,10:28,11:
-378
- 77080 multiletter control sequences out of 65536+600000
- 95 fonts using 36830475 bytes
+ 56270 strings out of 476447
+ 100000,2848258 words of node,token memory allocated
+ 1548 words of node memory still in use:
+   7 hlist, 2 vlist, 2 rule, 2 glue, 4 kern, 1 penalty, 2 sub_mlist, 2 glyph, 34
+1 attribute, 98 glue_spec, 50 attribute_list, 2 write, 8 pdf_action nodes
+   avail lists: 1:4,2:9857,3:365,4:626,5:399,6:130,7:5090,8:68,9:1351,10:28,11:3
+80
+ 77089 multiletter control sequences out of 65536+600000
+ 95 fonts using 34988119 bytes
  122i,20n,114p,10958b,2459s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype/public/
 lm/lmroman10-italic.otf></nix/store/iivr3nlmgwnpfd54c0l420xj0mqqg3vw-dejavu-font
@@ -2575,21 +2553,23 @@ s-2.37/share/fonts/truetype/DejaVuSansMono.ttf></nix/store/iivr3nlmgwnpfd54c0l42
 0xj0mqqg3vw-dejavu-fonts-2.37/share/fonts/truetype/DejaVuSansMono-Bold.ttf></nix
 /store/0dhipjmrsfh869scr5hy6q33imicvfp6-lm-math-1.959-tex/fonts/opentype/public/
 lm-math/latinmodern-math.otf></nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.0
-05-tex/fonts/opentype/public/lm/lmromanslant10-regular.otf></nix/store/0dhipjmrs
-fh869scr5hy6q33imicvfp6-lm-math-1.959-tex/fonts/opentype/public/lm-math/latinmod
-ern-math.otf></nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/ope
-ntype/public/lm/lmroman8-regular.otf></nix/store/0dhipjmrsfh869scr5hy6q33imicvfp
+05-tex/fonts/opentype/public/lm/lmromanslant10-regular.otf></nix/store/swxn2kgfg
+47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype/public/lm/lmroman8-regular.o
+tf></nix/store/0dhipjmrsfh869scr5hy6q33imicvfp6-lm-math-1.959-tex/fonts/opentype
+/public/lm-math/latinmodern-math.otf></nix/store/0dhipjmrsfh869scr5hy6q33imicvfp
 6-lm-math-1.959-tex/fonts/opentype/public/lm-math/latinmodern-math.otf></nix/sto
 re/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype/public/lm/lmroma
-n10-bold.otf></nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/ope
-ntype/public/lm/lmroman10-regular.otf></nix/store/swxn2kgfg47a8r0igh45r51c7x3mk9
+n10-regular.otf></nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/
+opentype/public/lm/lmroman10-bold.otf></nix/store/swxn2kgfg47a8r0igh45r51c7x3mk9
 2s-lm-2.005-tex/fonts/opentype/public/lm/lmroman12-regular.otf></nix/store/swxn2
-kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype/public/lm/lmromancaps10-
-regular.otf>
-Output written on Project.pdf (35 pages, 646900 bytes).
+kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype/public/lm/lmroman17-regu
+lar.otf></nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype
+/public/lm/lmroman12-bold.otf></nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.
+005-tex/fonts/opentype/public/lm/lmromancaps10-regular.otf>
+Output written on Project.pdf (35 pages, 721146 bytes).
 
-PDF statistics: 424 PDF objects out of 1000 (max. 8388607)
- 334 compressed objects within 4 object streams
- 91 named destinations out of 1000 (max. 131072)
- 120 words of extra memory for PDF output out of 10000 (max. 100000000)
+PDF statistics: 464 PDF objects out of 1000 (max. 8388607)
+ 363 compressed objects within 4 object streams
+ 93 named destinations out of 1000 (max. 131072)
+ 112 words of extra memory for PDF output out of 10000 (max. 100000000)
 
