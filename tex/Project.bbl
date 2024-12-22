@@ -88,9 +88,15 @@
       \field{sortinithash}{6901a00e45705986ee5e7ca9fd39adca}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{title}{Untitled1}
+      \field{title}{A numerical method on the Cahn-Hilliard equation and its relaxed variation.}
       \field{type}{Bachelor Thesis}
-      \field{year}{3000}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://github.com/ProceduralTree/CahnHilliardJulia/blob/af39a13f44caa1de1ee293b43e61e0c315d5aa0f/Thesis_jl.pdf
+      \endverb
+      \verb{url}
+      \verb https://github.com/ProceduralTree/CahnHilliardJulia/blob/af39a13f44caa1de1ee293b43e61e0c315d5aa0f/Thesis_jl.pdf
+      \endverb
     \endentry
     \entry{Wu_2022}{article}{}
       \name{author}{1}{}{%

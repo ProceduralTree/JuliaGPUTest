@@ -1,4 +1,4 @@
-% Created 2024-12-19 Do 13:05
+% Created 2024-12-22 So 15:24
 % Intended LaTeX compiler: lualatex
 \documentclass{mimosis}
                   \usepackage[hyperref,x11names]{xcolor}
@@ -235,7 +235,7 @@ unicode
 	{\LARGE \@author \par}
 	{\Large Matriculation Number: 3545737 \par}
 	\vspace{1.5cm}
-	{\large Supervisor: Tufan Gosh\par}
+	{\large Supervisor: Tufan Ghosh\par}
 	\vspace{1.5cm}
 	{\large Department of Hydromechanics and Modelling of Hydrosystems \par}
 
@@ -257,10 +257,10 @@ This project examines the effect of a simple Neumann boundary condition on a fin
 \listoffigures
 \mainmatter
 \chapter{Introduction}
-\label{sec:org969f3e6}
-This project thesis builds upon the work in our bachelor thesis, by introducing a simple boundary condition approach to a variation of the solver used therein. In Chapter \ref{sec:org5b96c8b} we introduce the Cahn-Hilliard equation in the formulation that we use for this project. This project used a coupled second order version of this CH equation rather than the usual single 4th order one, to simplify the numerical implementation. The solver itself builds upon a finite difference discretization of this equation. In Chapter \ref{sec:orgf5198c1}, together with the discrete domains, on which we run our numerical solver, we introduce a Jacobi iteration to solve the linear system derived from the aforementioned discretization.  The numerical solver in this thesis is GPU accelerated, and the discretization we chose to base our solver on is capable to calculate on all domains as long as a characteristic function is given. Therefore, we introduce two domains, on which we present our findings. The primary goal of this work is then the boundary condition approach in Chapter \ref{sec:orgc927f71}. Conceptionally the boundary condition we introduce simply consists of a constant value added in the linear system to all equations corresponding to grid-cells on the boundary. The actual implementation is capable of doing this for arbitrary domains. We present the results of this method on two Domains, a square one in Chapter \ref{sec:orgb961127} and a circular domain in Chapter \ref{sec:orgc37d753} where we show the phase field for different boundary conditions which manifest in a variable contact angle of the interface on the boundary mimicking the behavior of hydrophobic/hydrophilic material. While we are unable to provide explicit formulae in relation to contact, in Chapter \ref{sec:org91a311c} we provide numerical insight in this relationship, and a table with precomputed values.
+\label{sec:org172b883}
+This project thesis builds upon the work in our bachelor thesis, by introducing a simple boundary condition approach to a variation of the solver used therein. In Chapter \ref{sec:org8492d40} we introduce the Cahn-Hilliard equation in the formulation that we use for this project. This project used a coupled second order version of this CH equation rather than the usual single 4th order one, to simplify the numerical implementation. The solver itself builds upon a finite difference discretization of this equation. In Chapter \ref{sec:org1ac2f56}, together with the discrete domains, on which we run our numerical solver, we introduce a Jacobi iteration to solve the linear system derived from the aforementioned discretization.  The numerical solver in this thesis is GPU accelerated, and the discretization we chose to base our solver on is capable to calculate on all domains as long as a characteristic function is given. Therefore, we introduce two domains, on which we present our findings. The primary goal of this work is then the boundary condition approach in Chapter \ref{sec:org65f9e05}. Conceptionally the boundary condition we introduce simply consists of a constant value added in the linear system to all equations corresponding to grid-cells on the boundary. The actual implementation is capable of doing this for arbitrary domains. We present the results of this method on two Domains, a square one in Chapter \ref{sec:org75922b4} and a circular domain in Chapter \ref{sec:org7ce30bd} where we show the phase field for different boundary conditions which manifest in a variable contact angle of the interface on the boundary mimicking the behavior of hydrophobic/hydrophilic material. While we are unable to provide explicit formulae in relation to contact, in Chapter \ref{sec:org87a873f} we provide numerical insight in this relationship, and a table with precomputed values.
 \chapter{Fundamentals}
-\label{sec:org5b96c8b}
+\label{sec:org8492d40}
 This work concerns itself with boundary conditions on the Cahn-Hilliard equation. The Cahn-Hilliard (CH) equation is a fourth order partial differential equation (PDE) used to describe phase separation in binary mixtures. It models how a mixture of two components (e.g., two liquids or alloys) evolves over time to separate into distinct regions with different concentrations of each component. To achive this it provides a phase-field \(\phi\) which is used for an implicit representation of the interface between both phases. The Cahn-Hilliard equation, in the formulation we use here, is derived from the \textbf{Ginzburg-Landau} energy \eqref{eq:energy}, an example on how this is done is given by \autocite{Wu_2022}.
 \begin{align}
 \label{eq:energy}
@@ -290,7 +290,7 @@ One thing to note is, that this way of writing the CH equation presents a second
 \end{equation}
 This choice is deliberate, and aligns with the numerical implementation.
 \section{Notation}
-\label{sec:org2ffcccc}
+\label{sec:orgd993985}
 This project solves the CH equation on a regular rectangular grid with grid-size \(h\). The computational domain, is therefore discretized as
 \begin{align}
 \label{eq:4}
@@ -332,7 +332,7 @@ Our solver implements the ansatz proposed by the authors \autocite{SHIN20117441}
 \end{equation}
 This approach provides a semi implicit time discretization where linear terms are evaluated implicitly and the nonlinear double well potential is evaluated explicitly.
 \chapter{Boundary adaptation}
-\label{sec:orgc927f71}
+\label{sec:org65f9e05}
 The solver from \autocite{SHIN20117441}, that we use as reference guaranties no flux boundary conditions at a discrete level by setting \(\nabla \phi_{ij} = 0\) for \(\phi_{ij} \in \partial \Omega_{d}\) this is done by multiplying the gradient \(G_{ij} \nabla_d \phi_{ij}\) with the Characteristic function of \(\Omega_{d}\).
 \begin{equation}
 G_{ij}=
@@ -369,7 +369,7 @@ In this Project we use the following adaptation of the discretization from \auto
 \caption{\label{fig:boundary-circle}Visualization of all grid-cells adjacent to the boundary \(\partial \Omega_{d}\) of a circular domain}
 \end{figure}
 \chapter{Numerical solver}
-\label{sec:orgf5198c1}
+\label{sec:org1ac2f56}
 Contrary to the solver proposed in \autocite{Ulmer_CHRelaxed_2024} we do not use a multi-grid Gauss-Seidel Solver to solve the linear system, instead we use a Jacobi solver, as this will eventually assist in parallelizing the computation.
 Similar to \autocite{Ulmer_CHRelaxed_2024} we linearize \eqref{eq:second-order-adapted-ansatz} to
 \begin{equation}
@@ -446,7 +446,15 @@ Our implementation is done in julia to transmit the solution for each element in
 \end{Verbatim}
 \end{Code}
 \chapter{Numerical evaluation}
-\label{sec:orgb961127}
+\label{sec:org75922b4}
+the numerical investigations in this capter and the following are done with the following hyperparameters:
+\begin{center}
+\begin{tabular}{llll}
+parameter & \(\varepsilon\) & \(h\) & \(\Delta t\)\\
+\hline
+value & \(8 * 10^{-5}\) & \(1*10^{-4}\) & \(1*10^{-4}\)\\
+\end{tabular}
+\end{center}
 We set constant values for B\textsubscript{ij} on the boundary to begin with our evaluations.
 One may note that C = 0 is equivalent to the no-flux condition of the original solver introduced in the Bachelor thesis. Now, as a preliminary verification step we set C = 0 as our first choice.
 Consequently, for \(C = 0\), the interface lies orthogonal on the boundary (see Fig. \ref{fig:angle0}), which we expect for a CH solver with no-flux boundary conditions.
@@ -455,7 +463,7 @@ For \(B_{ij} \in \{-1,1\}\) we observed behavior connected to hydrophobic / hydr
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=.9\linewidth]{images/baseline.png}
-\caption{\label{fig:angle0}Phase-field \(\phi\) after 100 time-steps with \(C=0\) emmulating no-flux boundary.}
+\caption{\label{fig:angle0}Phase-field \(\phi\) after 100 time-steps with \(C=0\) emulating no-flux boundary.}
 \end{figure}
 
 We show, that our solver is stable for values \(C \neq 0\). In Fig. \ref{fig:angle1} we employ a constant value of \(C=1\) and observe the phase corresponding to \(\phi = 1\) puling away from the boundary. The contact angle between phase 1 and the boundary approaches 180° i.e. the interface runs parallel to the boundary.
@@ -480,7 +488,7 @@ The most interesting behavior are noted for values between \((-1,1)\), where we 
 \caption{\label{fig:angle-multiple}phase-field \(\phi\) after 500 time-steps with \(C \in \{-1 + \frac{\sqrt{2}}{2} , -0.5 , 0.5 , 1 - \frac{\sqrt{2}}{2} \}\)}
 \end{figure}
 \chapter{Numerical evaluation on a circle}
-\label{sec:orgc37d753}
+\label{sec:org7ce30bd}
 The original solver presented in \autocite{SHIN20117441} was able to solve the CH equation on arbitrary domains. Since the addition of our boundary function depends solely on the characteristic function of the discrete domain, we are able to use our approach on different domains, by providing a different characteristic function. We present the results of which in this chapter.
 To show the behavior of the CH solver in Fig. \ref{fig:angle0c}, we first employ no-flux boundary conditions on a circular domain. We observe the interface perpendicular on the boundary, as we expect.
 
@@ -532,7 +540,7 @@ The results for \(C=-1\) in Fig. \ref{fig:angle-1c} on the circular domain, are 
 \caption{\label{fig:angle-1c}Phase-field \(\phi\) after 100 time-steps with \(C=-1\)}
 \end{figure}
 
-When evaluating intermediate contact angles in Fig. \ref{fig:angle-multiplec}, the results are similar to the square domain again, however, especially for shallow angles, we observe some artifacts of one phase appearing in places where previously was none. We observe similar behavior on square domains only in the corners, i.e. points where the boundary has high curvature.
+When evaluating intermediate contact angles in Fig. \ref{fig:angle-multiplec}, the results are similar to the square domain again, however, especially for shallow angles, we observe some artifacts of one phase appearing in places where previously was none. We observe similar behavior on square domains only in the corners, i.e. points where the boundary has high curvature. Note that this effect can be circumvented with different values for \(\varepsilon\) howeverthis has an effect on the boundary angle, that we did not investigate.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=.9\linewidth]{images/angle-multiplec.png}
@@ -543,7 +551,15 @@ When evaluating intermediate contact angles in Fig. \ref{fig:angle-multiplec}, t
 
 When using random initial phase-fields, the results look the comparable to the square domain, and exhibit the for the CH equation expected behavior, whereas time goes on, the many small parts coalesce into larger parts.
 \chapter{Angle}
-\label{sec:org91a311c}
+\label{sec:org87a873f}
+We calculate the angle using the folowing hyperparameters
+\begin{center}
+\begin{tabular}{llll}
+parameter & \(\varepsilon\) & \(h\) & \(\Delta t\)\\
+\hline
+value & \(2 * 10^{-5}\) & \(1*10^{-4}\) & \(1*10^{-4}\)\\
+\end{tabular}
+\end{center}
 In previous experiments we noted that the angle of the interface changes with different input parameters. While we do not have a mathematical derivation of this relation, we aim to provide numerical insight in this chapter. We calculate this angle using the gradient of the phase-field \(\nabla \phi_{ij}\) and the normal of our domains' boundary.
 \begin{align}
 \label{eq:1}
@@ -555,7 +571,7 @@ For a single point \(\vec{x}_{ij}\) on the interface and near the boundary. Sinc
 P_{ij} = arg\max_{\vec{x}_{ij}} \nabla \phi_{ij} \qquad \text{where} \quad \phi_{ij} \in \partial \Omega
 \end{equation}
 \section{Circle}
-\label{sec:orga8cca41}
+\label{sec:org9915123}
 The normal of the circular domain in our second example is
 \begin{equation}
 \label{eq:3}
@@ -570,15 +586,15 @@ In Fig. \ref{fig:angle-on-circle} we present the results of a calculated angle, 
 \end{figure}
 
 
-The method we use to calculate the interface-boundary angle is not stable under small changes in \(C\) as seen in  Fig. \ref{fig:angle-table} this is unsurprising, since the selection criterion for the point, where we calculate the angle is prone to change as the maximum derivative of the phase-field is approximately the same everywhere on the phase-field. To combat this effect, we chose the point to evaluate at once for all iterations. This however only works if the interface doesn't move from the point selected. The results in Fig. \ref{fig:angle-table} shows, that the contact angle is proportional to the value we use for \(C\). Since the other hyperparameters (\(\varepsilon\) and \(h\)) may have an effect on the angel as well, we cannot give an exact realtion.
+The method we use to calculate the interface-boundary angle is not stable under small changes in \(C\) as seen in  Fig. \ref{fig:angle-table} this is unsurprising, since the selection criterion for the point, where we calculate the angle is prone to change as the maximum derivative of the phase-field is approximately the same everywhere on the phase-field. To combat this effect, we chose the point to evaluate at once for all iterations. This however only works if the interface doesn't move from the point selected. The results in Fig. \ref{fig:angle-table} shows, that the contact angle is related to the value we use for \(C\). Since the other hyperparameters (\(\varepsilon\) and \(h\)) may have an effect on the angel as well, we cannot give an exact relation.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=.9\linewidth]{/tmp/babel-9eE7ky/julia-fngElO.png}
+\includegraphics[width=.9\linewidth]{images/angle-values-circle.png}
 \caption{\label{fig:angle-table}value for \(C\) and corresponding angle \(\alpha\) after 200 time-steps}
 \end{figure}
 \section{Square}
-\label{sec:orge6cf74e}
+\label{sec:orgdfcdecb}
 The normal vector on a square domain is a little bit more complicated than the normal for the circle. In this case we use the normal
 \begin{equation}
 \label{eq:9}
@@ -600,7 +616,7 @@ The relation between the contact angle and \(C\), as seen in Fig. \ref{fig:angle
 \caption{\label{fig:angle-table-square}value for \(\theta\) and corresponding angle \(\alpha\) after 200 time-steps}
 \end{figure}
 \chapter{Summary and outlook}
-\label{sec:orga954a56}
+\label{sec:orgbd2a86c}
 In this project we examined a numerical model of the CH equation, with simple Neumann boundary conditions. We introduced a simplified version of the solver used in \autocite{Ulmer_CHRelaxed_2024} and derived from \autocite{SHIN20117441}. Which due to GPU acceleration is significantly faster on our available hardware. We have shown a simple Neumann boundary approach that runs stable on both tested domains. The approach introduced by us is able to freely affect the angle of the phase interface on the boundary, The results of which we have shown on a circular and square domain. We introduced a rudimentary method to calculate the contact angle programmatically however we acknowledge that the results are unreliable. Further research would require a more consistent approach. One such method may be a filter that averages the angle calculation over more than one point, another should be a consistent selection of the point of interest, as the current approach cannot guaranty that the same (or a similar) point is selected if the input parameters change slightly.
 
 Further research may concern itself, with the following topics. First and foremost, we observed inconsistent behavior when changing the hyperparameters \(\varepsilon\) and grid-size \(h\). However, the methods we used for evaluation were inconsistent at best. Due to the aforementioned unpredictability in the angle calculation the resulting data series was erratic and no trends where apparent. Further research would require investigation of those effects on the boundary. Additionally, in our bachelor thesis, which served as preliminary work to this project, we investigated an analytical relaxation. The solver used therein for the relaxed problem is compatible with the boundary approach introduced herein. Initial tests with the solver for the relaxed system where promising, and further research may investigate those results.

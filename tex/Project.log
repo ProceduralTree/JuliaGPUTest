@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.17.0 (TeX Live 2023/nixos.org)  (format=lualatex 1980.1.1)  19 DEC 2024 13:05
+This is LuaHBTeX, Version 1.17.0 (TeX Live 2023/nixos.org)  (format=lualatex 1980.1.1)  22 DEC 2024 15:24
  system commands enabled.
 **Project.tex
 (./Project.tex
@@ -2436,85 +2436,85 @@ chapter 5.
 <images/baseline.png, id=220, 602.25pt x 401.5pt>
 File: images/baseline.png Graphic file (type png)
 <use images/baseline.png>
-Package luatex.def Info: images/baseline.png  used on input line 457.
+Package luatex.def Info: images/baseline.png  used on input line 465.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
 <images/angle1.png, id=222, 602.25pt x 401.5pt>
 File: images/angle1.png Graphic file (type png)
 <use images/angle1.png>
-Package luatex.def Info: images/angle1.png  used on input line 464.
+Package luatex.def Info: images/angle1.png  used on input line 472.
+(luatex.def)             Requested size: 358.50233pt x 239.00879pt.
+<images/angle-.png, id=225, 602.25pt x 401.5pt>
+File: images/angle-.png Graphic file (type png)
+<use images/angle-.png>
+Package luatex.def Info: images/angle-.png  used on input line 480.
+(luatex.def)             Requested size: 358.50233pt x 239.00879pt.
+<images/angle-sqrt(2).png, id=226, 602.25pt x 401.5pt>
+File: images/angle-sqrt(2).png Graphic file (type png)
+<use images/angle-sqrt(2).png>
+Package luatex.def Info: images/angle-sqrt(2).png  used on input line 487.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
 [13
 
 
-<./images/baseline.png>]
-<images/angle-.png, id=231, 602.25pt x 401.5pt>
-File: images/angle-.png Graphic file (type png)
-<use images/angle-.png>
-Package luatex.def Info: images/angle-.png  used on input line 472.
-(luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-<images/angle-sqrt(2).png, id=232, 602.25pt x 401.5pt>
-File: images/angle-sqrt(2).png Graphic file (type png)
-<use images/angle-sqrt(2).png>
-Package luatex.def Info: images/angle-sqrt(2).png  used on input line 479.
-(luatex.def)             Requested size: 358.50233pt x 239.00879pt.
- [14<./images/angle1.png>] [15<./images/angle-.png><./images/angle-sqrt(2).png>] [16
+] [14<./images/baseline.png><./images/angle1.png>] [15<./images/angle-.png><./im
+ages/angle-sqrt(2).png>] [16
 
 
 ]
 chapter 6.
 LaTeX Font Info:    Font shape `TU/DejaVuSansMono(0)/m/n' will be
-(Font)              scaled to size 8.76003pt on input line 507.
-<images/angle0c.png, id=248, 602.25pt x 401.5pt>
+(Font)              scaled to size 8.76003pt on input line 515.
+<images/angle0c.png, id=247, 602.25pt x 401.5pt>
 File: images/angle0c.png Graphic file (type png)
 <use images/angle0c.png>
-Package luatex.def Info: images/angle0c.png  used on input line 515.
+Package luatex.def Info: images/angle0c.png  used on input line 523.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-<images/anfle1c.png, id=251, 602.25pt x 401.5pt>
+<images/anfle1c.png, id=250, 602.25pt x 401.5pt>
 File: images/anfle1c.png Graphic file (type png)
 <use images/anfle1c.png>
-Package luatex.def Info: images/anfle1c.png  used on input line 524.
+Package luatex.def Info: images/anfle1c.png  used on input line 532.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-<images/angle-1c.png, id=254, 602.25pt x 401.5pt>
+<images/angle-1c.png, id=253, 602.25pt x 401.5pt>
 File: images/angle-1c.png Graphic file (type png)
 <use images/angle-1c.png>
-Package luatex.def Info: images/angle-1c.png  used on input line 531.
+Package luatex.def Info: images/angle-1c.png  used on input line 539.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-<images/angle-multiplec.png, id=256, 602.25pt x 401.5pt>
+<images/angle-multiplec.png, id=255, 602.25pt x 401.5pt>
 File: images/angle-multiplec.png Graphic file (type png)
 <use images/angle-multiplec.png>
-Package luatex.def Info: images/angle-multiplec.png  used on input line 538.
+Package luatex.def Info: images/angle-multiplec.png  used on input line 546.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
 [17] [18<./images/angle0c.png><./images/anfle1c.png>] [19<./images/angle-1c.png>
 ] [20<./images/angle-multiplec.png>]
 chapter 7.
-<images/angle-circle.png, id=278, 602.25pt x 401.5pt>
+<images/angle-circle.png, id=277, 602.25pt x 401.5pt>
 File: images/angle-circle.png Graphic file (type png)
 <use images/angle-circle.png>
-Package luatex.def Info: images/angle-circle.png  used on input line 568.
-(luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-</tmp/babel-9eE7ky/julia-fngElO.png, id=281, 602.25pt x 401.5pt>
-File: /tmp/babel-9eE7ky/julia-fngElO.png Graphic file (type png)
-<use /tmp/babel-9eE7ky/julia-fngElO.png>
-Package luatex.def Info: /tmp/babel-9eE7ky/julia-fngElO.png  used on input line
- 577.
+Package luatex.def Info: images/angle-circle.png  used on input line 584.
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
 [21
 
 
 ]
-<images/angle-square.png, id=292, 602.25pt x 401.5pt>
-File: images/angle-square.png Graphic file (type png)
-<use images/angle-square.png>
-Package luatex.def Info: images/angle-square.png  used on input line 590.
-(luatex.def)             Requested size: 358.50233pt x 239.00879pt.
-<images/angle-values-square.png, id=294, 602.25pt x 401.5pt>
-File: images/angle-values-square.png Graphic file (type png)
-<use images/angle-values-square.png>
-Package luatex.def Info: images/angle-values-square.png  used on input line 599
+<images/angle-values-circle.png, id=289, 602.25pt x 401.5pt>
+File: images/angle-values-circle.png Graphic file (type png)
+<use images/angle-values-circle.png>
+Package luatex.def Info: images/angle-values-circle.png  used on input line 593
 .
 (luatex.def)             Requested size: 358.50233pt x 239.00879pt.
- [22<./images/angle-circle.png>] [23</tmp/babel-9eE7ky/julia-fngElO.png><./image
-s/angle-square.png>] [24<./images/angle-values-square.png>]
+<images/angle-square.png, id=291, 602.25pt x 401.5pt>
+File: images/angle-square.png Graphic file (type png)
+<use images/angle-square.png>
+Package luatex.def Info: images/angle-square.png  used on input line 606.
+(luatex.def)             Requested size: 358.50233pt x 239.00879pt.
+<images/angle-values-square.png, id=293, 602.25pt x 401.5pt>
+File: images/angle-values-square.png Graphic file (type png)
+<use images/angle-values-square.png>
+Package luatex.def Info: images/angle-values-square.png  used on input line 615
+.
+(luatex.def)             Requested size: 358.50233pt x 239.00879pt.
+ [22<./images/angle-circle.png>] [23<./images/angle-values-circle.png><./images/
+angle-square.png>] [24<./images/angle-values-square.png>]
 chapter 8.
 [25
 
@@ -2524,6 +2524,12 @@ chapter 8.
 
 ]
 chapter without number
+
+Overfull \hbox (98.83336pt too wide) in paragraph at lines 626--626
+\TU/DejaVuSansMono(0)/m/n/10.95 github . com / ProceduralTree / CahnHilliardJuli
+a / blob / af39a13f44caa1de1ee293b43e61e0c315d5aa0f /
+ []
+
 [27] (./tex/Project.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
@@ -2537,14 +2543,14 @@ Package logreq Info: Writing requests to 'Project.run.xml'.
 )
 
 Here is how much of LuaTeX's memory you used:
- 56270 strings out of 476447
+ 56272 strings out of 476447
  100000,2848258 words of node,token memory allocated
- 1548 words of node memory still in use:
+ 1570 words of node memory still in use:
    7 hlist, 2 vlist, 2 rule, 2 glue, 4 kern, 1 penalty, 2 sub_mlist, 2 glyph, 34
-1 attribute, 98 glue_spec, 50 attribute_list, 2 write, 8 pdf_action nodes
-   avail lists: 1:4,2:9857,3:365,4:626,5:399,6:130,7:5090,8:68,9:1351,10:28,11:3
-80
- 77089 multiletter control sequences out of 65536+600000
+8 attribute, 98 glue_spec, 51 attribute_list, 2 write, 9 pdf_action nodes
+   avail lists: 1:4,2:9849,3:365,4:626,5:399,6:129,7:5090,8:111,9:1351,10:28,11:
+380
+ 77091 multiletter control sequences out of 65536+600000
  95 fonts using 34988119 bytes
  122i,20n,114p,10958b,2459s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype/public/
@@ -2566,10 +2572,10 @@ kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype/public/lm/lmroman17-regu
 lar.otf></nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.005-tex/fonts/opentype
 /public/lm/lmroman12-bold.otf></nix/store/swxn2kgfg47a8r0igh45r51c7x3mk92s-lm-2.
 005-tex/fonts/opentype/public/lm/lmromancaps10-regular.otf>
-Output written on Project.pdf (35 pages, 721146 bytes).
+Output written on Project.pdf (35 pages, 629001 bytes).
 
-PDF statistics: 464 PDF objects out of 1000 (max. 8388607)
- 363 compressed objects within 4 object streams
+PDF statistics: 466 PDF objects out of 1000 (max. 8388607)
+ 365 compressed objects within 4 object streams
  93 named destinations out of 1000 (max. 131072)
  112 words of extra memory for PDF output out of 10000 (max. 100000000)
 

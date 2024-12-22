@@ -381,8 +381,8 @@ INPUT ./images/angle-multiplec.png
 INPUT ./images/angle-multiplec.png
 INPUT ./images/angle-circle.png
 INPUT ./images/angle-circle.png
-INPUT /tmp/babel-9eE7ky/julia-fngElO.png
-INPUT /tmp/babel-9eE7ky/julia-fngElO.png
+INPUT ./images/angle-values-circle.png
+INPUT ./images/angle-values-circle.png
 INPUT ./images/angle-square.png
 INPUT ./images/angle-square.png
 INPUT ./images/angle-values-square.png

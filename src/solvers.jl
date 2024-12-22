@@ -13,7 +13,7 @@ include("boundary-conditions.jl")
 include("initial_conditions.jl")
 
 
-function solve(initialCondition::T, timesteps::Int ; arrtype=T , θ=0 , h=1e-4 , ε = 3e-4) where T<:AbstractArray
+function solve(initialCondition::T, timesteps::Int ; arrtype=T , θ=0 , h=1e-4 , ε = .8e-4) where T<:AbstractArray
     # variables
     device = get_backend(initialCondition)
 

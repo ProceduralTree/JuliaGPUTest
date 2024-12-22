@@ -48,7 +48,7 @@
 	{\LARGE \@author \par}
 	{\Large Matriculation Number: 3545737 \par}
 	\vspace{1.5cm}
-	{\large Supervisor: Tufan Gosh\par}
+	{\large Supervisor: Tufan Ghosh\par}
 	\vspace{1.5cm}
 	{\large Department of Hydromechanics and Modelling of Hydrosystems \par}
 
@@ -318,6 +318,10 @@ Our implementation is done in julia to transmit the solution for each element in
 end
 #+end_src
 * Numerical evaluation
+the numerical investigations in this capter and the following are done with the following hyperparameters:
+| parameter | \(\varepsilon\) | \(h\)         | \(\Delta t\)  |
+|-----------+-----------------+---------------+---------------|
+| value     | \(8 * 10^{-5}\) | \(1*10^{-4}\) | \(1*10^{-4}\) |
 We set constant values for B_ij on the boundary to begin with our evaluations.
 One may note that C = 0 is equivalent to the no-flux condition of the original solver introduced in the Bachelor thesis. Now, as a preliminary verification step we set C = 0 as our first choice.
 Consequently, for \( C = 0 \), the interface lies orthogonal on the boundary (see Fig. [[fig:angle0]]), which we expect for a CH solver with no-flux boundary conditions.
@@ -334,9 +338,7 @@ using LaTeXStrings
     return 0
     end
 
-h::Float32 = 3f-4
 Δt::Float32 = 1e-4
-ε::Float32 = 2e-4
 W′(x) = -x * (1 - x^2)
 
 include("src/solvers.jl")
@@ -352,7 +354,7 @@ xlabel!(L"i")
 ylabel!(L"j")
 #+end_src
 
-#+caption: Phase-field \( \phi \) after 100 time-steps with \( C=0 \) emmulating no-flux boundary.
+#+caption: Phase-field \( \phi \) after 100 time-steps with \( C=0 \) emulating no-flux boundary.
 #+RESULTS: fig:angle0
 [[file:images/baseline.png]]
 
@@ -483,7 +485,7 @@ heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solut
 #+RESULTS: fig:angle-1c
 [[file:images/angle-1c.png]]
 
-When evaluating intermediate contact angles in Fig. [[fig:angle-multiplec]], the results are similar to the square domain again, however, especially for shallow angles, we observe some artifacts of one phase appearing in places where previously was none. We observe similar behavior on square domains only in the corners, i.e. points where the boundary has high curvature.
+When evaluating intermediate contact angles in Fig. [[fig:angle-multiplec]], the results are similar to the square domain again, however, especially for shallow angles, we observe some artifacts of one phase appearing in places where previously was none. We observe similar behavior on square domains only in the corners, i.e. points where the boundary has high curvature. Note that this effect can be circumvented with different values for \(\varepsilon\) howeverthis has an effect on the boundary angle, that we did not investigate.
 #+name: fig:angle-multiplec
 #+begin_src julia   :exports results :results file :file images/angle-multiplec.png
 using LaTeXStrings
@@ -525,7 +527,7 @@ h2 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(
 solution = solve(arr , 500 , θ=θ)
 h3 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=500")
 solution = solve(arr , 1000 , θ=θ)
-h4 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=5000")
+h4 = heatmap(Array(solution) , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(solution,1)), widen=1.06 , title=L"n=1000")
 plot(h1,h2,h3,h4)
 #+end_src
 
@@ -596,6 +598,10 @@ plot(f[50:end] , yaxis=:log)
 [[file:/tmp/babel-frcHT2/julia-VNDrnf.png]]
 
 * Angle
+We calculate the angle using the folowing hyperparameters
+| parameter | \(\varepsilon\) | \(h\)         | \(\Delta t\)  |
+|-----------+-----------------+---------------+---------------|
+| value     | \(2 * 10^{-5}\) | \(1*10^{-4}\) | \(1*10^{-4}\) |
 In previous experiments we noted that the angle of the interface changes with different input parameters. While we do not have a mathematical derivation of this relation, we aim to provide numerical insight in this chapter. We calculate this angle using the gradient of the phase-field \(\nabla \phi_{ij}\) and the normal of our domains' boundary.
 \begin{align}
 \label{eq:1}
@@ -645,7 +651,7 @@ end
 #+end_src
 
 #+RESULTS: angle-function
-: angle (generic function with 2 methods)
+: angle (generic function with 1 method)
 
 ** Circle
 The normal of the circular domain in our second example is
@@ -659,9 +665,7 @@ In Fig. [[fig:angle-on-circle]] we present the results of a calculated angle, to
 #+begin_src julia :results file :file images/angle-circle.png
 using LaTeXStrings
 n = 500
-h::Float32 = 3f-4
 Δt::Float32 = 1e-4
-ε::Float32 = 2e-4
 W′(x) = -x * (1 - x^2)
 @inline function G(I::CartesianIndex , Ids::CartesianIndices)::Float32
     @inline r  = Ids[end] - I
@@ -674,12 +678,13 @@ end
 using LinearAlgebra
 include("src/solvers.jl")
 include("src/initial_conditions.jl")
+h = 1f-4
 arr = _init()
-s = solve(arr , n, θ=-1f-0)
+s = solve(arr , n, θ=-1f-0 ,  ε = 3e-4 , h=h)
 P = argmax_gradient(s)
 g,n = angle(s , P)
 
-heatmap(Array(s)' , aspect_ratio=:equal)
+heatmap(Array(s)' , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(s,1)), widen=1.06)
 #acosd((g' * n)/(norm(g) * norm(n)))
 scatter!(Tuple(P), label=L"P")
 quiver!([P[1]] , [P[2]] , quiver=([g[1]] , [g[2]]) .* 50)
@@ -692,10 +697,10 @@ title!("$(acosd((g' * n))) °")
 [[file:images/angle-circle.png]]
 
 
-The method we use to calculate the interface-boundary angle is not stable under small changes in \(C\) as seen in  Fig. [[fig:angle-table]] this is unsurprising, since the selection criterion for the point, where we calculate the angle is prone to change as the maximum derivative of the phase-field is approximately the same everywhere on the phase-field. To combat this effect, we chose the point to evaluate at once for all iterations. This however only works if the interface doesn't move from the point selected. The results in Fig. [[fig:angle-table]] shows, that the contact angle is proportional to the value we use for \(C\). Since the other hyperparameters (\varepsilon and \(h\)) may have an effect on the angel as well, we cannot give an exact realtion.
+The method we use to calculate the interface-boundary angle is not stable under small changes in \(C\) as seen in  Fig. [[fig:angle-table]] this is unsurprising, since the selection criterion for the point, where we calculate the angle is prone to change as the maximum derivative of the phase-field is approximately the same everywhere on the phase-field. To combat this effect, we chose the point to evaluate at once for all iterations. This however only works if the interface doesn't move from the point selected. The results in Fig. [[fig:angle-table]] shows, that the contact angle is related to the value we use for \(C\). Since the other hyperparameters (\varepsilon and \(h\)) may have an effect on the angel as well, we cannot give an exact relation.
 
 #+name: fig:angle-table
-#+begin_src julia :results file :file/images/angle-values-circle.png
+#+begin_src julia :results file :file images/angle-values-circle.png
 using DataFrames
 iter = 200
 df = DataFrame(theta=Float64[] , angle=Float64[])
@@ -704,20 +709,21 @@ s = solve(arr , iter, θ=0)
 P = argmax_gradient(s)
 for theta=-0.5:0.005:0.5
     arr = _init()
-    s = solve(arr , iter, θ=Float32(theta))
+    s = solve(arr , iter, θ=Float32(theta),  ε = 3e-4 , h=1f-4)
     g,n = angle(s, P)
     #local point = P
     alpha = acosd(g' * n)
     push!(df  , (theta , alpha))
 end
-plot(df.theta , df.angle)
+plot(df.theta , df.angle , label=L"\alpha (C)")
 xlabel!(L"C")
 ylabel!(L"\alpha")
+title!(L"Relation between boundary angle and $C$")
 #+end_src
 
 #+caption: value for \(C\) and corresponding angle \alpha after 200 time-steps
 #+RESULTS: fig:angle-table
-[[file:/tmp/babel-9eE7ky/julia-fngElO.png]]
+[[file:images/angle-values-circle.png]]
 
 
 ** Square
@@ -739,9 +745,8 @@ The angle on a square domain is presented in Fig. [[fig:angle-on-square]]
 end
 using LaTeXStrings
 n = 500
-h::Float32 = 3f-4
 Δt::Float32 = 1e-4
-ε::Float32 = 2e-4
+h = 2f-4
 W′(x) = -x * (1 - x^2)
 @inline function G(I::CartesianIndex , Ids::CartesianIndices)::Float32
     Id = oneunit(I)
@@ -754,11 +759,12 @@ using LinearAlgebra
 include("src/solvers.jl")
 include("src/initial_conditions.jl")
 arr = _init()
-s = solve(arr , n, θ=-1f-0)
+s = solve(arr , n, θ=-1f-0 ,  ε = 3e-4 , h=1f-4)
 
-g,n,P = angle(s)
+P = argmax_gradient(s)
+g,n = angle(s, P)
 
-heatmap(Array(s)' , aspect_ratio=:equal)
+heatmap(Array(s)' , aspect_ratio=:equal , clims=(-1,1), lims=(0,size(s,1)), widen=1.06)
 #acosd((g' * n)/(norm(g) * norm(n)))
 scatter!(Tuple(P), label=L"P")
 quiver!([P[1]] , [P[2]] , quiver=([g[1]] , [g[2]]) .* 50)
@@ -779,19 +785,20 @@ using DataFrames
 iter = 200
 df = DataFrame(theta=Float64[] , angle=Float64[])
 arr = _init()
-s = solve(arr , iter, θ=0)
+s = solve(arr , iter, θ=0f0)
 P = argmax_gradient(s)
 for theta=-0.5:0.005:0.5
     arr = _init()
-    s = solve(arr , iter, θ=Float32(theta))
+    s = solve(arr , iter, θ=Float32(theta),  ε = 3f-4 , h=1f-4)
     g,n = angle(s, P)
     #local point = P
     alpha = acosd(g' * n)
     push!(df  , (theta , alpha))
 end
-plot(df.theta , df.angle)
+plot(df.theta , df.angle  , label=L"\alpha (C)")
 xlabel!(L"C")
 ylabel!(L"\alpha")
+title!(L"Relation between boundary angle and $C$")
 #+end_src
 
 #+caption: value for \theta and corresponding angle \alpha after 200 time-steps
