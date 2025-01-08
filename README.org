@@ -1,49 +1,5 @@
 #+title: Readme
 
-* Personal tests of the KernelAbstraction lib
-+ Tests of diffrent backends
-  + [X] CPU
-  + [X] oneApi
-  + [X] CUDA
-+ Test of finite difference laplacian
-  - [X] basic
-  - [X] with characteristic function
-* Simple elliptical DGL
-- [X] with gpu
-- [X] reference implementation
-** benchmarks
-julia> @benchmark nokernel_elyps_solver!(M,1000)
-
-BenchmarkTools.Trial: 1 sample with 1 evaluation.
- Single result which took 42.295 s (0.00% GC) to evaluate,
- with a memory estimate of 4.00 MiB, over 4 allocations.
-
-julia>
-
-julia>
-
-julia> @benchmark test_elyps_solver(M,1000 , device_arr=CuArray)
-BenchmarkTools.Trial: 35 samples with 1 evaluation.
- Range (min … max):  143.772 ms … 152.888 ms  ┊ GC (min … max): 0.00% … 3.50%
- Time  (median):     145.901 ms               ┊ GC (median):    0.00%
- Time  (mean ± σ):   146.588 ms ±   2.544 ms  ┊ GC (mean ± σ):  0.60% ± 1.30%
-
-   █ ▁       ▁▁▁▁       ▁
-  ▆█▆█▆▁▆▆▁▁▁████▆▁▆▆▆▁▆█▁▆▆▁▁▁▆▁▁▁▁▁▁▁▁▆▁▁▁▁▁▁▆▁▁▆▁▁▁▁▁▆▁▁▆▁▁▆ ▁
-  144 ms           Histogram: frequency by time          153 ms <
-
- Memory estimate: 11.97 MiB, allocs estimate: 80936.
-
-julia> @benchmark test_elyps_solver(M,1000)
-BenchmarkTools.Trial: 2 samples with 1 evaluation.
- Range (min … max):  2.822 s …  2.825 s  ┊ GC (min … max): 0.00% … 0.00%
- Time  (median):     2.823 s             ┊ GC (median):    0.00%
- Time  (mean ± σ):   2.823 s ± 1.673 ms  ┊ GC (mean ± σ):  0.00% ± 0.00%
-
-  █                                                      █
-  █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█ ▁
-  2.82 s        Histogram: frequency by time        2.82 s <
-
- Memory estimate: 18.99 MiB, allocs estimate: 148502.
-
-julia>
+* This Repo contains code for my Project Thesis
+The main document of interesst is Project.org, which contains code for all plots and the explanation of my work.
+the main solver can be found in the src directory. This Repo biulds on the work in my bachelor thesis and provides a gpu accelerated solver for the algorith explained therein. Note: this repo uses a less acurate jacoby method instead of the gauss seidel method in the BA repo
