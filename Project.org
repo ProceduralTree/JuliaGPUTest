@@ -20,6 +20,7 @@
 #+latex_header: \usepackage{unicode-math}
 #+latex_header: \setmonofont{DejaVu Sans Mono}[Scale=0.8]
 #+latex_header: \newenvironment{abstract} {}{}
+#+latex_header: \newenvironment{declaration} {}{}
 #+latex_header: \usepackage{abstract}
 #+latex_header: \usepackage{multicol}
 #+latex_header: \usepackage{supertabular,booktabs}
@@ -66,6 +67,26 @@
 #+begin_abstract
 This project examines the effect of a simple Neumann boundary condition on a finite difference solver for the Cahn-Hilliard equation. It presents the results of the proposed method on different domains (for a square and a circule). There it is apparent, that the approach is able to affect the contact angle of the interface on the boundary. Additionally, this project gives a rudimentary technique to calculate this angle.
 #+end_abstract
+#+begin_declaration
+„Hiermit erkläre ich, dass ich die vorliegende Arbeit selbständig verfasst habe, dass ich keine anderen als die angegebenen
+Quellen benutzt und alle wörtlich oder sinngemäß aus anderen Werken
+übernommenen Aussagen als solche gekennzeichnet habe, dass die
+eingereichte Arbeit weder vollständig noch in wesentlichen Teilen Gegenstand
+eines anderen Prüfungsverfahrens gewesen ist, dass ich die Arbeit weder
+vollständig noch in Teilen bereits veröffentlicht habe und dass das elektronische
+Exemplar mit den anderen Exemplaren übereinstimmt.“
+#+end_declaration
+
+#+begin_declaration
+English translation for convenience:
+"I hereby declare that I have written the present work independently, that I
+have not used any sources other than those specified and that all statements
+taken verbatim or meaningfully from other works have been marked as such,
+that the submitted work has not been completely or partially the subject of
+another examination procedure, that I have not published the work either
+completely or in part, and that the electronic copy coincides exactly with the
+other copies."
+#+end_declaration
 
 #+TOC: headlines 3
 #+begin_export latex
